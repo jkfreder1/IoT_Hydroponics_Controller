@@ -1,6 +1,6 @@
 
 // Load Wi-Fi library
-//#include <WiFi.h>
+#include <WiFi.h>
 
 #include <Arduino.h>
 //#include <Ethernet.h>
@@ -25,7 +25,7 @@ String output27State = "off";
 // Assign output variables to GPIO pins
 const int output26 = 26;
 const int output27 = 27;
-//sconst int LED_BUILTIN = 2;
+const int LED_BUILTIN = 2;
 
 // Current time
 unsigned long currentTime = millis();
