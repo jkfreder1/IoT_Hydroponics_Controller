@@ -1,9 +1,12 @@
 #include <WiFi.h>
 #include <WebServer.h>
-float windDir =   380.0;
-String SendHTML(uint8_t led1stat,uint8_t led2stat){
+int windDir=1;
+float Temperature[5]={0,1,2,3,4};
+String SendHTML(uint8_t led1stat,uint8_t led2stat,int windDir){
   String ptr = "<!DOCTYPE html> <html>\n";
   ptr +="<head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, user-scalable=no\">\n";
+  ptr +="<meta name='viewport' content='width=device-width, initial-scale=1.0'/>";
+  ptr +="<meta charset='utf-8'>";
   ptr +="<title>LED Control</title>\n";
   ptr +="<style>html { font-family: Helvetica; display: inline-block; margin: 0px auto; text-align: center;}\n";
   ptr +="body{margin-top: 50px;} h1 {color: #444444;margin: 50px auto 30px;} h3 {color: #444444;margin-bottom: 50px;}\n";
@@ -32,7 +35,8 @@ String SendHTML(uint8_t led1stat,uint8_t led2stat){
 
   ptr +="</body>\n";
   ptr +="</html>\n";
-  ptr += windDir;
+  ptr +="<p>windDir: ";
+  ptr +=windDir;
   return ptr;
 }
 
@@ -51,32 +55,37 @@ void handle_OnConnect() {
   LED1status = LOW;
   LED2status = LOW;
   Serial.println("GPIO4 Status: OFF | GPIO5 Status: OFF");
-  server.send(200, "text/html", SendHTML(LED1status,LED2status)); 
+  server.send(200, "text/html", SendHTML(LED1status,LED2status,windDir)); 
+
 }
 
 void handle_led1on() {
   LED1status = HIGH;
   Serial.println("GPIO4 Status: ON");
-  server.send(200, "text/html", SendHTML(true,LED2status)); 
+  server.send(200, "text/html", SendHTML(true,LED2status,windDir)); 
 }
 
 void handle_led1off() {
   LED1status = LOW;
   Serial.println("GPIO4 Status: OFF");
-  server.send(200, "text/html", SendHTML(false,LED2status)); 
+  server.send(200, "text/html", SendHTML(false,LED2status,windDir)); 
 }
 
 void handle_led2on() {
   LED2status = HIGH;
   Serial.println("GPIO5 Status: ON");
-  server.send(200, "text/html", SendHTML(LED1status,true)); 
+  server.send(200, "text/html", SendHTML(LED1status,true,windDir)); 
 }
 
 void handle_led2off() {
   LED2status = LOW;
   Serial.println("GPIO5 Status: OFF");
-  server.send(200, "text/html", SendHTML(LED1status,false)); 
+  server.send(200, "text/html", SendHTML(LED1status,false,windDir)); 
 }
+
+  
+
+
 
 void handle_NotFound(){
   server.send(404, "text/plain", "Not found");
@@ -128,5 +137,6 @@ void loop() {
   {digitalWrite(LED2pin, HIGH);}
   else
   {digitalWrite(LED2pin, LOW);}
+  windDir= random(1,10);
+  
 }
-
