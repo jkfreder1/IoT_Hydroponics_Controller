@@ -5,6 +5,16 @@
 #include <OneWire.h>
 #include <DallasTemperature.h>
 
+#include <iostream>
+
+#include <deque>
+using namespace std;
+deque<int> intd;
+deque<int> inta;
+deque<int> inta1;
+deque<int> intw;
+
+
 int trigPin = 33;    // Trigger
 int echoPin = 25;    // Echo
 long duration, cm, inches;
@@ -52,8 +62,10 @@ void setup(){
 
   sensors.begin();///water temp
   pinMode(TdsSensorPin,INPUT);
-}
 
+  pinMode(26, OUTPUT);////
+}
+/*
 int getMedianNum(int bArray[], int iFilterLen)
 {
  int bTab[iFilterLen];
@@ -77,7 +89,7 @@ int getMedianNum(int bArray[], int iFilterLen)
  else
  bTemp = (bTab[iFilterLen / 2] + bTab[iFilterLen / 2 - 1]) / 2;
  return bTemp;
-} 
+} */
 
 void displayWaterTemp(float temperatureF){
   lcd.setCursor(0,0);//water temp display
@@ -90,13 +102,15 @@ void displayWaterTemp(float temperatureF){
     lcd.print("Error!");
 	lcd.setCursor(0,1);
 	lcd.print("Water temp high");
+  digitalWrite(26, HIGH);/////
   }
   else{
 	lcd.print("Water temp ");
   	lcd.print(temperatureF);
+    digitalWrite(26, LOW);/////
   }
-  delay(5000);
-  lcd.clear();
+  //delay(3000);/////
+  //lcd.clear();
 }
 
 void displayDHT(float h, float f){
@@ -125,8 +139,8 @@ void displayDHT(float h, float f){
   	lcd.print(f);
     lcd.print("F");
   }
-  delay(5000);
-  lcd.clear();
+  //delay(5000);
+  //lcd.clear();
 }
 
 void displaySonar(long inches){
@@ -145,8 +159,8 @@ void displaySonar(long inches){
   	lcd.print(inches);
     lcd.print(" inches");
   }
-  delay(5000);
-  lcd.clear();
+  //delay(5000);
+  //lcd.clear();
 }
 
 void displayTDS(float tdsValue){
@@ -178,7 +192,7 @@ static unsigned long analogSampleTimepoint = millis();//Tds value
 tdsValue=(133.42*compensationVolatge*compensationVolatge*compensationVolatge - 255.86*compensationVolatge*compensationVolatge + 857.39*compensationVolatge)*0.5;
  }*/
 
-  digitalWrite(trigPin, LOW);///////sonar sensor
+  digitalWrite(trigPin, LOW);//sonar sensor
   delayMicroseconds(5);
   digitalWrite(trigPin, HIGH);
   delayMicroseconds(10);
@@ -187,19 +201,47 @@ tdsValue=(133.42*compensationVolatge*compensationVolatge*compensationVolatge - 2
   duration = pulseIn(echoPin, HIGH);
   cm = (duration/2) / 29.1;     
   inches = (duration/2) / 74;
-  
-  //delay(2000);//////DHT temp humid
-  float h = dht.readHumidity();
-  float f = dht.readTemperature(true);
-
-  sensors.requestTemperatures();/////Water temp
-  float temperatureF = sensors.getTempFByIndex(0);
-
-  displayWaterTemp(temperatureF);
-
-  displayDHT(h, f);
-
   displaySonar(inches);
+  delay(5000);
+  lcd.clear();
+  intd.push_back(inches);/////
+  
+  float h = dht.readHumidity();//DHT temp humid
+  float f = dht.readTemperature(true);
+  displayDHT(h, f);
+  delay(5000);
+  lcd.clear();
+  inta.push_back(h);/////
+  inta1.push_back(f);/////
 
-  displayTDS(tdsValue);
+  sensors.requestTemperatures();//Water temp
+  float temperatureF = sensors.getTempFByIndex(0);
+  displayWaterTemp(temperatureF);
+  delay(5000);
+  lcd.clear();
+  intw.push_back(temperatureF);/////
+
+   lcd.print(intd[0]);////
+   lcd.print(intd[1]);////
+   lcd.print(intd[2]);////
+   lcd.print(intd[3]);////
+   lcd.print(intd[4]);////
+   lcd.print(intd[5]);////
+   delay(2000);
+   lcd.clear();
+
+  if(intd.size()>5){
+    intd.pop_front();
+  }
+  if(inta.size()>5){
+    inta.pop_front();
+  }
+  if(inta1.size()>5){
+    inta1.pop_front();
+  }
+  if(intw.size()>5){
+    intw.pop_front();
+  }
+  //Serial.print(intd[2]);
+  //cout<<intd[2];
 }
