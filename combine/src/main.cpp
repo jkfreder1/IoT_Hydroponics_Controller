@@ -17,6 +17,16 @@ deque<int> intd;
 deque<int> inta;
 deque<int> inta1;
 deque<int> intw;
+deque<int> inttds;
+deque<int> intph;
+
+
+#define state1 1
+#define state2 2
+#define state3 3
+#define state4 4
+#define state5 5
+int state = 0;
 
 
 int trigPin = 33;    // Trigger
@@ -33,6 +43,7 @@ float airTempLowParam=50;
 long sonarHighParam=2;
 long sonarLowParam=8;
 int counter=0;
+int counter2=0;
 
 #define COLUMS           16
 #define ROWS             2
@@ -41,7 +52,7 @@ int counter=0;
 #define LCD_SPACE_SYMBOL 0x20  //space symbol from the LCD ROM, see p.9 of GDM2004D datasheet
 const int oneWireBus = 23;
 
-#define TdsSensorPin 14
+#define TdsSensorPin 34
 #define VREF 5.0 // analog reference voltage(Volt) of the ADC
 #define SCOUNT 30 // sum of sample point
 int analogBuffer[SCOUNT]; // store the analog value in the array, read from ADC
@@ -49,6 +60,19 @@ int analogBufferTemp[SCOUNT];
 int analogBufferIndex = 0,copyIndex = 0;
 float averageVoltage = 0,tdsValue = 0,temperature = 25;
 
+
+float calibration_value = 120.34;//ph
+int phval = 0; 
+unsigned long int avgval; 
+int array1;
+int array2;
+int array3;
+//int buffer_arr[10],temp;
+
+
+int button=0;
+int button2;
+int flag;
 
 
 const char* ssid = "ESP32";  // Enter SSID here
@@ -66,11 +90,39 @@ bool LED2status = LOW;
 
 
 
-
 OneWire oneWire(oneWireBus);
 DallasTemperature sensors(&oneWire);
 LiquidCrystal_I2C lcd(PCF8574_ADDR_A21_A11_A01, 4, 5, 6, 16, 11, 12, 13, 14, POSITIVE);
 DHT dht(DHTPIN, DHTTYPE);
+
+
+hw_timer_t * timer = NULL;
+
+
+int getMedianNum(int bArray[], int iFilterLen)//////////tds sensor
+{
+ int bTab[iFilterLen];
+ for (byte i = 0; i<iFilterLen; i++)
+ bTab[i] = bArray[i];
+ int i, j, bTemp;
+ for (j = 0; j < iFilterLen - 1; j++)
+ {
+ for (i = 0; i < iFilterLen - j - 1; i++)
+ {
+ if (bTab[i] > bTab[i + 1])
+ {
+ bTemp = bTab[i];
+ bTab[i] = bTab[i + 1];
+ bTab[i + 1] = bTemp;
+ }
+ }
+ }
+ if ((iFilterLen & 1) > 0)
+ bTemp = bTab[(iFilterLen - 1) / 2];
+ else
+ bTemp = (bTab[iFilterLen / 2] + bTab[iFilterLen / 2 - 1]) / 2;
+ return bTemp;
+} 
 
 
 
@@ -156,6 +208,12 @@ void handle_NotFound(){
 }
 
 
+void IRAM_ATTR incrCounter(){////////
+  counter++;
+  counter2++;
+}
+
+
 
 
 void setup(){
@@ -171,52 +229,30 @@ void setup(){
   sensors.begin();///water temp
   pinMode(TdsSensorPin,INPUT);
 
-  //pinMode(26, OUTPUT);////
-
-
-
-  pinMode(LED1pin, OUTPUT);
+  pinMode(LED1pin, OUTPUT);//wifi
   pinMode(LED2pin, OUTPUT);
-
   WiFi.softAP(ssid, password);
   WiFi.softAPConfig(local_ip, gateway, subnet);
   delay(100);
-
   server.on("/", handle_OnConnect);
   server.on("/led1on", handle_led1on);
   server.on("/led1off", handle_led1off);
   server.on("/led2on", handle_led2on);
   server.on("/led2off", handle_led2off);
   server.onNotFound(handle_NotFound);
-
   server.begin();
   Serial.println("HTTP server started");
+
+  pinMode(TdsSensorPin,INPUT);//tds sensor
+
+  timer = timerBegin(0, 8, true);//////////// timer
+  timerAttachInterrupt(timer, &incrCounter, true);
+  timerAlarmWrite(timer, 1000000, true);
+  timerAlarmEnable(timer);
+
+  pinMode(13,OUTPUT);
+
 }
-/*
-int getMedianNum(int bArray[], int iFilterLen)
-{
- int bTab[iFilterLen];
- for (byte i = 0; i<iFilterLen; i++)
- bTab[i] = bArray[i];
- int i, j, bTemp;
- for (j = 0; j < iFilterLen - 1; j++)
- {
- for (i = 0; i < iFilterLen - j - 1; i++)
- {
- if (bTab[i] > bTab[i + 1])
- {
- bTemp = bTab[i];
- bTab[i] = bTab[i + 1];
- bTab[i + 1] = bTemp;
- }
- }
- }
- if ((iFilterLen & 1) > 0)
- bTemp = bTab[(iFilterLen - 1) / 2];
- else
- bTemp = (bTab[iFilterLen / 2] + bTab[iFilterLen / 2 - 1]) / 2;
- return bTemp;
-} */
 
 void displayWaterTemp(float temperatureF){
   lcd.setCursor(0,0);//water temp display
@@ -236,8 +272,6 @@ void displayWaterTemp(float temperatureF){
     lcd.print(temperatureF);
     digitalWrite(13 , LOW);/////
   }
-  //delay(3000);/////
-  //lcd.clear();
 }
 
 void displayDHT(float h, float f){
@@ -266,8 +300,6 @@ void displayDHT(float h, float f){
     lcd.print(f);
     lcd.print("F");
   }
-  //delay(5000);
-  //lcd.clear();
 }
 
 void displaySonar(long inches){
@@ -286,21 +318,31 @@ void displaySonar(long inches){
     lcd.print(inches);
     lcd.print(" inches");
   }
-  //delay(5000);
-  //lcd.clear();
 }
+
 
 void displayTDS(float tdsValue){
   lcd.setCursor(0,0);
   lcd.print(tdsValue);
   lcd.print(" ppm");
-  //delay(5000);
-  //lcd.clear();
 }
 
+void displaypH(float ph_act){
+  lcd.setCursor(0,0);
+  lcd.print(ph_act);
+  lcd.print("pH");
+}
+
+
+float h;
+float f;
+float temperatureF;
+int ph_act;
+
+
 void loop(){
-/*
-static unsigned long analogSampleTimepoint = millis();//Tds value
+
+  static unsigned long analogSampleTimepoint = millis();//Tds sensor
  if(millis()-analogSampleTimepoint > 40U) {
  analogSampleTimepoint = millis();
  analogBuffer[analogBufferIndex] = analogRead(TdsSensorPin);
@@ -317,9 +359,9 @@ static unsigned long analogSampleTimepoint = millis();//Tds value
  float compensationCoefficient=1.0+0.02*(temperature-25.0);
  float compensationVolatge=averageVoltage/compensationCoefficient;
 tdsValue=(133.42*compensationVolatge*compensationVolatge*compensationVolatge - 255.86*compensationVolatge*compensationVolatge + 857.39*compensationVolatge)*0.5;
- }*/
-  counter++;
+}
 
+  if(counter>30){
   digitalWrite(trigPin, LOW);//sonar sensor
   delayMicroseconds(5);
   digitalWrite(trigPin, HIGH);
@@ -329,60 +371,102 @@ tdsValue=(133.42*compensationVolatge*compensationVolatge*compensationVolatge - 2
   duration = pulseIn(echoPin, HIGH);
   cm = (duration/2) / 29.1;
   inches = (duration/2) / 74;
-  if(counter<2){
-    lcd.clear();
-  }
-  if(counter<22){
-  displaySonar(inches);
-  }
-  //delay(5000);
-  //lcd.clear();
-  if(counter==1){
-  intd.push_back(inches);/////
-  }
-  
-  float h = dht.readHumidity();//DHT temp humid
-  float f = dht.readTemperature(true);
-  //delay(5000);
-  //lcd.clear();
-  if(counter>22&&counter<24){
-    lcd.clear();
-  }
-  if(counter>24&&counter<44){
-    displayDHT(h, f);
-  }
-  if(counter==1){
-  inta.push_back(h);/////
-  inta1.push_back(f);/////
-  }
-  
-  sensors.requestTemperatures();//Water temp
-  float temperatureF = sensors.getTempFByIndex(0);
-  if(counter>44&&counter<46){
-    lcd.clear();
-  }
-  if(counter>46&&counter<66){
-    displayWaterTemp(temperatureF);
-  }
-  //delay(5000);
-  //lcd.clear();
-  if(counter==1){
-  intw.push_back(temperatureF);/////
-  }
-  if(counter>66){
-    counter=0;
   }
 
-   /*
-   lcd.print(intd[0]);////
-   lcd.print(intd[1]);////
-   lcd.print(intd[2]);////
-   lcd.print(intd[3]);////
-   lcd.print(intd[4]);////
-   lcd.print(intd[5]);////
-   delay(2000);
-   lcd.clear();
-*/
+  if(counter>30&&counter<60){
+  h = dht.readHumidity();//DHT temp humid
+  f = dht.readTemperature(true);
+  }
+
+  if(counter>60&&counter<90){
+  sensors.requestTemperatures();//Water temp
+  temperatureF = sensors.getTempFByIndex(0);
+  }
+
+  if(counter>90&&counter<120){
+
+ array1=analogRead(0);
+ array2=analogRead(0);
+ array3=analogRead(0);
+
+ array1=array2+array3+array1;
+ 
+float volt=(float)array1*5.0/1024/3;
+ ph_act = -5.70 * volt + calibration_value;
+
+ counter=0;
+ }
+
+if(counter2>15){
+if(touchRead(15)<20){
+      button2++;
+      if(button2>7){
+        flag=1;
+      }
+}
+}
+
+if(flag>0&&counter2>25){
+  button2=0;
+  counter2=0;
+  button++;
+  flag=0;
+  lcd.clear();
+}
+if(button2<10&&counter2>50){
+  button2=0;
+  counter2=0;
+}
+if(button>5){
+  button=0;
+}
+
+/*
+  if(counter2>60){
+    digitalWrite(13,LOW);
+  if(touchRead(15)<25&&touchRead(15)>10){
+      button=button+1;
+      counter2=0;
+      lcd.clear();
+      digitalWrite(13,HIGH);
+  }
+  }
+  if(button>5){
+      button=0;
+  }*/
+  
+
+ switch (button){
+    case 0:
+      lcd.setCursor(0,0);
+      lcd.print("Hydroponics");
+      intd.push_back(inches);
+      inta.push_back(h);
+      inta1.push_back(f);
+      intw.push_back(temperatureF);
+      inttds.push_back(tdsValue);
+      intph.push_back(ph_act);
+      break;
+    case 1:
+      displaypH(ph_act);
+      break;
+    case 2:
+      displayWaterTemp(temperatureF);
+      break;
+    case 3:
+      displayTDS(tdsValue);
+      break;
+    case 4:
+      displaySonar(inches);
+      break;
+    case 5:
+      displayDHT(h,f);
+      break;
+    default: break;
+ }
+
+  
+  
   if(intd.size()>5){
     intd.pop_front();
   }
