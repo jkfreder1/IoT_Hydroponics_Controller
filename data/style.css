@@ -27,10 +27,12 @@ p{
   background-color: #f44336;
 }
 
-.table {
+.table, th, td {
+  border-collapse: collapse;
   border: 1px solid black;
-  width: 100%;
   text-align: center;
+  align-self: center;
+  margin: auto;
 }
 
 .table:hover {

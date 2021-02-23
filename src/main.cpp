@@ -3,6 +3,9 @@
 #include <ESPAsyncWebServer.h>
 #include <ESPAsyncWiFiManager.h> 
 #include "SPIFFS.h"
+//#include <PubSubClient.h>
+#include <stdlib.h>  
+
 
 // Create AsyncWebServer object on port 80
 AsyncWebServer server(80);
@@ -12,14 +15,30 @@ DNSServer dns;
 //const char* ssid = "MySpectrumWiFi8a-2G";
 //const char* password = "swiftguppy564";
 
+
+// MQTT address
+const char* mqtt_server = "localhost";
+
+
 // Set LED GPIO
 const int ledPin = 2;
 // Stores LED state
 String ledState;
 
+const char* http_username = "admin";
+const char* http_password = "admin";
 
-
-
+String readBME280Humidity() {
+  float h = 65 + rand() % (( 85 + 1 ) -65);
+  if (isnan(h)) {
+    Serial.println("Failed to read from BME280 sensor!");
+    return "";
+  }
+  else {
+    Serial.println(h);
+    return String(h);
+  }
+}
 // Replaces placeholder with LED state value
 String processor(const String& var){
   Serial.println(var);
@@ -81,30 +100,58 @@ void setup(){
 
   // Route for root / web page
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
+    if(!request->authenticate(http_username, http_password))
+      return request->requestAuthentication();
     request->send(SPIFFS, "/index.html", String(), false, processor);
   });
   
   // Route to load style.css file
   server.on("/style.css", HTTP_GET, [](AsyncWebServerRequest *request){
+    if(!request->authenticate(http_username, http_password))
+      return request->requestAuthentication();
     request->send(SPIFFS, "/style.css", "text/css");
+  });
+
+  // Route to load script.js file
+  server.on("/script.js", HTTP_GET, [](AsyncWebServerRequest *request){
+    if(!request->authenticate(http_username, http_password))
+      return request->requestAuthentication();
+    request->send(SPIFFS, "/script.js", "text/javascript");
   });
 
   // Route to set GPIO to HIGH
   server.on("/on", HTTP_GET, [](AsyncWebServerRequest *request){
+    if(!request->authenticate(http_username, http_password))
+      return request->requestAuthentication();
     digitalWrite(ledPin, HIGH);    
     request->send(SPIFFS, "/index.html", String(), false, processor);
   });
   
   // Route to set GPIO to LOW
   server.on("/off", HTTP_GET, [](AsyncWebServerRequest *request){
+    if(!request->authenticate(http_username, http_password))
+      return request->requestAuthentication();
     digitalWrite(ledPin, LOW);    
     request->send(SPIFFS, "/index.html", String(), false, processor);
   });
 
+  server.on("/logout", HTTP_GET, [](AsyncWebServerRequest *request){
+  request->send(401);
+  });
+
+  server.on("/logged-out", HTTP_GET, [](AsyncWebServerRequest *request){
+   request->send(SPIFFS, "/logged_out.html", String(), false, processor);
+  });
+
+  server.on("/humidity", HTTP_GET, [](AsyncWebServerRequest *request){
+    
+    request->send_P(200, "text/plain", readBME280Humidity().c_str());
+    
+  });
   // Start server
   server.begin();
 
-
+ 
 }
 
 

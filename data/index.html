@@ -1,85 +1,69 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>ESP32 Web Server</title>
+  <title>ESP32 Hydroponics Web Server</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" href="data:,">
   <link rel="stylesheet" type="text/css" href="style.css">
+  <script src="script.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+  <script src="https://code.highcharts.com/highcharts.js"></script>
 </head>
 <body>
-  <h1>ESP32 Web Server </h1>
-  <ul>
-    <li>Home</li>
-    <li>Air Temperature</li>
-    <li>Air Humidity</li>
-    <li>Water Temperature</li>
-    <li>Water Level</li>
-    <li>pH</li>
-  </ul>
-  <p>GPIO state: <strong> %STATE%</strong></p>
+  <h1>ESP32 Hydroponics Web Server </h1>
+  <button onclick="logoutButton()">Logout</button>
+  <div id="chart-temperature" class="container"></div>
+  <div id="chart-humidity" class="container"></div>
+  <div id="chart-pressure" class="container"></div>
+  
+  <p>GPIO state: <strong> %STATE% </strong></p>
   <p><a href="/on"><button class="button">ON</button></a></p>
   <p><a href="/off"><button class="button button2">OFF</button></a></p>
 
-  <table class="table">
-    <tr>
-      <th>Air Temperature</th>
-      <th>Air Humidity</th>
-      <th>Water Temperature</th>
-      <th>Water Level</th>
-    </tr>
-    <tr>
-      <td>Jill</td>
-      <td>Smith</td>
-      <td>50</td>
-      <td>50</td>
-    </tr>
-    <tr>
-      <td>Eve</td>
-      <td>Jackson</td>
-      <td>94</td>
-      <td>50</td>
-    </tr>
-  </table>
-  <canvas id="myChart" width="400" height="400"></canvas>
-<script>
-var ctx = document.getElementById('myChart').getContext('2d');
-var myChart = new Chart(ctx, {
-    type: 'bar',
-    data: {
-        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-        datasets: [{
-            label: '# of Votes',
-            data: [12, 19, 3, 5, 2, 3],
-            backgroundColor: [
-                'rgba(255, 99, 132, 0.2)',
-                'rgba(54, 162, 235, 0.2)',
-                'rgba(255, 206, 86, 0.2)',
-                'rgba(75, 192, 192, 0.2)',
-                'rgba(153, 102, 255, 0.2)',
-                'rgba(255, 159, 64, 0.2)'
-            ],
-            borderColor: [
-                'rgba(255, 99, 132, 1)',
-                'rgba(54, 162, 235, 1)',
-                'rgba(255, 206, 86, 1)',
-                'rgba(75, 192, 192, 1)',
-                'rgba(153, 102, 255, 1)',
-                'rgba(255, 159, 64, 1)'
-            ],
-            borderWidth: 1
-        }]
-    },
-    options: {
-        scales: {
-            yAxes: [{
-                ticks: {
-                    beginAtZero: true
-                }
-            }]
+  
+
+  <script>
+    var chartT = new Highcharts.Chart({
+      chart:{ renderTo : 'chart-temperature' },
+      title: { text: 'Temperature Chart' },
+      series: [{
+        showInLegend: false,
+        data: []
+      }],
+      plotOptions: {
+        line: { animation: false,
+          dataLabels: { enabled: true }
+        },
+        series: { color: '#059e8a' }
+      },
+      xAxis: { type: 'datetime',
+        dateTimeLabelFormats: { second: '%H:%M:%S' }
+      },
+      yAxis: {
+        title: { text: 'Temperature (Celsius)' }
+        //title: { text: 'Temperature (Fahrenheit)' }
+      },
+      credits: { enabled: false }
+    });
+    setInterval(function ( ) {
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          var x = (new Date()).getTime(),
+              y = parseFloat(this.responseText);
+          //console.log(this.responseText);
+          if(chartT.series[0].data.length > 40) {
+            chartT.series[0].addPoint([x, y], true, true, true);
+          } else {
+            chartT.series[0].addPoint([x, y], true, false, true);
+          }
         }
-    }
-});
-</script>
+      };
+      xhttp.open("GET", "/humidity", true);
+      xhttp.send();
+    }, 800 ) ;
+    </script>
+  <canvas id="myChart" width="400" height="400"></canvas>
+
 </body>
 </html>
