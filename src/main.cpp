@@ -17,7 +17,7 @@ DNSServer dns;
 
 
 // MQTT address
-const char* mqtt_server = "localhost";
+//const char* mqtt_server = "localhost";
 
 
 // Set LED GPIO
@@ -55,50 +55,8 @@ String processor(const String& var){
   return String();
 }
  
- 
-void setup(){
-  // Serial port for debugging purposes
-  Serial.begin(115200);
-  pinMode(ledPin, OUTPUT);
-
-  //WiFiManager
-    //Local intialization. Once its business is done, there is no need to keep it around
-    AsyncWiFiManager wifiManager(&server,&dns);
-    //reset saved settings
-    //wifiManager.resetSettings();
-    //set custom ip for portal
-    //wifiManager.setAPConfig(IPAddress(10,0,1,1), IPAddress(10,0,1,1), IPAddress(255,255,255,0));
-    //fetches ssid and pass from eeprom and tries to connect
-    //if it does not connect it starts an access point with the specified name
-    //here  "AutoConnectAP"
-    //and goes into a blocking loop awaiting configuration
-    wifiManager.autoConnect("AutoConnectAP");
-    //or use this for auto generated name ESP + ChipID
-    //wifiManager.autoConnect();
-    //if you get here you have connected to the WiFi
-    Serial.println("connected...yeey :)");
-
-
-  // Initialize SPIFFS
-  if(!SPIFFS.begin(true)){
-    Serial.println("An Error has occurred while mounting SPIFFS");
-    return;
-  }
-
-  // Connect to Wi-Fi
- /*WiFi.begin(ssid, password);
-
-
-
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(1000);
-    Serial.println("Connecting to WiFi..");
-  }
-*/
-  // Print ESP32 Local IP Address
-  Serial.println(WiFi.localIP());
-
-  // Route for root / web page
+ void routes(){
+    // Route for root / web page
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
     if(!request->authenticate(http_username, http_password))
       return request->requestAuthentication();
@@ -148,6 +106,43 @@ void setup(){
     request->send_P(200, "text/plain", readBME280Humidity().c_str());
     
   });
+ }
+ 
+void setup(){
+  // Serial port for debugging purposes
+  Serial.begin(115200);
+  pinMode(ledPin, OUTPUT);
+
+  //WiFiManager
+    //Local intialization. Once its business is done, there is no need to keep it around
+    AsyncWiFiManager wifiManager(&server,&dns);
+    //reset saved settings
+    //wifiManager.resetSettings();
+    //set custom ip for portal
+    //wifiManager.setAPConfig(IPAddress(10,0,1,1), IPAddress(10,0,1,1), IPAddress(255,255,255,0));
+    //fetches ssid and pass from eeprom and tries to connect
+    //if it does not connect it starts an access point with the specified name
+    //here  "AutoConnectAP"
+    //and goes into a blocking loop awaiting configuration
+    wifiManager.autoConnect("AutoConnectAP");
+    //or use this for auto generated name ESP + ChipID
+    //wifiManager.autoConnect();
+    //if you get here you have connected to the WiFi
+    Serial.println("connected...yeey :)");
+
+
+  // Initialize SPIFFS
+  if(!SPIFFS.begin(true)){
+    Serial.println("An Error has occurred while mounting SPIFFS");
+    return;
+  }
+
+  
+  // Print ESP32 Local IP Address
+  Serial.println(WiFi.localIP());
+
+  // initialize server routes
+  routes();
   // Start server
   server.begin();
 
