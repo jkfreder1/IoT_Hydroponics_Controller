@@ -21,14 +21,6 @@ deque<int> inttds;
 deque<int> intph;
 
 
-#define state1 1
-#define state2 2
-#define state3 3
-#define state4 4
-#define state5 5
-int state = 0;
-
-
 int trigPin = 33;    // Trigger
 int echoPin = 25;    // Echo
 long duration, cm, inches;
@@ -43,7 +35,6 @@ float airTempLowParam=50;
 long sonarHighParam=2;
 long sonarLowParam=8;
 int counter=0;
-//int counter2=0;
 
 #define COLUMS           16
 #define ROWS             2
@@ -67,11 +58,14 @@ unsigned long int avgval;
 int array1;
 int array2;
 int array3;
-//int buffer_arr[10],temp;
+
+float h;
+float f;
+float temperatureF;
+int ph_act;
 
 
 int button=0;
-int button2;
 int counter2;
 int clear;
 
@@ -217,6 +211,17 @@ void IRAM_ATTR incrCounter(){
   }
 }
 
+int h_offset,f_offset,ph_act_offset,inches_offset,temperatureF_offset,tds_offset;
+int h_input,f_input,ph_act_input,inches_input,temperatureF_input,tds_value_input;
+
+void calibration(float hum,float far,int ph,int in,float atemp,float tds){
+  h_offset=h_input-hum;
+  f_offset=f_input-far;
+  ph_act_offset=ph_act_input-ph_act;
+  inches_offset=inches_input-inches;
+  temperatureF_offset=temperatureF_input-temperatureF;
+  tds_offset=tds_value_input-tdsValue;
+}
 
 void buttonISR(){
   if(counter2>10){
@@ -231,6 +236,10 @@ void button2ISR(){
     counter2=0;
     ESP.restart();
   }
+}
+
+void button3ISR(){
+  calibration(h,f,ph_act,inches,temperatureF,tdsValue);
 }
 
 void setup(){
@@ -267,9 +276,11 @@ void setup(){
   timerAlarmWrite(timer, 1000000, true);
   timerAlarmEnable(timer);
 
-  pinMode(13,OUTPUT);
+  pinMode(13,OUTPUT);///button interrupts
+  pinMode(18,INPUT);
   pinMode(15,INPUT);
   pinMode(19,INPUT);
+  attachInterrupt(digitalPinToInterrupt(18), button3ISR,RISING);
   attachInterrupt(digitalPinToInterrupt(15), buttonISR, RISING);
   attachInterrupt(digitalPinToInterrupt(19), button2ISR, RISING);
 }
@@ -285,12 +296,10 @@ void displayWaterTemp(float temperatureF){
     lcd.print("Error!");
   lcd.setCursor(0,1);
   lcd.print("Water temp high");
-  digitalWrite(13, HIGH);/////
   }
   else{
   lcd.print("Water temp ");
     lcd.print(temperatureF);
-    digitalWrite(13 , LOW);/////
   }
 }
 
@@ -354,15 +363,10 @@ void displaypH(float ph_act){
 }
 
 
-float h;
-float f;
-float temperatureF;
-int ph_act;
-
 
 void loop(){
 
- if(counter>30&&counter<40){
+ //if(counter>30&&counter<40){
  static unsigned long analogSampleTimepoint = millis();//Tds sensor
  if(millis()-analogSampleTimepoint > 40U) {
  analogSampleTimepoint = millis();
@@ -381,9 +385,9 @@ void loop(){
  float compensationVolatge=averageVoltage/compensationCoefficient;
 tdsValue=(133.42*compensationVolatge*compensationVolatge*compensationVolatge - 255.86*compensationVolatge*compensationVolatge + 857.39*compensationVolatge)*0.5;
 }
- }
+ //}
 
-  if(counter>60&&counter<70){
+  //if(counter>60&&counter<70){
   digitalWrite(trigPin, LOW);//sonar sensor
   delayMicroseconds(5);
   digitalWrite(trigPin, HIGH);
@@ -393,31 +397,31 @@ tdsValue=(133.42*compensationVolatge*compensationVolatge*compensationVolatge - 2
   duration = pulseIn(echoPin, HIGH);
   cm = (duration/2) / 29.1;
   inches = (duration/2) / 74;
-  }
+  //}
 
-  if(counter>90&&counter<100){
+  //if(counter>90&&counter<100){
   h = dht.readHumidity();//DHT temp humid
   f = dht.readTemperature(true);
-  }
+  //}
 
-  if(counter>120&&counter<130){
+  //if(counter>120&&counter<130){
   sensors.requestTemperatures();//Water temp
   temperatureF = sensors.getTempFByIndex(0);
-  }
+  //}
 
-if(counter>150){
+//if(counter>150){
  array1=analogRead(0);
  array2=analogRead(0);
  array3=analogRead(0);
  array1=array2+array3+array1;
  float volt=(float)array1*5.0/1024/3;
  ph_act = -5.70 * volt + calibration_value;
- }
+ //}
 
- if(counter>160){
- counter=0;
- counter2=0;
- }
+ //if(counter>160){
+ //counter=0;
+//counter2=0;
+ //}
  if(store==1){
     store=0;
     intd.push_back(inches);
@@ -433,7 +437,7 @@ if(clear==1){
   lcd.clear();
 }
 
-if(button>5){
+if(button>4){//5
   button=0;
 }
 
@@ -445,7 +449,7 @@ if(button>5){
       lcd.print("Hydroponics");
       break;
     case 1:
-      displaypH(ph_act);
+      displayDHT(h,f);
       break;
     case 2:
       displayWaterTemp(temperatureF);
@@ -456,9 +460,9 @@ if(button>5){
     case 4:
       displaySonar(inches);
       break;
-    case 5:
-      displayDHT(h,f);
-      break;
+    //case 5:
+      //displaypH(ph_act);
+      //break;
     default: break;
  }
 
