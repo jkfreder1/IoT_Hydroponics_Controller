@@ -254,7 +254,7 @@ void setup(){
   pinMode(trigPin, OUTPUT);///sonar
   pinMode(echoPin, INPUT);
 
-  lcd.begin();/////display
+  lcd.begin();  /////display
   lcd.backlight();
 
   dht.begin();///temp humid
