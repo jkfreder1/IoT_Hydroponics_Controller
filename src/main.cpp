@@ -1,17 +1,18 @@
-
 #include <Arduino.h>
 #include <LiquidCrystal_I2C.h>
 #include <DHT.h>
 #include <Adafruit_Sensor.h>
 #include <OneWire.h>
 #include <DallasTemperature.h>
-
 #include <WiFi.h>
 #include <WebServer.h>
-
 #include <iostream>
-
 #include <deque>
+#include "WiFi.h"
+#include <ESPAsyncWebServer.h>
+#include <ESPAsyncWiFiManager.h> 
+#include "SPIFFS.h"
+#include <stdlib.h>
 using namespace std;
 deque<int> intd;
 deque<int> inta;
@@ -19,7 +20,6 @@ deque<int> inta1;
 deque<int> intw;
 deque<int> inttds;
 deque<int> intph;
-
 
 int trigPin = 33;    // Trigger
 int echoPin = 25;    // Echo
@@ -51,7 +51,6 @@ int analogBufferTemp[SCOUNT];
 int analogBufferIndex = 0,copyIndex = 0;
 float averageVoltage = 0,tdsValue = 0,temperature = 25;
 
-
 float calibration_value = 120.34;//ph
 int phval = 0; 
 unsigned long int avgval; 
@@ -64,21 +63,15 @@ float f;
 float temperatureF;
 int ph_act;
 
-
 int button=0;
 int counter2;
 int clear;
-
-
-
-
 
 uint8_t LED1pin = 26;
 bool LED1status = LOW;
 
 uint8_t LED2pin = 27;
 bool LED2status = LOW;
-
 
 
 OneWire oneWire(oneWireBus);
@@ -127,7 +120,6 @@ void IRAM_ATTR incrCounter(){
 
 int h_offset,f_offset,ph_act_offset,inches_offset,temperatureF_offset,tds_offset;
 int h_input,f_input,ph_act_input,inches_input,temperatureF_input,tds_value_input;
-
 void calibration(float hum,float far,int ph,int in,float atemp,float tds){
   h_offset=h_input-hum;
   f_offset=f_input-far;
@@ -136,7 +128,6 @@ void calibration(float hum,float far,int ph,int in,float atemp,float tds){
   temperatureF_offset=temperatureF_input-temperatureF;
   tds_offset=tds_value_input-tdsValue;
 }
-
 void buttonISR(){
   if(counter2>10){
   button++;
@@ -144,17 +135,97 @@ void buttonISR(){
   counter2=0;
   }
 }
-
 void button2ISR(){
   if(counter2>10){
     counter2=0;
     ESP.restart();
   }
 }
-
 void button3ISR(){
   calibration(h,f,ph_act,inches,temperatureF,tdsValue);
 }
+
+
+
+AsyncWebServer server(80);////////new web server
+DNSServer dns;
+const int ledPin = 2;
+String ledState;
+const char* http_username = "admin";
+const char* http_password = "admin";
+
+String readBME280Humidity() {
+  float h = 65 + rand() % (( 85 + 1 ) -65);
+  if (isnan(h)) {
+    Serial.println("Failed to read from BME280 sensor!");
+    return "";
+  }
+  else {
+    Serial.println(h);
+    return String(h);
+  }
+}
+
+String processor(const String& var){
+  Serial.println(var);
+  if(var == "STATE"){
+    if(digitalRead(ledPin)){
+      ledState = "ON";
+    }
+    else{
+      ledState = "OFF";
+    }
+    Serial.print(ledState);
+    return ledState;
+  }
+  return String();
+}
+
+ void routes(){
+    // Route for root / web page
+  server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
+    if(!request->authenticate(http_username, http_password))
+      return request->requestAuthentication();
+    request->send(SPIFFS, "/index.html", String(), false, processor);
+  });
+  // Route to load style.css file
+  server.on("/style.css", HTTP_GET, [](AsyncWebServerRequest *request){
+    if(!request->authenticate(http_username, http_password))
+      return request->requestAuthentication();
+    request->send(SPIFFS, "/style.css", "text/css");
+  });
+  // Route to load script.js file
+  server.on("/script.js", HTTP_GET, [](AsyncWebServerRequest *request){
+    if(!request->authenticate(http_username, http_password))
+      return request->requestAuthentication();
+    request->send(SPIFFS, "/script.js", "text/javascript");
+  });
+  // Route to set GPIO to HIGH
+  server.on("/on", HTTP_GET, [](AsyncWebServerRequest *request){
+    if(!request->authenticate(http_username, http_password))
+      return request->requestAuthentication();
+    digitalWrite(ledPin, HIGH);    
+    request->send(SPIFFS, "/index.html", String(), false, processor);
+  });
+  // Route to set GPIO to LOW
+  server.on("/off", HTTP_GET, [](AsyncWebServerRequest *request){
+    if(!request->authenticate(http_username, http_password))
+      return request->requestAuthentication();
+    digitalWrite(ledPin, LOW);    
+    request->send(SPIFFS, "/index.html", String(), false, processor);
+  });
+  server.on("/logout", HTTP_GET, [](AsyncWebServerRequest *request){
+  request->send(401);
+  });
+  server.on("/logged-out", HTTP_GET, [](AsyncWebServerRequest *request){
+   request->send(SPIFFS, "/logged_out.html", String(), false, processor);
+  });
+  server.on("/humidity", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send_P(200, "text/plain", readBME280Humidity().c_str());
+  });
+ }
+
+
 
 void setup(){
   Serial.begin (115200);
@@ -168,9 +239,6 @@ void setup(){
 
   sensors.begin();///water temp
   pinMode(TdsSensorPin,INPUT);
-
- 
-  
 
   pinMode(TdsSensorPin,INPUT);//tds sensor
 
@@ -186,6 +254,19 @@ void setup(){
   attachInterrupt(digitalPinToInterrupt(18), button3ISR,RISING);
   attachInterrupt(digitalPinToInterrupt(15), buttonISR, RISING);
   attachInterrupt(digitalPinToInterrupt(19), button2ISR, RISING);
+
+  //pinMode(ledPin, OUTPUT);///////new web server
+  
+    AsyncWiFiManager wifiManager(&server,&dns);
+    wifiManager.autoConnect("AutoConnectAP");
+    Serial.println("connected...yeey :)");
+  if(!SPIFFS.begin(true)){
+    Serial.println("An Error has occurred while mounting SPIFFS");
+    return;
+  }
+  Serial.println(WiFi.localIP());
+  routes();
+  server.begin();
 }
 
 void displayWaterTemp(float temperatureF){
@@ -219,7 +300,6 @@ void displayDHT(float h, float f){
     lcd.print(h);
     lcd.print("%");
   }
-
   lcd.setCursor(0,1); //air temp display
   if(f < airTempLowParam){
   lcd.print("Error! AirTemp");
@@ -268,7 +348,6 @@ void displaypH(float ph_act){
 
 
 void loop(){
-
  //if(counter>30&&counter<40){
  static unsigned long analogSampleTimepoint = millis();//Tds sensor
  if(millis()-analogSampleTimepoint > 40U) {
@@ -313,7 +392,7 @@ tdsValue=(133.42*compensationVolatge*compensationVolatge*compensationVolatge - 2
   //}
 
 //if(counter>150){
- array1=analogRead(0);
+ array1=analogRead(0);//////ph sensor
  array2=analogRead(0);
  array3=analogRead(0);
  array1=array2+array3+array1;
