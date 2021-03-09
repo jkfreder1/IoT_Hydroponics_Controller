@@ -188,11 +188,11 @@ String processor(const String& var){
       return request->requestAuthentication();
     request->send(SPIFFS, "/index.html", String(), false, processor);
   });
-  // Route to load style.css file
-  server.on("/style.css", HTTP_GET, [](AsyncWebServerRequest *request){
+  // Route to load style.scss file
+  server.on("/style.scss", HTTP_GET, [](AsyncWebServerRequest *request){
     if(!request->authenticate(http_username, http_password))
       return request->requestAuthentication();
-    request->send(SPIFFS, "/style.css", "text/css");
+    request->send(SPIFFS, "/style.scss", "text/css");
   });
   // Route to load script.js file
   server.on("/script.js", HTTP_GET, [](AsyncWebServerRequest *request){
