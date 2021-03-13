@@ -49,19 +49,15 @@ p{
 }
 #error{
   background-color: #F27272;
-  border-radius: 5px;
-  padding: 10px;
+  border-radius: 10px;
+  padding: 20px;
   width: 800px;
-  
+  height: 15px;
 }
 h1{
   color: #0F3376;
   padding: 2vh;
   margin: auto;
-}
-
-#section1{
-  display: block;
 }
 
 .tabs ul{
@@ -79,7 +75,6 @@ h1{
 }
 
 .tabs li a{
-  user-select: none; 
   display: block;
   position: relative;
   overflow: hidden;
@@ -92,7 +87,6 @@ h1{
 }
 
 .tabs li a:before{
-  border-style: groove;
   content: '';
   display: block;
   position: absolute;
