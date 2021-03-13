@@ -13,6 +13,7 @@
 #include <ESPAsyncWiFiManager.h> 
 #include "SPIFFS.h"
 #include <stdlib.h>
+#include <ArduinoJson.h>
 using namespace std;
 deque<int> intd;
 deque<int> inta;
@@ -35,6 +36,7 @@ float airTempLowParam=50;
 long sonarHighParam=2;
 long sonarLowParam=8;
 int counter=0;
+int counter3 = 0;
 
 #define COLUMS           16
 #define ROWS             2
@@ -82,6 +84,65 @@ DHT dht(DHTPIN, DHTTYPE);
 
 hw_timer_t * timer = NULL;
 
+//database initialization
+StaticJsonDocument<512> doc1;
+StaticJsonDocument<512> doc2;
+StaticJsonDocument<1024> daily;
+StaticJsonDocument<1024> weekly;
+StaticJsonDocument<1024> monthly;
+
+JsonObject airTemp = doc1.to<JsonObject>();
+JsonObject waterTemp = doc2.to<JsonObject>();
+JsonObject dailyAvg = daily.to<JsonObject>();
+
+JsonArray data1[24] = airTemp.createNestedArray("air temp data");
+int airTempCount = 0;
+
+JsonArray data2[24] = waterTemp.createNestedArray("water temp data");
+JsonArray dailyData = dailyAvg.createNestedArray("daily average");
+
+float avgAirTemp = 0;
+float avgAirHum = 0;
+float avgWaterTemp = 0;
+float avgpH = 0;
+float avgTDS = 0;
+
+int totCount1 = 0;
+
+void calcAverage(float avg, float data){
+  avg += data;
+  avg = avg/2;
+}
+
+void printJSON(){
+  uint8_t* pBuffer;
+  File testfile = SPIFFS.open("/data.json", "r");
+  if(testfile){
+    unsigned int fileSize = testfile.size();
+    pBuffer = (uint8_t*)malloc(fileSize + 1);
+    testfile.read(pBuffer, fileSize);
+    pBuffer[fileSize] = '\0';
+    Serial.println((char*)pBuffer);                // Print the file to the serial monitor.
+    testfile.close();
+  }
+  else{
+    Serial.println("Failed to read to file");
+  }
+  free(pBuffer);
+}
+
+void store_data(float val, JsonObject root, JsonArray data[], int count){
+  if(count == 24){
+      count = 0;
+    }
+  File outfile = SPIFFS.open("/data.json", "w");
+  data[count].add(val);
+  if(serializeJsonPretty(root, outfile) == 0){
+    Serial.println("Failed to write to file");
+  }
+  outfile.close();
+  count++;
+}
 
 int getMedianNum(int bArray[], int iFilterLen)//////////tds sensor
 {
@@ -255,18 +316,26 @@ void setup(){
   attachInterrupt(digitalPinToInterrupt(15), buttonISR, RISING);
   attachInterrupt(digitalPinToInterrupt(19), button2ISR, RISING);
 
+
+
   //pinMode(ledPin, OUTPUT);///////new web server
+  /*
   
     AsyncWiFiManager wifiManager(&server,&dns);
     wifiManager.autoConnect("AutoConnectAP");
     Serial.println("connected...yeey :)");
+
+  */
   if(!SPIFFS.begin(true)){
     Serial.println("An Error has occurred while mounting SPIFFS");
     return;
   }
+
+  /*
   Serial.println(WiFi.localIP());
   routes();
   server.begin();
+  */
 }
 
 void displayWaterTemp(float temperatureF){
@@ -348,6 +417,7 @@ void displaypH(float ph_act){
 
 
 void loop(){
+
  //if(counter>30&&counter<40){
  static unsigned long analogSampleTimepoint = millis();//Tds sensor
  if(millis()-analogSampleTimepoint > 40U) {
@@ -381,10 +451,12 @@ tdsValue=(133.42*compensationVolatge*compensationVolatge*compensationVolatge - 2
   inches = (duration/2) / 74;
   //}
 
-  //if(counter>90&&counter<100){
-  h = dht.readHumidity();//DHT temp humid
-  f = dht.readTemperature(true);
-  //}
+  if(counter>10&&counter<15){
+    h = dht.readHumidity();//DHT temp humid
+    calcAverage(avgAirHum, h);
+    f = dht.readTemperature(true);
+    calcAverage(avgAirTemp, f);
+  }
 
   //if(counter>120&&counter<130){
   sensors.requestTemperatures();//Water temp
@@ -400,8 +472,16 @@ tdsValue=(133.42*compensationVolatge*compensationVolatge*compensationVolatge - 2
  ph_act = -5.70 * volt + calibration_value;
  //}
 
- //if(counter>160){
- //counter=0;
+ if(counter>15){
+ counter=0;
+ totCount1++;
+ }
+
+ if(totCount1 > 5){
+  store_data(avgAirTemp, airTemp, data1, airTempCount);
+  serializeJsonPretty(doc1, Serial);
+  totCount1 = 0;
+ }
 //counter2=0;
  //}
  if(store==1){
@@ -448,6 +528,7 @@ if(button>4){//5
     default: break;
  }
 
+/*
   if(intph.size()>5){
     intph.pop_front();
   }
@@ -466,7 +547,7 @@ if(button>4){//5
   if(intw.size()>5){
     intw.pop_front();
   }
-
+*/
   
 
 }
