@@ -13,7 +13,11 @@
 #include <ESPAsyncWiFiManager.h> 
 #include "SPIFFS.h"
 #include <stdlib.h>
+<<<<<<< HEAD
 #include <ArduinoJson.h>
+=======
+#include <PubSubClient.h>
+>>>>>>> 48626217925f7d2ce6beabd30ce1b3e76d0c1a7d
 using namespace std;
 deque<int> intd;
 deque<int> inta;
@@ -36,7 +40,75 @@ float airTempLowParam=50;
 long sonarHighParam=2;
 long sonarLowParam=8;
 int counter=0;
+<<<<<<< HEAD
 int counter3 = 0;
+=======
+// Add your MQTT Broker IP address, example:
+//const char* mqtt_server = "192.168.1.144";
+//mqtt credentials
+const char* ssid = "ATT9JNx4NI";
+const char* password = "6fzv98tb2x?5";
+const char* mqttServer = "192.168.1.66";
+const int mqttPort = 1883;
+const char* mqttUser = "user";
+const char* mqttPassword = "password";
+WiFiClient espClient;
+PubSubClient client(espClient);
+long lastMsg = 0;
+char msg[50];
+int value = 0;
+float temperatureMQTT = 0;
+float humidityMQTT = 0;
+/*void setup_wifi() {
+  delay(10);
+  // We start by connecting to a WiFi network
+  Serial.println();
+  Serial.print("Connecting to ");
+  Serial.println(ssid);
+
+  WiFi.begin(ssid, password);
+
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+
+  Serial.println("");
+  Serial.println("WiFi connected");
+  Serial.println("IP address: ");
+  Serial.println(WiFi.localIP());
+}*/
+void callback(char* topic, byte* message, unsigned int length) {
+  Serial.print("Message arrived on topic: ");
+  Serial.print(topic);
+  Serial.print(". Message: ");
+  String messageTemp;
+  
+  for (int i = 0; i < length; i++) {
+    Serial.print((char)message[i]);
+    messageTemp += (char)message[i];
+  }
+  Serial.println();
+
+  // Feel free to add more if statements to control more GPIOs with MQTT
+
+  // If a message is received on the topic esp32/output, you check if the message is either "on" or "off". 
+  // Changes the output state according to the message
+  if (String(topic) == "esp32/output") {
+    Serial.print("Changing output to ");
+    if(messageTemp == "on"){
+      Serial.println("on");
+      //digitalWrite(ledPin, HIGH);
+    }
+    else if(messageTemp == "off"){
+      Serial.println("off");
+      //digitalWrite(ledPin, LOW);
+    }
+  }
+}
+
+
+>>>>>>> 48626217925f7d2ce6beabd30ce1b3e76d0c1a7d
 
 #define COLUMS           16
 #define ROWS             2
@@ -250,10 +322,10 @@ String processor(const String& var){
     request->send(SPIFFS, "/index.html", String(), false, processor);
   });
   // Route to load style.scss file
-  server.on("/style.scss", HTTP_GET, [](AsyncWebServerRequest *request){
+  server.on("/style.css", HTTP_GET, [](AsyncWebServerRequest *request){
     if(!request->authenticate(http_username, http_password))
       return request->requestAuthentication();
-    request->send(SPIFFS, "/style.scss", "text/css");
+    request->send(SPIFFS, "/style.css", "text/css");
   });
   // Route to load script.js file
   server.on("/script.js", HTTP_GET, [](AsyncWebServerRequest *request){
@@ -290,6 +362,11 @@ String processor(const String& var){
 
 void setup(){
   Serial.begin (115200);
+  Serial.print("it is starting");
+  //setup_wifi();
+  client.setServer(mqttServer, mqttPort);
+  client.setCallback(callback);
+
   pinMode(trigPin, OUTPUT);///sonar
   pinMode(echoPin, INPUT);
 
@@ -321,8 +398,8 @@ void setup(){
   //pinMode(ledPin, OUTPUT);///////new web server
   /*
   
-    AsyncWiFiManager wifiManager(&server,&dns);
-    wifiManager.autoConnect("AutoConnectAP");
+  AsyncWiFiManager wifiManager(&server,&dns);
+  wifiManager.autoConnect("AutoConnectAP");
     Serial.println("connected...yeey :)");
 
   */
@@ -336,6 +413,27 @@ void setup(){
   routes();
   server.begin();
   */
+}
+void reconnect() {
+  // Loop until we're reconnected
+
+  while (!client.connected()) {
+    Serial.print("Attempting MQTT connection...");
+    String clientId = "ESP32Client-";
+    clientId += String(random(0xffff), HEX);
+    // Attempt to connect
+    if (client.connect(clientId.c_str(),mqttUser,mqttPassword)) {
+      Serial.println("connected");
+      // Subscribe
+      client.subscribe("esp32/output");
+    } else {
+      Serial.print("failed, rc=");
+      Serial.print(client.state());
+      Serial.println(" try again in 5 seconds");
+      // Wait 5 seconds before retrying
+      delay(5000);
+    }
+  }
 }
 
 void displayWaterTemp(float temperatureF){
@@ -547,7 +645,41 @@ if(button>4){//5
   if(intw.size()>5){
     intw.pop_front();
   }
+<<<<<<< HEAD
 */
+=======
+if (!client.connected()) {
+    reconnect();
+  }
+  client.loop();
+
+  long now = millis();
+  if (now - lastMsg > 5000) {
+    lastMsg = now;
+    
+    // Temperature in Celsius
+    temperatureMQTT = 1.35;   
+    // Uncomment the next line to set temperature in Fahrenheit 
+    // (and comment the previous temperature line)
+    //temperature = 1.8 * bme.readTemperature() + 32; // Temperature in Fahrenheit
+    
+    // Convert the value to a char array
+    char tempString[8];
+    dtostrf(temperatureMQTT, 1, 2, tempString);
+    Serial.print("Temperature: ");
+    Serial.println(tempString);
+    client.publish("esp32/temperature", tempString);
+
+    humidityMQTT = 4.96;
+    
+    // Convert the value to a char array
+    char humString[8];
+    dtostrf(humidityMQTT, 1, 2, humString);
+    Serial.print("Humidity: ");
+    Serial.println(humString);
+    client.publish("esp32/humidity", humString);
+  }
+>>>>>>> 48626217925f7d2ce6beabd30ce1b3e76d0c1a7d
   
 
 }
