@@ -13,11 +13,8 @@
 #include <ESPAsyncWiFiManager.h> 
 #include "SPIFFS.h"
 #include <stdlib.h>
-<<<<<<< HEAD
 #include <ArduinoJson.h>
-=======
 #include <PubSubClient.h>
->>>>>>> 48626217925f7d2ce6beabd30ce1b3e76d0c1a7d
 using namespace std;
 deque<int> intd;
 deque<int> inta;
@@ -40,9 +37,7 @@ float airTempLowParam=50;
 long sonarHighParam=2;
 long sonarLowParam=8;
 int counter=0;
-<<<<<<< HEAD
 int counter3 = 0;
-=======
 // Add your MQTT Broker IP address, example:
 //const char* mqtt_server = "192.168.1.144";
 //mqtt credentials
@@ -108,7 +103,6 @@ void callback(char* topic, byte* message, unsigned int length) {
 }
 
 
->>>>>>> 48626217925f7d2ce6beabd30ce1b3e76d0c1a7d
 
 #define COLUMS           16
 #define ROWS             2
@@ -645,9 +639,7 @@ if(button>4){//5
   if(intw.size()>5){
     intw.pop_front();
   }
-<<<<<<< HEAD
 */
-=======
 if (!client.connected()) {
     reconnect();
   }
@@ -679,7 +671,6 @@ if (!client.connected()) {
     Serial.println(humString);
     client.publish("esp32/humidity", humString);
   }
->>>>>>> 48626217925f7d2ce6beabd30ce1b3e76d0c1a7d
   
 
 }
