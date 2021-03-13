@@ -255,10 +255,10 @@ String processor(const String& var){
     request->send(SPIFFS, "/index.html", String(), false, processor);
   });
   // Route to load style.scss file
-  server.on("/style.scss", HTTP_GET, [](AsyncWebServerRequest *request){
+  server.on("/style.css", HTTP_GET, [](AsyncWebServerRequest *request){
     if(!request->authenticate(http_username, http_password))
       return request->requestAuthentication();
-    request->send(SPIFFS, "/style.scss", "text/css");
+    request->send(SPIFFS, "/style.css", "text/css");
   });
   // Route to load script.js file
   server.on("/script.js", HTTP_GET, [](AsyncWebServerRequest *request){
@@ -328,8 +328,8 @@ void setup(){
 
   //pinMode(ledPin, OUTPUT);///////new web server
   
-    AsyncWiFiManager wifiManager(&server,&dns);
-    wifiManager.autoConnect("AutoConnectAP");
+  AsyncWiFiManager wifiManager(&server,&dns);
+  wifiManager.autoConnect("AutoConnectAP");
     Serial.println("connected...yeey :)");
   if(!SPIFFS.begin(true)){
     Serial.println("An Error has occurred while mounting SPIFFS");
