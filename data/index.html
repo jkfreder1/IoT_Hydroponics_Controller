@@ -109,7 +109,9 @@
       },
       credits: { enabled: false }
     });
-    setInterval(function ( ) {
+
+
+    setInterval(function ( ){ 
       var xhttp = new XMLHttpRequest();
       xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
@@ -127,14 +129,25 @@
       xhttp.send();
     }, 800 ) ;
     </script>
+
+
+
   <canvas id="myChart" width="400" height="400"></canvas>
 
-  
+
+
+
+
+
+
+  <div id="chartContainer" style="height: 300px; width: 100%;"></div>
+
  <script>
+   window.onload = function() {
    var dataPoints = [];
 
    var data = [
-     { dataset: [1,2,3,4,5,6,7]}
+     { id: 1, dataset: [1,2,3,4,5,6,7]}
    ]
    var time = [
      { timeset: [1,2,3,4,5,6,7]}
@@ -157,20 +170,34 @@
 	}]
 });
 
-   function addData(data,time) {
+
+function addData(data) {
 	for (var i = 0; i < data.dataset.length; i++) {
 		dataPoints.push({
 			x: data.dataset[i],
-			y: time.timeset[i],
+			y: i,
 		});
 	}
 	chart.render();
 
 }
-   
- </script>
+
+setInterval(function ( ){ 
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+   if (this.readyState == 4 && this.status == 200) {
+      var myArr = JSON.parse(this.responseText);
+      addData(myArr);
+    }
+  };
+  xhttp.open("GET", "/data.json", true);
+  xhttp.send();
+}, 800 ) ;
+}
+</script>
+
   
-   
+  
    
 </body>
 </html>

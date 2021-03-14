@@ -173,7 +173,7 @@ void calcAverage(float avg, float data){
 }
 
 void printJSON(){
-  uint8_t* pBuffer;
+  uint8_t* pBuffer = nullptr;
   File testfile = SPIFFS.open("/data.json", "r");
   if(testfile){
     unsigned int fileSize = testfile.size();
@@ -275,7 +275,7 @@ String readBME280Humidity() {
     return "";
   }
   else {
-    Serial.println(h);
+    //Serial.println(h);
     return String(h);
   }
 }
@@ -314,13 +314,18 @@ String processor(const String& var){
       return request->requestAuthentication();
     request->send(SPIFFS, "/script.js", "text/javascript");
   });
+
+
   // Route to load data.json file 
   server.on("/data.json", HTTP_GET, [](AsyncWebServerRequest *request){
     if(!request->authenticate(http_username, http_password))
       return request->requestAuthentication();
-    request->send(SPIFFS, "/data.json", "text/javascript");
-
+    request->send(SPIFFS, "/data2.json", "application/json");
   });
+
+
+
+
   // Route to set GPIO to HIGH
   server.on("/on", HTTP_GET, [](AsyncWebServerRequest *request){
     if(!request->authenticate(http_username, http_password))
@@ -341,6 +346,7 @@ String processor(const String& var){
   server.on("/logged-out", HTTP_GET, [](AsyncWebServerRequest *request){
    request->send(SPIFFS, "/logged_out.html", String(), false, processor);
   });
+
   server.on("/humidity", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send_P(200, "text/plain", readBME280Humidity().c_str());
   });
@@ -401,6 +407,7 @@ void setup(){
   routes();
   server.begin();
   
+  printJSON();
 }
 void reconnect() {
   // Loop until we're reconnected
@@ -503,6 +510,7 @@ void displaypH(float ph_act){
 
 
 void loop(){
+  printJSON();
 
  //if(counter>30&&counter<40){
  static unsigned long analogSampleTimepoint = millis();//Tds sensor
