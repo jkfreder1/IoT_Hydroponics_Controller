@@ -50,3 +50,54 @@ var table = new Tabulator("#example-table", {
   ],
 });
 
+window.onload = function() {
+  var dataPoints = [];
+
+  var data = [
+    { id: 1, dataset: [1,2,3,4,5,6,7]}
+  ]
+  var time = [
+    { timeset: [1,2,3,4,5,6,7]}
+  ]
+  
+  var chart = new CanvasJS.Chart("chartContainer", {
+ animationEnabled: true,
+ theme: "light2",
+ title: {
+   text: "Line Chart"
+ },
+ axisY: {
+   title: "Measurement",
+   titleFontSize: 24,
+ },
+ data: [{
+   type: "line",
+   //yValueFormatString: "#,### Units",
+   dataPoints: dataPoints
+ }]
+});
+
+
+function addData(data) {
+ for (var i = 0; i < data.dataset.length; i++) {
+   dataPoints.push({
+     x: data.dataset[i],
+     y: i,
+   });
+ }
+ chart.render();
+
+}
+
+setInterval(function ( ){ 
+ var xhttp = new XMLHttpRequest();
+ xhttp.onreadystatechange = function() {
+  if (this.readyState == 4 && this.status == 200) {
+     var myArr = JSON.parse(this.responseText);
+     addData(myArr);
+   }
+ };
+ xhttp.open("GET", "/data.json", true);
+ xhttp.send();
+}, 800 ) ;
+}
