@@ -161,10 +161,12 @@ JsonObject airTemp = doc1.to<JsonObject>();
 JsonObject waterTemp = doc2.to<JsonObject>();
 JsonObject dailyAvg = daily.to<JsonObject>();
 
-JsonArray data1[24] = airTemp.createNestedArray("air temp data");
+JsonArray data1 = airTemp.createNestedArray("air temp data");
 int airTempCount = 0;
 
-JsonArray data2[24] = waterTemp.createNestedArray("water temp data");
+JsonArray data2 = waterTemp.createNestedArray("water temp data");
+int airHumCount = 0;
+
 JsonArray dailyData = dailyAvg.createNestedArray("daily average");
 
 float avgAirTemp = 0;
@@ -173,11 +175,17 @@ float avgWaterTemp = 0;
 float avgpH = 0;
 float avgTDS = 0;
 
-int totCount1 = 0;
+float dailyAirTemp = 0;
 
-void calcAverage(float avg, float data){
+int totCount1 = 0;
+int dailyCount1 = 0;
+
+int sel = 0;
+
+float calcAverage(float avg, float data){
   avg += data;
   avg = avg/2;
+  return avg;
 }
 
 void printJSON(){
@@ -197,17 +205,25 @@ void printJSON(){
   free(pBuffer);
 }
 
-void store_data(float val, JsonObject root, JsonArray data[], int count){
-  if(count == 24){
-      count = 0;
-    }
+void store_data(float val, JsonObject root, JsonArray data, int count){
   File outfile = SPIFFS.open("/data.json", "w");
-  data[count].add(val);
+  data[count] = val;
   if(serializeJsonPretty(root, outfile) == 0){
     Serial.println("Failed to write to file");
   }
   outfile.close();
-  count++;
+}
+
+void store_daily(JsonArray liveData, JsonArray dailyData, JsonObject root){
+  File outfile = SPIFFS.open("/daily.json", "w");
+  for (int i = 0; i < 24; i++){
+    dailyAirTemp = calcAverage(dailyAirTemp, liveData[i]);
+  }
+  dailyData.add(dailyAirTemp);
+  if(serializeJsonPretty(root, outfile) == 0){
+    Serial.println("Failed to write to file");
+  }
+  outfile.close();
 }
 
 int getMedianNum(int bArray[], int iFilterLen)//////////tds sensor
@@ -358,8 +374,10 @@ void setup(){
   Serial.begin (115200);
   Serial.print("it is starting");
   //setup_wifi();
+  /*
   client.setServer(mqttServer, mqttPort);
   client.setCallback(callback);
+  */
 
   pinMode(trigPin, OUTPUT);///sonar
   pinMode(echoPin, INPUT);
@@ -545,9 +563,9 @@ tdsValue=(133.42*compensationVolatge*compensationVolatge*compensationVolatge - 2
 
   if(counter>10&&counter<15){
     h = dht.readHumidity();//DHT temp humid
-    calcAverage(avgAirHum, h);
+    avgAirHum = calcAverage(avgAirHum, h);
     f = dht.readTemperature(true);
-    calcAverage(avgAirTemp, f);
+    avgAirTemp = calcAverage(avgAirTemp, f);
   }
 
   //if(counter>120&&counter<130){
@@ -569,11 +587,25 @@ tdsValue=(133.42*compensationVolatge*compensationVolatge*compensationVolatge - 2
  totCount1++;
  }
 
+  //store live and historical air temp
  if(totCount1 > 5){
+  if(airTempCount == 5){
+    airTempCount = 0;
+  }
   store_data(avgAirTemp, airTemp, data1, airTempCount);
+  airTempCount++;
   serializeJsonPretty(doc1, Serial);
+  printJSON();
   totCount1 = 0;
+  dailyCount1++;
  }
+
+ if(dailyCount1 == 24){
+   store_daily(data1, dailyData, dailyAvg);
+   serializeJsonPretty(daily, Serial);
+   dailyCount1 = 0;
+ }
+
 //counter2=0;
  //}
  if(store==1){
@@ -639,7 +671,7 @@ if(button>4){//5
   if(intw.size()>5){
     intw.pop_front();
   }
-*/
+
 if (!client.connected()) {
     reconnect();
   }
@@ -671,6 +703,6 @@ if (!client.connected()) {
     Serial.println(humString);
     client.publish("esp32/humidity", humString);
   }
-  
+  */
 
 }
