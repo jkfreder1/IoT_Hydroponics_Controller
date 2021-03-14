@@ -384,23 +384,23 @@ void setup(){
 
 
   //pinMode(ledPin, OUTPUT);///////new web server
-  /*
+  
   
   AsyncWiFiManager wifiManager(&server,&dns);
   wifiManager.autoConnect("AutoConnectAP");
     Serial.println("connected...yeey :)");
 
-  */
+  
   if(!SPIFFS.begin(true)){
     Serial.println("An Error has occurred while mounting SPIFFS");
     return;
   }
 
-  /*
+  
   Serial.println(WiFi.localIP());
   routes();
   server.begin();
-  */
+  
 }
 void reconnect() {
   // Loop until we're reconnected
@@ -614,7 +614,7 @@ if(button>4){//5
     default: break;
  }
 
-/*
+
   if(intph.size()>5){
     intph.pop_front();
   }
@@ -633,7 +633,7 @@ if(button>4){//5
   if(intw.size()>5){
     intw.pop_front();
   }
-*/
+
 if (!client.connected()) {
     reconnect();
   }
