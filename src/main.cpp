@@ -336,7 +336,7 @@ String processor(const String& var){
   server.on("/data.json", HTTP_GET, [](AsyncWebServerRequest *request){
     if(!request->authenticate(http_username, http_password))
       return request->requestAuthentication();
-    request->send(SPIFFS, "/data2.json", "application/json");
+    request->send(SPIFFS, "/data.json", "application/json");
   });
 
 
@@ -374,10 +374,11 @@ void setup(){
   Serial.begin (115200);
   Serial.print("it is starting");
   //setup_wifi();
-  /*
+
+  
   client.setServer(mqttServer, mqttPort);
   client.setCallback(callback);
-  */
+  
 
   pinMode(trigPin, OUTPUT);///sonar
   pinMode(echoPin, INPUT);
@@ -420,12 +421,11 @@ void setup(){
     return;
   }
 
-  
+  store_data(avgAirTemp, airTemp, data1, airTempCount);
+
   Serial.println(WiFi.localIP());
   routes();
   server.begin();
-  
-  printJSON();
 }
 void reconnect() {
   // Loop until we're reconnected
@@ -528,7 +528,6 @@ void displaypH(float ph_act){
 
 
 void loop(){
-  printJSON();
 
  //if(counter>30&&counter<40){
  static unsigned long analogSampleTimepoint = millis();//Tds sensor
@@ -705,6 +704,6 @@ if (!client.connected()) {
     Serial.println(humString);
     client.publish("esp32/humidity", humString);
   }
-  */
+  
 
 }

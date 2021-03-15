@@ -24,6 +24,8 @@ function openTab(evt, tabName) {
   // Show the current tab, and add an "active" class to the button that opened the tab
   document.getElementById(tabName).style.display = "block";
   evt.currentTarget.className += " active";
+
+  
 }
 
 
@@ -31,10 +33,6 @@ function openTab(evt, tabName) {
 var tableData = [
   {id:1, name:"Billy Bob", age:"12", gender:"male", height:1, col:"red", dob:"", cheese: 1},
 ]
-/* 
-var tableData2 = [
-{cheese: 1},
-]*/
 
 var table = new Tabulator("#example-table", {
   data:tableData, //set initial table data
@@ -52,13 +50,6 @@ var table = new Tabulator("#example-table", {
 
 window.onload = function() {
   var dataPoints = [];
-
-  var data = [
-    { id: 1, dataset: [1,2,3,4,5,6,7]}
-  ]
-  var time = [
-    { timeset: [1,2,3,4,5,6,7]}
-  ]
   
   var chart = new CanvasJS.Chart("chartContainer", {
  animationEnabled: true,
