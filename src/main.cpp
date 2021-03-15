@@ -144,22 +144,85 @@ hw_timer_t * timer = NULL;
 
 //database initialization
 StaticJsonDocument<512> doc1;
+String jsonData1 = "/data1.json";
+
 StaticJsonDocument<512> doc2;
-StaticJsonDocument<1024> daily;
-StaticJsonDocument<1024> weekly;
-StaticJsonDocument<1024> monthly;
+String jsonData2 = "/data2.json";
+
+StaticJsonDocument<512> doc3;
+String jsonData3 = "/data3.json";
+
+StaticJsonDocument<512> doc4;
+String jsonData4 = "/data4.json";
+
+StaticJsonDocument<512> doc5;
+String jsonData5 = "/data5.json";
+
+StaticJsonDocument<1024> daily1;
+String jsonDaily1 = "/daily1.json";
+
+StaticJsonDocument<1024> daily2;
+String jsonDaily2 = "/daily2.json";
+
+StaticJsonDocument<1024> daily3;
+String jsonDaily3 = "/daily3.json";
+
+StaticJsonDocument<1024> daily4;
+String jsonDaily4 = "/daily4.json";
+
+StaticJsonDocument<1024> daily5;
+String jsonDaily5 = "/daily5.json";
+
+StaticJsonDocument<1024> weekly1;
+StaticJsonDocument<1024> weekly2;
+StaticJsonDocument<1024> weekly3;
+StaticJsonDocument<1024> weekly4;
+StaticJsonDocument<1024> weekly5;
+
+StaticJsonDocument<1024> monthly1;
+StaticJsonDocument<1024> monthly2;
+StaticJsonDocument<1024> monthly3;
+StaticJsonDocument<1024> monthly4;
+StaticJsonDocument<1024> monthly5;
 
 JsonObject airTemp = doc1.to<JsonObject>();
-JsonObject waterTemp = doc2.to<JsonObject>();
-JsonObject dailyAvg = daily.to<JsonObject>();
+JsonObject airHum = doc2.to<JsonObject>();
+JsonObject waterTemp = doc3.to<JsonObject>();
+JsonObject tds = doc4.to<JsonObject>();
+JsonObject pH = doc5.to<JsonObject>();
+
+JsonObject dailyAirTempAvg = daily1.to<JsonObject>();
+JsonObject dailyAirHumAvg = daily2.to<JsonObject>();
+JsonObject dailyWaterTempAvg = daily3.to<JsonObject>();
+JsonObject dailyTdsAvg = daily4.to<JsonObject>();
+JsonObject dailypHAvg = daily5.to<JsonObject>();
+
 
 JsonArray data1 = airTemp.createNestedArray("air temp data");
 int airTempCount = 0;
+int totCount1 = 0;
 
-JsonArray data2 = waterTemp.createNestedArray("water temp data");
-int airHumCount = 0;
+JsonArray data2 = airHum.createNestedArray("air humidity data");
+//int airHumCount = 0;
+int totCount2 = 0;
 
-JsonArray dailyData = dailyAvg.createNestedArray("daily average");
+JsonArray data3 = waterTemp.createNestedArray("water temp data");
+//int waterTempCount = 0;
+int totCount3 = 0;
+
+JsonArray data4 = tds.createNestedArray("tds data");
+//int tdsCount = 0;
+int totCount4 = 0;
+
+JsonArray dailyAirTempData = dailyAirTempAvg.createNestedArray("daily average");
+JsonArray dailyAirHumData = dailyAirHumAvg.createNestedArray("daily average");
+JsonArray dailyWaterTempData = dailyWaterTempAvg.createNestedArray("daily average");
+JsonArray dailyTdsData = dailyTdsAvg.createNestedArray("daily average");
+JsonArray dailypHData = dailypHAvg.createNestedArray("daily average");
+
+int dailyCount = 0;
+int weeklyCount = 0;
+int monthlyCount = 0;
 
 float avgAirTemp = 0;
 float avgAirHum = 0;
@@ -168,11 +231,6 @@ float avgpH = 0;
 float avgTDS = 0;
 
 float dailyAirTemp = 0;
-
-int totCount1 = 0;
-int dailyCount1 = 0;
-
-int sel = 0;
 
 float calcAverage(float avg, float data){
   avg += data;
@@ -197,8 +255,8 @@ void printJSON(){
   free(pBuffer);
 }
 
-void store_data(float val, JsonObject root, JsonArray data, int count){
-  File outfile = SPIFFS.open("/data.json", "w");
+void store_data(float val, JsonObject root, JsonArray data, int count, String fileName){
+  File outfile = SPIFFS.open(fileName, "w");
   data[count] = val;
   if(serializeJsonPretty(root, outfile) == 0){
     Serial.println("Failed to write to file");
@@ -206,8 +264,8 @@ void store_data(float val, JsonObject root, JsonArray data, int count){
   outfile.close();
 }
 
-void store_daily(JsonArray liveData, JsonArray dailyData, JsonObject root){
-  File outfile = SPIFFS.open("/daily.json", "w");
+void store_daily(JsonArray liveData, JsonArray dailyData, JsonObject root, String fileName){
+  File outfile = SPIFFS.open(fileName, "w");
   for (int i = 0; i < 24; i++){
     dailyAirTemp = calcAverage(dailyAirTemp, liveData[i]);
   }
@@ -409,23 +467,23 @@ void setup(){
 
   //pinMode(ledPin, OUTPUT);///////new web server
   
-  
+  /*
   AsyncWiFiManager wifiManager(&server,&dns);
   wifiManager.autoConnect("AutoConnectAP");
     Serial.println("connected...yeey :)");
-
+*/
   
   if(!SPIFFS.begin(true)){
     Serial.println("An Error has occurred while mounting SPIFFS");
     return;
   }
 
-  
+  /*
   Serial.println(WiFi.localIP());
   routes();
   server.begin();
+  */
   
-  printJSON();
 }
 void reconnect() {
   // Loop until we're reconnected
@@ -528,7 +586,6 @@ void displaypH(float ph_act){
 
 
 void loop(){
-  printJSON();
 
  //if(counter>30&&counter<40){
  static unsigned long analogSampleTimepoint = millis();//Tds sensor
@@ -589,23 +646,32 @@ tdsValue=(133.42*compensationVolatge*compensationVolatge*compensationVolatge - 2
  totCount1++;
  }
 
-  //store live and historical air temp
+  //store live and historical data
  if(totCount1 > 5){
   if(airTempCount == 5){
     airTempCount = 0;
   }
-  store_data(avgAirTemp, airTemp, data1, airTempCount);
+  //store_data(avgAirTemp, airTemp, data1, airTempCount, jsonData1);
+  store_data(avgAirHum, airHum, data2, airTempCount, jsonData2);
+  //store_data(avgWaterTemp, waterTemp, data3, airTempCount, jsonData3);
+  //store_data(avgTDS, tds, data4, airTempCount, jsonData4);
   airTempCount++;
-  serializeJsonPretty(doc1, Serial);
-  printJSON();
   totCount1 = 0;
-  dailyCount1++;
+  serializeJsonPretty(doc2, Serial);
+  //printJSON();
+  dailyCount++;
+  weeklyCount++;
+  monthlyCount++;
  }
 
- if(dailyCount1 == 24){
-   store_daily(data1, dailyData, dailyAvg);
-   serializeJsonPretty(daily, Serial);
-   dailyCount1 = 0;
+ if(dailyCount == 24){
+   //store_daily(data1, dailyAirTempData, dailyAirTempAvg, jsonDaily1);
+   store_daily(data2, dailyAirHumData, dailyAirHumAvg, jsonDaily2);
+   //store_daily(data3, dailyWaterTempData, dailyWaterTempAvg, jsonDaily3);
+   //store_daily(data4, dailyTdsData, dailyTdsAvg, jsonDaily4);
+   //store_daily(data5, dailypHData, dailypHAvg, jsonDaily5);
+   serializeJsonPretty(daily2, Serial);
+   dailyCount = 0;
  }
 
 //counter2=0;
@@ -654,7 +720,7 @@ if(button>4){//5
     default: break;
  }
 
-
+/*
   if(intph.size()>5){
     intph.pop_front();
   }
