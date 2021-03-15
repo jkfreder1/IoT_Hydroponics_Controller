@@ -19,17 +19,90 @@ function openTab(evt, tabName) {
   tablinks = document.getElementsByClassName("tabs");
   for (i = 0; i < tablinks.length; i++) {
     tablinks[i].className = tablinks[i].className.replace(" active", "");
-  }
+  }s
 
   // Show the current tab, and add an "active" class to the button that opened the tab
   document.getElementById(tabName).style.display = "block";
   evt.currentTarget.className += " active";
 
-  
+  renderChart(tabName);
 }
 
+function renderChart(tabName){
 
+  // initialize variables 
+  var chartTitleL = "blank";
+  var yAxisL = "blank";
+  var xAxisL = "time";
+  var jsonFile = "/test.json"
 
+  // set variables to correct lables dependent on section the page is in
+  switch(tabName) {
+    case section1:
+      
+      break;
+    case section2:
+      chartTitleL = "Live Air Temperature";
+      yAxisL = "Fahrenheit";
+      jsonFile = "/data1.json"
+      break;
+    case section3:
+      chartTitleL = "Live Air Humidity";
+      yAxisL = "kg/kg";
+      jsonFile = "/data2.json"
+      break;
+    default:
+      // code block
+  }
+
+  var dataPoints = [];
+
+  var chart = new CanvasJS.Chart("chartContainer2", {
+    animationEnabled: true,
+    theme: "light2",
+    title: {
+      text: chartTitleL
+    },
+    axisY: {
+      title: yAxisL,
+      titleFontSize: 24,
+    },
+    axisX: {
+      title: xAxisL
+    },
+    data: [{
+      type: "line",
+      //yValueFormatString: "#,### Units",
+      dataPoints: dataPoints
+    }]
+   });
+
+   function addData(data) {
+    dataPoints.length = 0;
+    for (var i = 0; i < data.dataset.length; i++) {
+      dataPoints.push({
+        x: data.dataset[i],
+        y: i,
+      });
+    }
+    chart.render();
+   
+   }
+
+   setInterval(function ( ){ 
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+     if (this.readyState == 4 && this.status == 200) {
+        var myArr = JSON.parse(this.responseText);
+        addData(myArr);
+      }
+    };
+    xhttp.open("GET", jsonFile, true);
+    xhttp.send();
+   }, 500 ) ;
+}
+
+/*
 var tableData = [
   {id:1, name:"Billy Bob", age:"12", gender:"male", height:1, col:"red", dob:"", cheese: 1},
 ]
@@ -47,7 +120,7 @@ var table = new Tabulator("#example-table", {
       {title:"Cheese Preference", field:"cheese"},
   ],
 });
-
+*/
 window.onload = function() {
   var dataPoints = [];
   
