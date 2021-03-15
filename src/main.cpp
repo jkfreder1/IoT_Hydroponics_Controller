@@ -70,7 +70,8 @@ int counter2;
 int clear;
 
 
-
+int h_offset,f_offset,ph_act_offset,inches_offset,temperatureF_offset,tds_offset;
+int h_input=40,f_input=75,ph_act_input=7,inches_input=5,temperatureF_input=69,tds_value_input=0;
 
 
 uint8_t LED1pin = 26;
@@ -125,17 +126,6 @@ void IRAM_ATTR incrCounter(){
   }
 }
 
-int h_offset,f_offset,ph_act_offset,inches_offset,temperatureF_offset,tds_offset;
-int h_input,f_input,ph_act_input,inches_input,temperatureF_input,tds_value_input;
-
-void calibration(float hum,float far,int ph,int in,float atemp,float tds){
-  h_offset=h_input-hum;
-  f_offset=f_input-far;
-  ph_act_offset=ph_act_input-ph_act;
-  inches_offset=inches_input-inches;
-  temperatureF_offset=temperatureF_input-temperatureF;
-  tds_offset=tds_value_input-tdsValue;
-}
 
 void buttonISR(){
   if(counter2>10){
@@ -151,9 +141,9 @@ void button2ISR(){
     ESP.restart();
   }
 }
-
+int cal;
 void button3ISR(){
-  calibration(h,f,ph_act,inches,temperatureF,tdsValue);
+  cal=1;
 }
 
 void setup(){
@@ -179,12 +169,12 @@ void setup(){
   timerAlarmWrite(timer, 1000000, true);
   timerAlarmEnable(timer);
 
-  pinMode(13,OUTPUT);///button interrupts
-  pinMode(18,INPUT);
+  //pinMode(13,OUTPUT);///button interrupts
+  pinMode(5,INPUT);
   pinMode(15,INPUT);
   pinMode(19,INPUT);
-  attachInterrupt(digitalPinToInterrupt(18), button3ISR,RISING);
-  attachInterrupt(digitalPinToInterrupt(15), buttonISR, RISING);
+  attachInterrupt(digitalPinToInterrupt(5), button3ISR,RISING);
+  attachInterrupt(digitalPinToInterrupt(15), buttonISR, HIGH);
   attachInterrupt(digitalPinToInterrupt(19), button2ISR, RISING);
 }
 
@@ -340,7 +330,7 @@ if(clear==1){
   lcd.clear();
 }
 
-if(button>4){//5
+if(button>5){//5
   button=0;
 }
 
@@ -352,20 +342,20 @@ if(button>4){//5
       lcd.print("Hydroponics");
       break;
     case 1:
-      displayDHT(h,f);
+      displayDHT(h+h_offset,f+f_offset);
       break;
     case 2:
-      displayWaterTemp(temperatureF);
+      displayWaterTemp(temperatureF+temperatureF_offset);
       break;
     case 3:
-      displayTDS(tdsValue);
+      displayTDS(tdsValue+tds_offset);
       break;
     case 4:
-      displaySonar(inches);
+      displaySonar(inches+inches_offset);
       break;
-    //case 5:
-      //displaypH(ph_act);
-      //break;
+    case 5:
+      displaypH(ph_act+ph_act_offset);
+      break;
     default: break;
  }
 
@@ -388,6 +378,14 @@ if(button>4){//5
     intw.pop_front();
   }
 
-  
+  if(cal==1){
+    cal=0;
+  h_offset=h_input-h;
+  f_offset=f_input-f;
+  ph_act_offset=ph_act_input-ph_act;
+  inches_offset=inches_input-inches;
+  temperatureF_offset=temperatureF_input-temperatureF;
+  tds_offset=tds_value_input-tdsValue;
+  }
 
 }
