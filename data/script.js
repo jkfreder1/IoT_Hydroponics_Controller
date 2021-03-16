@@ -5,7 +5,7 @@ function logoutButton() {
   setTimeout(function(){ window.open("/logged-out","_self"); }, 1000);
 }
 
-function openTab(evt, tabName) {
+function openTab(evt, tabSection, tabName) {
   // Declare all variables
   var i, tabcontent, tablinks;
 
@@ -22,7 +22,7 @@ function openTab(evt, tabName) {
   }
 
   // Show the current tab, and add an "active" class to the button that opened the tab
-  document.getElementById(tabName).style.display = "block";
+  document.getElementById(tabSection).style.display = "block";
   evt.currentTarget.className += " active";
 
   if(tabName == "section2" || tabName == "section3")
@@ -35,30 +35,46 @@ function renderChart(tabName){
   var chartTitleL = "blank";
   var yAxisL = "blank";
   var xAxisL = "time";
-  var jsonFile = "/test.json";
+  var jsonFileL = "/test.json";
   var chartContainerL = "blank";
+  var chartTitleH = "blank";
+  var yAxisH = "blank";
+  var xAxisH = "Day";
+  var jsonFileH = "/test.json";
+  var chartContainerH = "blank";
 
   // set variables to correct lables dependent on section the page is in
   switch(tabName) {
     case "section2":
       chartTitleL = "Live Air Temperature";
       yAxisL = "Fahrenheit";
-      jsonFile = "/data1.json";
+      jsonFileL = "/data1.json";
       chartContainerL = "chartContainerL2";
+      chartTitleH = "Daily Air Temperature Averages";
+      yAxisH = "Fahrenheit";
+      jsonFileH = "/daily1.json";
+      chartContainerH = "chartContainerH2";
       break;
     case "section3":
       chartTitleL = "Live Air Humidity";
-      yAxisL = "kg/kg";
-      jsonFile = "/data2.json";
+      yAxisL = "%";
+      jsonFileL = "/data2.json";
       chartContainerL = "chartContainerL3";
+      chartTitleH = "Daily Air Humidity Averages";
+      yAxisH = "%";
+      jsonFileH = "/daily2.json";
+      chartContainerH = "chartContainerH2";
       break;
     default:
       // code block
   }
 
-  var dataPoints = [];
+  // initialize data arrays
+  var dataPointsL = [];
+  var dataPointsH = [];
 
-  var chart = new CanvasJS.Chart(chartContainerL, {
+
+  var chartL = new CanvasJS.Chart("chartContainerL", {
     animationEnabled: true,
     theme: "light2",
     title: {
@@ -74,20 +90,52 @@ function renderChart(tabName){
     data: [{
       type: "line",
       //yValueFormatString: "#,### Units",
-      dataPoints: dataPoints
+      dataPoints: dataPointsL
     }]
    });
 
-   function addData(data) {
-    dataPoints.length = 0;
+
+   var chartH = new CanvasJS.Chart("chartContainerH", {
+    animationEnabled: true,
+    theme: "light2",
+    title: {
+      text: chartTitleH
+    },
+    axisY: {
+      title: yAxisH,
+      titleFontSize: 24,
+    },
+    axisX: {
+      title: xAxisH
+    },
+    data: [{
+      type: "line",
+      //yValueFormatString: "#,### Units",
+      dataPoints: dataPointsH
+    }]
+   });
+
+
+   function addDataL(data) {
+    dataPointsL.length = 0;
     for (var i = 0; i < data.dataset.length; i++) {
-      dataPoints.push({
-        x: data.dataset[i],
-        y: i,
+      dataPointsL.push({
+        x: i,
+        y: data.dataset[i],
       });
     }
-    chart.render();
-   
+    chartL.render();
+   }
+
+   function addDataH(data) {
+    dataPoints.length = 0;
+    for (var i = 0; i < data.dataset.length; i++) {
+      dataPointsH.push({
+        x: i,
+        y: data.dataset[i],
+      });
+    }
+    chartH.render();
    }
 
    setInterval(function ( ){ 
@@ -95,13 +143,38 @@ function renderChart(tabName){
     xhttp.onreadystatechange = function() {
      if (this.readyState == 4 && this.status == 200) {
         var myArr = JSON.parse(this.responseText);
-        addData(myArr);
+        addDataL(myArr);
       }
     };
-    xhttp.open("GET", jsonFile, true);
+    xhttp.open("GET", jsonFileL, true);
     xhttp.send();
-   }, 500 ) ;
+   }, 5000 ) ;
+
+   setInterval(function ( ){ 
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+     if (this.readyState == 4 && this.status == 200) {
+        var myArr = JSON.parse(this.responseText);
+        addDataH(myArr);
+      }
+    };
+    xhttp.open("GET", jsonFileH, true);
+    xhttp.send();
+   }, 5000 ) ;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /*
 var tableData = [

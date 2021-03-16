@@ -15,6 +15,9 @@
 #include <stdlib.h>
 #include <ArduinoJson.h>
 #include <PubSubClient.h>
+#include <string.h>
+#include <bits/stdc++.h> 
+
 using namespace std;
 deque<int> intd;
 deque<int> inta;
@@ -206,19 +209,19 @@ JsonArray data2 = airHum.createNestedArray("dataset");
 //int airHumCount = 0;
 int totCount2 = 0;
 
-JsonArray data3 = waterTemp.createNestedArray("water temp data");
+JsonArray data3 = waterTemp.createNestedArray("dataset");
 //int waterTempCount = 0;
 int totCount3 = 0;
 
-JsonArray data4 = tds.createNestedArray("tds data");
+JsonArray data4 = tds.createNestedArray("dataset");
 //int tdsCount = 0;
 int totCount4 = 0;
 
-JsonArray dailyAirTempData = dailyAirTempAvg.createNestedArray("daily average");
-JsonArray dailyAirHumData = dailyAirHumAvg.createNestedArray("daily average");
-JsonArray dailyWaterTempData = dailyWaterTempAvg.createNestedArray("daily average");
-JsonArray dailyTdsData = dailyTdsAvg.createNestedArray("daily average");
-JsonArray dailypHData = dailypHAvg.createNestedArray("daily average");
+JsonArray dailyAirTempData = dailyAirTempAvg.createNestedArray("dataset");
+JsonArray dailyAirHumData = dailyAirHumAvg.createNestedArray("dataset");
+JsonArray dailyWaterTempData = dailyWaterTempAvg.createNestedArray("dataset");
+JsonArray dailyTdsData = dailyTdsAvg.createNestedArray("dataset");
+JsonArray dailypHData = dailypHAvg.createNestedArray("dataset");
 
 int dailyCount = 0;
 int weeklyCount = 0;
@@ -389,6 +392,7 @@ String processor(const String& var){
     request->send(SPIFFS, "/script.js", "text/javascript");
   });
 
+/*
 
   // Route to load data1.json file 
   server.on("/data1.json", HTTP_GET, [](AsyncWebServerRequest *request){
@@ -403,7 +407,7 @@ String processor(const String& var){
       return request->requestAuthentication();
     request->send(SPIFFS, "/data2.json", "application/json");
   });
-
+*/
 
 
 
@@ -610,7 +614,7 @@ void loop(){
  averageVoltage = getMedianNum(analogBufferTemp,SCOUNT) * (float)VREF/ 1024.0;
  float compensationCoefficient=1.0+0.02*(temperature-25.0);
  float compensationVolatge=averageVoltage/compensationCoefficient;
-tdsValue=(133.42*compensationVolatge*compensationVolatge*compensationVolatge - 255.86*compensationVolatge*compensationVolatge + 857.39*compensationVolatge)*0.5;
+ tdsValue=(133.42*compensationVolatge*compensationVolatge*compensationVolatge - 255.86*compensationVolatge*compensationVolatge + 857.39*compensationVolatge)*0.5;
 }
  //}
 
@@ -654,11 +658,15 @@ tdsValue=(133.42*compensationVolatge*compensationVolatge*compensationVolatge - 2
 
   //store live and historical data
  if(totCount1 > 5){
-  if(airTempCount == 5){
+  if(airTempCount == 24){
     airTempCount = 0;
   }
-  store_data(avgAirTemp, airTemp, data1, airTempCount, jsonData1);
-  store_data(avgAirHum, airHum, data2, airTempCount, jsonData2);
+  
+  float fakeAirTemp = 65 + rand() % (( 85 + 1 ) -65);
+  float fakeAirHumid = 65 + rand() % (( 85 + 1 ) -65);
+
+  store_data(fakeAirTemp, airTemp, data1, airTempCount, jsonData1);
+  store_data(fakeAirHumid, airHum, data2, airTempCount, jsonData2);
   //store_data(avgWaterTemp, waterTemp, data3, airTempCount, jsonData3);
   //store_data(avgTDS, tds, data4, airTempCount, jsonData4);
   airTempCount++;
@@ -671,7 +679,7 @@ tdsValue=(133.42*compensationVolatge*compensationVolatge*compensationVolatge - 2
  }
 
  if(dailyCount == 24){
-   //store_daily(data1, dailyAirTempData, dailyAirTempAvg, jsonDaily1);
+   store_daily(data1, dailyAirTempData, dailyAirTempAvg, jsonDaily1);
    store_daily(data2, dailyAirHumData, dailyAirHumAvg, jsonDaily2);
    //store_daily(data3, dailyWaterTempData, dailyWaterTempAvg, jsonDaily3);
    //store_daily(data4, dailyTdsData, dailyTdsAvg, jsonDaily4);
@@ -679,6 +687,37 @@ tdsValue=(133.42*compensationVolatge*compensationVolatge*compensationVolatge - 2
    serializeJsonPretty(daily2, Serial);
    dailyCount = 0;
  }
+
+  // Route to load data1.json file 
+  server.on("/data1.json", HTTP_GET, [](AsyncWebServerRequest *request){
+    if(!request->authenticate(http_username, http_password))
+      return request->requestAuthentication();
+    request->send(SPIFFS, "/data1.json", "application/json");
+  });
+
+   // Route to load data2.json file 
+  server.on("/data2.json", HTTP_GET, [](AsyncWebServerRequest *request){
+    if(!request->authenticate(http_username, http_password))
+      return request->requestAuthentication();
+    request->send(SPIFFS, "/data2.json", "application/json");
+  });
+
+   // Route to load data2.json file 
+  server.on("/daily1.json", HTTP_GET, [](AsyncWebServerRequest *request){
+    if(!request->authenticate(http_username, http_password))
+      return request->requestAuthentication();
+    request->send(SPIFFS, "/daily1.json", "application/json");
+  });
+
+   // Route to load data2.json file 
+  server.on("/daily2.json", HTTP_GET, [](AsyncWebServerRequest *request){
+    if(!request->authenticate(http_username, http_password))
+      return request->requestAuthentication();
+    request->send(SPIFFS, "/daily2.json", "application/json");
+  });
+
+
+
 
 //counter2=0;
  //}

@@ -26,8 +26,8 @@
   <h1>ESP32 Hydroponics Web Server </h1>
   <div class="tabs">
     <ul>
-      <li><a  onclick="openTab(event, 'section2')">Air Temperature</a></li>
-      <li><a  onclick="openTab(event, 'section3')">Air Humidity</a></li>
+      <li><a  onclick="openTab(event, 'section2', 'section2')">Air Temperature</a></li>
+      <li><a  onclick="openTab(event, 'section2', 'section3')">Air Humidity</a></li>
       <li><a  onclick="openTab(event, 'section4')">Water Temperature</a></li>
       <li><a  onclick="openTab(event, 'section5')">Water Level</a></li>
       <li><a  onclick="openTab(event, 'section6')">pH</a></li>
@@ -43,11 +43,14 @@
         <p id="error">Sensor data for Water Temperature has been flagged for data: _____. Check Water Temperature sensor. </p>
       </section>
       <section id="section2" class="tabcontent">
-        <div id="chartContainerL2" style="height: 300px; width: 100%;"></div>
+        <div id="chartContainerH" style="height: 300px; width: 100%;"></div>
+
+        <div id="chartContainerL" style="height: 300px; width: 100%;"></div>
+
+
       </section>
      
       <section id="section3" class="tabcontent">
-        <div id="chartContainerL3" style="height: 300px; width: 100%;"></div>
       </section>
 
       <section id="section4" class="tabcontent">
