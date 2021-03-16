@@ -48,8 +48,7 @@ p{
   background-color: #F27272;
   border-radius: 10px;
   padding: 20px;
-  width: 800px;
-  height: 15px;
+  
 }
 h1{
   color: #0F3376;
@@ -84,7 +83,6 @@ h1{
   text-align: center;
   font-weight: bold;
   color: black;
-  transition: all 0.3s ease 0.4s;
 }
 
 .tabs li a:before{
@@ -97,8 +95,13 @@ h1{
   top: 0;
   background: #1E88E5;
   transform: translateZ(0) translateY(100%);
-  transition: all 0.3s ease 0.3s;
   z-index: -1;
+}
+
+.tabs li a:hover{
+  color: #0F3376;
+  background: #1ee599;
+
 }
 
 .tabs li a[aria-selected]{
