@@ -475,11 +475,11 @@ void setup(){
 
   //pinMode(ledPin, OUTPUT);///////new web server
   
-  /*
+  
   AsyncWiFiManager wifiManager(&server,&dns);
   wifiManager.autoConnect("AutoConnectAP");
     Serial.println("connected...yeey :)");
-*/
+
   
   if(!SPIFFS.begin(true)){
     Serial.println("An Error has occurred while mounting SPIFFS");

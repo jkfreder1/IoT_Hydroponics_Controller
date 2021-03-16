@@ -19,13 +19,14 @@ function openTab(evt, tabName) {
   tablinks = document.getElementsByClassName("tabs");
   for (i = 0; i < tablinks.length; i++) {
     tablinks[i].className = tablinks[i].className.replace(" active", "");
-  }s
+  }
 
   // Show the current tab, and add an "active" class to the button that opened the tab
   document.getElementById(tabName).style.display = "block";
   evt.currentTarget.className += " active";
 
-  renderChart(tabName);
+  if(tabName == "section2" || tabName == "section3")
+    renderChart(tabName);
 }
 
 function renderChart(tabName){
@@ -34,22 +35,22 @@ function renderChart(tabName){
   var chartTitleL = "blank";
   var yAxisL = "blank";
   var xAxisL = "time";
-  var jsonFile = "/test.json"
+  var jsonFile = "/test.json";
+  var chartContainerL = "blank";
 
   // set variables to correct lables dependent on section the page is in
   switch(tabName) {
-    case section1:
-      
-      break;
-    case section2:
+    case "section2":
       chartTitleL = "Live Air Temperature";
       yAxisL = "Fahrenheit";
-      jsonFile = "/data1.json"
+      jsonFile = "/data1.json";
+      chartContainerL = "chartContainerL2";
       break;
-    case section3:
+    case "section3":
       chartTitleL = "Live Air Humidity";
       yAxisL = "kg/kg";
-      jsonFile = "/data2.json"
+      jsonFile = "/data2.json";
+      chartContainerL = "chartContainerL3";
       break;
     default:
       // code block
@@ -57,7 +58,7 @@ function renderChart(tabName){
 
   var dataPoints = [];
 
-  var chart = new CanvasJS.Chart("chartContainer2", {
+  var chart = new CanvasJS.Chart(chartContainerL, {
     animationEnabled: true,
     theme: "light2",
     title: {
@@ -121,6 +122,7 @@ var table = new Tabulator("#example-table", {
   ],
 });
 */
+/*
 window.onload = function() {
   var dataPoints = [];
   
@@ -165,3 +167,4 @@ setInterval(function ( ){
  xhttp.send();
 }, 800 ) ;
 }
+*/
