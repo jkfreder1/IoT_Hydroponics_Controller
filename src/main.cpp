@@ -198,11 +198,11 @@ JsonObject dailyTdsAvg = daily4.to<JsonObject>();
 JsonObject dailypHAvg = daily5.to<JsonObject>();
 
 
-JsonArray data1 = airTemp.createNestedArray("air temp data");
+JsonArray data1 = airTemp.createNestedArray("dataset");
 int airTempCount = 0;
 int totCount1 = 0;
 
-JsonArray data2 = airHum.createNestedArray("air humidity data");
+JsonArray data2 = airHum.createNestedArray("dataset");
 //int airHumCount = 0;
 int totCount2 = 0;
 
@@ -657,7 +657,7 @@ tdsValue=(133.42*compensationVolatge*compensationVolatge*compensationVolatge - 2
   if(airTempCount == 5){
     airTempCount = 0;
   }
-  //store_data(avgAirTemp, airTemp, data1, airTempCount, jsonData1);
+  store_data(avgAirTemp, airTemp, data1, airTempCount, jsonData1);
   store_data(avgAirHum, airHum, data2, airTempCount, jsonData2);
   //store_data(avgWaterTemp, waterTemp, data3, airTempCount, jsonData3);
   //store_data(avgTDS, tds, data4, airTempCount, jsonData4);
