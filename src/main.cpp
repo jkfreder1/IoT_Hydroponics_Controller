@@ -173,6 +173,7 @@ String jsonDaily4 = "/daily4.json";
 StaticJsonDocument<1024> daily5;
 String jsonDaily5 = "/daily5.json";
 
+/*
 StaticJsonDocument<1024> weekly1;
 StaticJsonDocument<1024> weekly2;
 StaticJsonDocument<1024> weekly3;
@@ -184,6 +185,7 @@ StaticJsonDocument<1024> monthly2;
 StaticJsonDocument<1024> monthly3;
 StaticJsonDocument<1024> monthly4;
 StaticJsonDocument<1024> monthly5;
+*/
 
 JsonObject airTemp = doc1.to<JsonObject>();
 JsonObject airHum = doc2.to<JsonObject>();
@@ -198,11 +200,11 @@ JsonObject dailyTdsAvg = daily4.to<JsonObject>();
 JsonObject dailypHAvg = daily5.to<JsonObject>();
 
 
-JsonArray data1 = airTemp.createNestedArray("dataset");
+JsonArray data1 = airTemp.createNestedArray("Air Temperature Data");
 int airTempCount = 0;
 int totCount1 = 0;
 
-JsonArray data2 = airHum.createNestedArray("dataset");
+JsonArray data2 = airHum.createNestedArray("Air Humidity Data");
 //int airHumCount = 0;
 int totCount2 = 0;
 
@@ -214,8 +216,8 @@ JsonArray data4 = tds.createNestedArray("tds data");
 //int tdsCount = 0;
 int totCount4 = 0;
 
-JsonArray dailyAirTempData = dailyAirTempAvg.createNestedArray("daily average");
-JsonArray dailyAirHumData = dailyAirHumAvg.createNestedArray("daily average");
+JsonArray dailyAirTempData = dailyAirTempAvg.createNestedArray("Daily Air Temperature Average");
+JsonArray dailyAirHumData = dailyAirHumAvg.createNestedArray("Daily Air Humidity Average");
 JsonArray dailyWaterTempData = dailyWaterTempAvg.createNestedArray("daily average");
 JsonArray dailyTdsData = dailyTdsAvg.createNestedArray("daily average");
 JsonArray dailypHData = dailypHAvg.createNestedArray("daily average");
@@ -230,12 +232,17 @@ float avgWaterTemp = 0;
 float avgpH = 0;
 float avgTDS = 0;
 
-float dailyAirTemp = 0;
+float avgCount = 1;
 
-float calcAverage(float avg, float data){
-  avg += data;
-  avg = avg/2;
-  return avg;
+float calcAverage(float avg, float data, int count){
+  if (count == 1){
+    avg = data;
+    return avg;
+  }
+  else{
+    avg = avg + ((data - avg)/count);
+    return avg;
+  }
 }
 
 void printJSON(){
@@ -266,10 +273,13 @@ void store_data(float val, JsonObject root, JsonArray data, int count, String fi
 
 void store_daily(JsonArray liveData, JsonArray dailyData, JsonObject root, String fileName){
   File outfile = SPIFFS.open(fileName, "w");
-  for (int i = 0; i < 24; i++){
-    dailyAirTemp = calcAverage(dailyAirTemp, liveData[i]);
+  float tempVal = 0;
+  float count = 1;
+  for (int i = 0; i < 5; i++){
+     tempVal = calcAverage(tempVal, liveData[i], count);
+     count++;
   }
-  dailyData.add(dailyAirTemp);
+  dailyData.add(tempVal);
   if(serializeJsonPretty(root, outfile) == 0){
     Serial.println("Failed to write to file");
   }
@@ -389,7 +399,7 @@ String processor(const String& var){
     request->send(SPIFFS, "/script.js", "text/javascript");
   });
 
-
+/*
   // Route to load data1.json file 
   server.on("/data1.json", HTTP_GET, [](AsyncWebServerRequest *request){
     if(!request->authenticate(http_username, http_password))
@@ -403,6 +413,7 @@ String processor(const String& var){
       return request->requestAuthentication();
     request->send(SPIFFS, "/data2.json", "application/json");
   });
+  */
 
 
 
@@ -440,10 +451,10 @@ void setup(){
   Serial.print("it is starting");
   //setup_wifi();
 
-  
+  /*
   client.setServer(mqttServer, mqttPort);
   client.setCallback(callback);
-  
+  */
 
   pinMode(trigPin, OUTPUT);///sonar
   pinMode(echoPin, INPUT);
@@ -475,21 +486,22 @@ void setup(){
 
   //pinMode(ledPin, OUTPUT);///////new web server
   
-  
+  /*
   AsyncWiFiManager wifiManager(&server,&dns);
   wifiManager.autoConnect("AutoConnectAP");
     Serial.println("connected...yeey :)");
+    */
 
   
   if(!SPIFFS.begin(true)){
     Serial.println("An Error has occurred while mounting SPIFFS");
     return;
   }
-
-
+/*
   Serial.println(WiFi.localIP());
   routes();
   server.begin();
+  */
 }
 void reconnect() {
   // Loop until we're reconnected
@@ -627,10 +639,12 @@ tdsValue=(133.42*compensationVolatge*compensationVolatge*compensationVolatge - 2
   //}
 
   if(counter>10&&counter<15){
+    
     h = dht.readHumidity();//DHT temp humid
-    avgAirHum = calcAverage(avgAirHum, h);
+    avgAirHum = calcAverage(avgAirHum, h, avgCount);
     f = dht.readTemperature(true);
-    avgAirTemp = calcAverage(avgAirTemp, f);
+    avgAirTemp = calcAverage(avgAirTemp, f, avgCount);
+    avgCount++;
   }
 
   //if(counter>120&&counter<130){
@@ -663,6 +677,8 @@ tdsValue=(133.42*compensationVolatge*compensationVolatge*compensationVolatge - 2
   //store_data(avgTDS, tds, data4, airTempCount, jsonData4);
   airTempCount++;
   totCount1 = 0;
+  avgCount = 1;
+  serializeJsonPretty(doc1, Serial);
   serializeJsonPretty(doc2, Serial);
   //printJSON();
   dailyCount++;
@@ -670,15 +686,33 @@ tdsValue=(133.42*compensationVolatge*compensationVolatge*compensationVolatge - 2
   monthlyCount++;
  }
 
- if(dailyCount == 24){
-   //store_daily(data1, dailyAirTempData, dailyAirTempAvg, jsonDaily1);
+ if(dailyCount == 5){
+   store_daily(data1, dailyAirTempData, dailyAirTempAvg, jsonDaily1);
    store_daily(data2, dailyAirHumData, dailyAirHumAvg, jsonDaily2);
    //store_daily(data3, dailyWaterTempData, dailyWaterTempAvg, jsonDaily3);
    //store_daily(data4, dailyTdsData, dailyTdsAvg, jsonDaily4);
    //store_daily(data5, dailypHData, dailypHAvg, jsonDaily5);
+   serializeJsonPretty(daily1, Serial);
    serializeJsonPretty(daily2, Serial);
    dailyCount = 0;
  }
+
+// routes();
+// Route to load data1.json file 
+/*
+  server.on("/data1.json", HTTP_GET, [](AsyncWebServerRequest *request){
+    if(!request->authenticate(http_username, http_password))
+      return request->requestAuthentication();
+    request->send(SPIFFS, "/data1.json", "application/json");
+  });
+
+   // Route to load data2.json file 
+  server.on("/data2.json", HTTP_GET, [](AsyncWebServerRequest *request){
+    if(!request->authenticate(http_username, http_password))
+      return request->requestAuthentication();
+    request->send(SPIFFS, "/data2.json", "application/json");
+  });
+*/
 
 //counter2=0;
  //}
