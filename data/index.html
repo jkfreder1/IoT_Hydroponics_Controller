@@ -14,12 +14,14 @@
   <script>
     window.jQuery || document.write('<script src="http://mysite.com/jquery.min.js"><\/script>')</script>
 
-<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
   <script src="https://code.highcharts.com/highcharts.js"></script>
 
   <script src="script.js"></script>
+
+  <script src="https://canvasjs.com/assets/script/canvasjs.min.js" type="text/javascript"></script>
+
 
 </head>
 <body>
@@ -37,17 +39,36 @@
       <li><a  onclick="openTab(event, 'section1')">Home</a></li>
 
     </ul>
+  
   </div>
       <section id="section1" class="tabcontent">
         <h2>Error Messages: </h2>
         <p id="error">Sensor data for Water Temperature has been flagged for data: _____. Check Water Temperature sensor. </p>
       </section>
       <section id="section2" class="tabcontent">
+        Select Graphs to Display
+        <section class="checkboxContainer">
+          <button onclick="selectAllCheckboxes()">Select all</button>
+          <button onclick="clearAllCheckboxes()">Clear all</button>
+
+
+          <ul id = "WaterLevelCheckBox1" ><input type="checkbox" onclick="selectLI(WaterLevelCheckBox1)" class="checkboxes1" > <label for="waterlevel">Water Level</label>
+            <li><input type="checkbox" class="checkboxes1"> <label for="waterlevel" > Live Data</label></li>
+            <li><input type="checkbox" class="checkboxes1"> <label for="waterlevel" >Historical Data</label></li>
+          </ul>
+          <ul id = "WaterTempCheckBox1" ><input type="checkbox" onclick="selectLI(WaterTempCheckBox1)" class="checkboxes1" > <label for="watertemp">Water Temperature</label>
+            <li ><input type="checkbox" class="checkboxes1"> <label for="watertemp" > Live Data</label></li>
+            <li><input type="checkbox" class="checkboxes1"> <label for="watertemp" >Historical Data</label></li>
+          </ul>
+        
+        
+        
+        </section>
+
+        <section id="graphs">
         <div id="chartContainerH" style="height: 300px; width: 100%;"></div>
-
         <div id="chartContainerL" style="height: 300px; width: 100%;"></div>
-
-
+        </section>
       </section>
      
       <section id="section3" class="tabcontent">
@@ -60,6 +81,7 @@
  
       <section id="section5" class="tabcontent">
         <h2>Section 5</h2>
+
         <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Perspiciatis, ullam natus tenetur molestiae commodi nesciunt, neque adipisci alias nostrum saepe inventore magnam. Molestias laboriosam, tempora quidem assumenda harum. Numquam, delectus.</p>
       </section>
       <section id="section6" class="tabcontent">
@@ -79,7 +101,8 @@
         <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Perspiciatis, ullam natus tenetur molestiae commodi nesciunt, neque adipisci alias nostrum saepe inventore magnam. Molestias laboriosam, tempora quidem assumenda harum. Numquam, delectus.</p>
       </section>
     
-  
+
+      
   <button onclick="logoutButton()">Logout</button>
 
    

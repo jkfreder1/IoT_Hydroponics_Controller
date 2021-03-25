@@ -5,6 +5,42 @@ function logoutButton() {
   setTimeout(function(){ window.open("/logged-out","_self"); }, 1000);
 }
 
+function selectAllCheckboxes(){
+  
+  checkboxes = document.getElementsByClassName('checkboxes1');
+  for (var i = 0; i < checkboxes.length; i++) {
+    checkboxes[i].checked = true;
+  }
+}
+
+function clearAllCheckboxes(){
+  checkboxes = document.getElementsByClassName('checkboxes1');
+  for (var i = 0; i < checkboxes.length; i++) {
+    checkboxes[i].checked = false;
+  }
+}
+
+
+function selectLI(ulID){
+  let ul = ulID.getElementsByTagName('input');
+  for (let i = 1; i < ul.length; i++) {
+    if(ul[0].checked == true)
+       ul[i].checked = true;
+    else
+      ul[i].checked  = false;
+    }
+
+    updateGraphsDisplaye();
+}
+
+function updateGraphsDisplaye() {
+  checkboxes = document.getElementsByTagName('li'); //
+  test = document.getElementsByClassName('checkboxes1');
+  console.log(checkboxes);  
+  console.log(test);
+
+}
+
 function openTab(evt, tabSection, tabName) {
   // Declare all variables
   var i, tabcontent, tablinks;
@@ -36,44 +72,38 @@ function renderChart(tabName){
   var yAxisL = "blank";
   var xAxisL = "time";
   var jsonFileL = "/test.json";
-  var chartContainerL = "blank";
   var chartTitleH = "blank";
   var yAxisH = "blank";
   var xAxisH = "Day";
   var jsonFileH = "/test.json";
-  var chartContainerH = "blank";
-
+  
   // set variables to correct lables dependent on section the page is in
   switch(tabName) {
     case "section2":
       chartTitleL = "Live Air Temperature";
       yAxisL = "Fahrenheit";
       jsonFileL = "/data1.json";
-      chartContainerL = "chartContainerL2";
       chartTitleH = "Daily Air Temperature Averages";
       yAxisH = "Fahrenheit";
       jsonFileH = "/daily1.json";
-      chartContainerH = "chartContainerH2";
       break;
     case "section3":
       chartTitleL = "Live Air Humidity";
       yAxisL = "%";
       jsonFileL = "/data2.json";
-      chartContainerL = "chartContainerL3";
       chartTitleH = "Daily Air Humidity Averages";
       yAxisH = "%";
       jsonFileH = "/daily2.json";
-      chartContainerH = "chartContainerH2";
       break;
     default:
       // code block
   }
-
+  
   // initialize data arrays
   var dataPointsL = [];
-  var dataPointsH = [];
-
-
+  var dataPointsH =  [];
+  
+  
   var chartL = new CanvasJS.Chart("chartContainerL", {
     animationEnabled: true,
     theme: "light2",
@@ -94,7 +124,7 @@ function renderChart(tabName){
     }]
    });
 
-
+  
    var chartH = new CanvasJS.Chart("chartContainerH", {
     animationEnabled: true,
     theme: "light2",
@@ -115,7 +145,7 @@ function renderChart(tabName){
     }]
    });
 
-
+  
    function addDataL(data) {
     dataPointsL.length = 0;
     for (var i = 0; i < data.dataset.length; i++) {
@@ -126,9 +156,10 @@ function renderChart(tabName){
     }
     chartL.render();
    }
-
+  
    function addDataH(data) {
-    dataPoints.length = 0;
+
+    dataPointsH.length = 0;
     for (var i = 0; i < data.dataset.length; i++) {
       dataPointsH.push({
         x: i,
@@ -137,39 +168,38 @@ function renderChart(tabName){
     }
     chartH.render();
    }
-
+  
    setInterval(function ( ){ 
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function() {
+    let xhttpL = new XMLHttpRequest();
+    xhttpL.onreadystatechange = function() {
      if (this.readyState == 4 && this.status == 200) {
-        var myArr = JSON.parse(this.responseText);
-        addDataL(myArr);
+        var myArrL = JSON.parse(this.responseText);
+        addDataL(myArrL);
       }
     };
-    xhttp.open("GET", jsonFileL, true);
-    xhttp.send();
+    xhttpL.open("GET", jsonFileL, true);
+    xhttpL.send();
    }, 5000 ) ;
-
+  
    setInterval(function ( ){ 
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function() {
+
+    let xhttpH = new XMLHttpRequest();
+    xhttpH.onreadystatechange = function() {
      if (this.readyState == 4 && this.status == 200) {
-        var myArr = JSON.parse(this.responseText);
-        addDataH(myArr);
+        var myArrH = JSON.parse(this.responseText);
+        addDataH(myArrH);
       }
     };
-    xhttp.open("GET", jsonFileH, true);
-    xhttp.send();
+    xhttpH.open("GET", jsonFileH, true);
+    if(dataPointsL.length>4)
+      xhttpH.send();
    }, 5000 ) ;
-}
+   
 
-
-
-
-
-
-
-
+  }
+  
+  
+  
 
 
 

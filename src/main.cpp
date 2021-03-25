@@ -176,6 +176,7 @@ String jsonDaily4 = "/daily4.json";
 StaticJsonDocument<1024> daily5;
 String jsonDaily5 = "/daily5.json";
 
+/*
 StaticJsonDocument<1024> weekly1;
 StaticJsonDocument<1024> weekly2;
 StaticJsonDocument<1024> weekly3;
@@ -187,6 +188,7 @@ StaticJsonDocument<1024> monthly2;
 StaticJsonDocument<1024> monthly3;
 StaticJsonDocument<1024> monthly4;
 StaticJsonDocument<1024> monthly5;
+*/
 
 JsonObject airTemp = doc1.to<JsonObject>();
 JsonObject airHum = doc2.to<JsonObject>();
@@ -233,12 +235,17 @@ float avgWaterTemp = 0;
 float avgpH = 0;
 float avgTDS = 0;
 
-float dailyAirTemp = 0;
+float avgCount = 1;
 
-float calcAverage(float avg, float data){
-  avg += data;
-  avg = avg/2;
-  return avg;
+float calcAverage(float avg, float data, int count){
+  if (count == 1){
+    avg = data;
+    return avg;
+  }
+  else{
+    avg = avg + ((data - avg)/count);
+    return avg;
+  }
 }
 
 void printJSON(){
@@ -269,10 +276,13 @@ void store_data(float val, JsonObject root, JsonArray data, int count, String fi
 
 void store_daily(JsonArray liveData, JsonArray dailyData, JsonObject root, String fileName){
   File outfile = SPIFFS.open(fileName, "w");
-  for (int i = 0; i < 24; i++){
-    dailyAirTemp = calcAverage(dailyAirTemp, liveData[i]);
+  float tempVal = 0;
+  float count = 1;
+  for (int i = 0; i < 5; i++){
+     tempVal = calcAverage(tempVal, liveData[i], count);
+     count++;
   }
-  dailyData.add(dailyAirTemp);
+  dailyData.add(tempVal);
   if(serializeJsonPretty(root, outfile) == 0){
     Serial.println("Failed to write to file");
   }
@@ -444,10 +454,10 @@ void setup(){
   Serial.print("it is starting");
   //setup_wifi();
 
-  
+  /*
   client.setServer(mqttServer, mqttPort);
   client.setCallback(callback);
-  
+  */
 
   pinMode(trigPin, OUTPUT);///sonar
   pinMode(echoPin, INPUT);
@@ -481,8 +491,9 @@ void setup(){
   
   
   AsyncWiFiManager wifiManager(&server,&dns);
-  wifiManager.autoConnect("AutoConnectAP");
+  wifiManager.autoConnect("AutoConnectAP","password");
     Serial.println("connected...yeey :)");
+    
 
   
   if(!SPIFFS.begin(true)){
@@ -490,10 +501,10 @@ void setup(){
     return;
   }
 
-
   Serial.println(WiFi.localIP());
   routes();
   server.begin();
+  
 }
 void reconnect() {
   // Loop until we're reconnected
@@ -631,10 +642,12 @@ void loop(){
   //}
 
   if(counter>10&&counter<15){
+    
     h = dht.readHumidity();//DHT temp humid
-    avgAirHum = calcAverage(avgAirHum, h);
+    avgAirHum = calcAverage(avgAirHum, h, avgCount);
     f = dht.readTemperature(true);
-    avgAirTemp = calcAverage(avgAirTemp, f);
+    avgAirTemp = calcAverage(avgAirTemp, f, avgCount);
+    avgCount++;
   }
 
   //if(counter>120&&counter<130){
@@ -671,6 +684,8 @@ void loop(){
   //store_data(avgTDS, tds, data4, airTempCount, jsonData4);
   airTempCount++;
   totCount1 = 0;
+  avgCount = 1;
+  serializeJsonPretty(doc1, Serial);
   serializeJsonPretty(doc2, Serial);
   //printJSON();
   dailyCount++;
@@ -678,17 +693,35 @@ void loop(){
   monthlyCount++;
  }
 
- if(dailyCount == 24){
+ if(dailyCount == 5){
    store_daily(data1, dailyAirTempData, dailyAirTempAvg, jsonDaily1);
    store_daily(data2, dailyAirHumData, dailyAirHumAvg, jsonDaily2);
    //store_daily(data3, dailyWaterTempData, dailyWaterTempAvg, jsonDaily3);
    //store_daily(data4, dailyTdsData, dailyTdsAvg, jsonDaily4);
    //store_daily(data5, dailypHData, dailypHAvg, jsonDaily5);
+   serializeJsonPretty(daily1, Serial);
    serializeJsonPretty(daily2, Serial);
    dailyCount = 0;
+
+
+    // Route to load data2.json file 
+  server.on("/daily1.json", HTTP_GET, [](AsyncWebServerRequest *request){
+    if(!request->authenticate(http_username, http_password))
+      return request->requestAuthentication();
+    request->send(SPIFFS, "/daily1.json", "application/json");
+  });
+
+   // Route to load data2.json file 
+  server.on("/daily2.json", HTTP_GET, [](AsyncWebServerRequest *request){
+    if(!request->authenticate(http_username, http_password))
+      return request->requestAuthentication();
+    request->send(SPIFFS, "/daily2.json", "application/json");
+  });
  }
 
-  // Route to load data1.json file 
+// routes();
+// Route to load data1.json file 
+
   server.on("/data1.json", HTTP_GET, [](AsyncWebServerRequest *request){
     if(!request->authenticate(http_username, http_password))
       return request->requestAuthentication();
@@ -702,23 +735,17 @@ void loop(){
     request->send(SPIFFS, "/data2.json", "application/json");
   });
 
+  
    // Route to load data2.json file 
-  server.on("/daily1.json", HTTP_GET, [](AsyncWebServerRequest *request){
+  server.on("/test.json", HTTP_GET, [](AsyncWebServerRequest *request){
     if(!request->authenticate(http_username, http_password))
       return request->requestAuthentication();
-    request->send(SPIFFS, "/daily1.json", "application/json");
-  });
-
-   // Route to load data2.json file 
-  server.on("/daily2.json", HTTP_GET, [](AsyncWebServerRequest *request){
-    if(!request->authenticate(http_username, http_password))
-      return request->requestAuthentication();
-    request->send(SPIFFS, "/daily2.json", "application/json");
+    request->send(SPIFFS, "/test.json", "application/json");
   });
 
 
 
-
+/*
 //counter2=0;
  //}
  if(store==1){
@@ -765,7 +792,7 @@ if(button>4){//5
     default: break;
  }
 
-/*
+
   if(intph.size()>5){
     intph.pop_front();
   }

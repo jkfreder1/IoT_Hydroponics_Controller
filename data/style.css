@@ -12,6 +12,10 @@ h1{
 p{
   font-size: 1.5rem;
 }
+li{
+  list-style-type: none;
+
+}
 .button {
   display: inline-block;
   background-color: #008CBA;
@@ -38,6 +42,28 @@ p{
 
 .table:hover {
   background-color: #9b75d8;
+}
+
+.checkboxContainer {
+  background-color:#F27272;
+  text-align: left;
+}
+
+.checkboxContainer li {
+  margin-left:25px;
+}
+
+.checkboxContainer ul {
+  
+}
+
+.checkboxes1{
+  width:10%; 
+  float:left;
+}
+
+.graphs {
+  
 }
 
 
