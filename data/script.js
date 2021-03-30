@@ -7,14 +7,14 @@ function logoutButton() {
 
 function selectAllCheckboxes(){
   
-  checkboxes = document.getElementsByClassName('checkboxes1');
+  checkboxes = document.getElementsByClassName('checkboxContainer')[0].getElementsByTagName('input');
   for (var i = 0; i < checkboxes.length; i++) {
     checkboxes[i].checked = true;
   }
 }
 
 function clearAllCheckboxes(){
-  checkboxes = document.getElementsByClassName('checkboxes1');
+  checkboxes = document.getElementsByClassName('checkboxContainer')[0].getElementsByTagName('input')
   for (var i = 0; i < checkboxes.length; i++) {
     checkboxes[i].checked = false;
   }
@@ -30,16 +30,57 @@ function selectLI(ulID){
       ul[i].checked  = false;
     }
 
-    updateGraphsDisplaye();
+    
 }
 
-function updateGraphsDisplaye() {
-  checkboxes = document.getElementsByTagName('li'); //
-  test = document.getElementsByClassName('checkboxes1');
+function updateGraphsDisplay() {
+  checkboxes = document.getElementsByClassName('checkboxesGraphs');
+  graphs = document.getElementsByClassName("graphElement");
+
+  for(i=0; i<checkboxes.length; i++){
+    if(checkboxes[i].checked == true)
+    graphs[i].style.display = 'block';
+    else
+    graphs[i].style.display = 'none';
+
+  }
   console.log(checkboxes);  
-  console.log(test);
+}
+
+function showHistoricalGraph(evt,graphID,graphCategory) {
+  let historyGraphs;
+  console.log(graphID);
+  console.log(graphCategory);
+  
+  // obtain historical graphs of category and hide all of them
+  historyGraphs = document.getElementById(graphCategory).getElementsByTagName("canvas");
+  console.log(historyGraphs);
+  for (i = 0; i < historyGraphs.length; i++) {
+    historyGraphs[i].style.display = "none";
+  }
+
+  // show the historical graph that was selected
+  document.getElementById(graphID).style.display = "block";
+  console.log(document.getElementById(graphID));
 
 }
+
+// function hides all historical graphs
+function hideHistoricals(){
+  // gather all historical containers that hold each of the historical categories
+  let historyContainer = document.getElementsByClassName('historyGraphs');
+  let historyGraphs;
+
+  // for each historical container, hide the canvas elements (graphs) within it 
+  for(i=0; i <historyContainer.length; i++){
+    historyGraphs = historyContainer[i].getElementsByTagName("canvas");
+    for (k = 0; k < historyGraphs.length; k++) {
+      historyGraphs[k].style.display = "none";
+    }
+  }
+  
+}
+
 
 function openTab(evt, tabSection, tabName) {
   // Declare all variables
@@ -61,10 +102,13 @@ function openTab(evt, tabSection, tabName) {
   document.getElementById(tabSection).style.display = "block";
   evt.currentTarget.className += " active";
 
-  if(tabName == "section2" || tabName == "section3")
-    renderChart(tabName);
+  
 }
 
+window.onload = (event) => {
+}
+
+/*
 function renderChart(tabName){
 
   // initialize variables 
@@ -105,6 +149,8 @@ function renderChart(tabName){
   
   
   var chartL = new CanvasJS.Chart("chartContainerL", {
+    height: 360,
+
     animationEnabled: true,
     theme: "light2",
     title: {
@@ -126,6 +172,8 @@ function renderChart(tabName){
 
   
    var chartH = new CanvasJS.Chart("chartContainerH", {
+    height: 360,
+
     animationEnabled: true,
     theme: "light2",
     title: {
@@ -200,8 +248,9 @@ function renderChart(tabName){
   
   
   
-
-
+  
+ 
+*/
 
 
 
@@ -263,11 +312,10 @@ setInterval(function ( ){
  xhttp.onreadystatechange = function() {
   if (this.readyState == 4 && this.status == 200) {
      var myArr = JSON.parse(this.responseText);
-     addData(myArr);
+     //addData(myArr);
    }
  };
- xhttp.open("GET", "/data.json", true);
+ xhttp.open("GET", "/test.json", true);
  xhttp.send();
 }, 800 ) ;
-}
 */

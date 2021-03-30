@@ -15,12 +15,12 @@
     window.jQuery || document.write('<script src="http://mysite.com/jquery.min.js"><\/script>')</script>
 
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4"></script>
   <script src="https://code.highcharts.com/highcharts.js"></script>
-
-  <script src="script.js"></script>
-
   <script src="https://canvasjs.com/assets/script/canvasjs.min.js" type="text/javascript"></script>
+
+  <script src="script.js" type="text/javascript"></script>
+
 
 
 </head>
@@ -28,11 +28,8 @@
   <h1>ESP32 Hydroponics Web Server </h1>
   <div class="tabs">
     <ul>
-      <li><a  onclick="openTab(event, 'section2', 'section2')">Air Temperature</a></li>
-      <li><a  onclick="openTab(event, 'section2', 'section3')">Air Humidity</a></li>
-      <li><a  onclick="openTab(event, 'section4')">Water Temperature</a></li>
-      <li><a  onclick="openTab(event, 'section5')">Water Level</a></li>
-      <li><a  onclick="openTab(event, 'section6')">pH</a></li>
+      <li><a  onclick="openTab(event, 'section2', 'section2')">Graphs</a></li>
+      <li><a  onclick="openTab(event, 'section4')">Tables</a></li>
       <li><a  onclick="openTab(event, 'section7')">Password change</a></li>
       <li><a  onclick="openTab(event, 'section8')">Parameter Configuration</a></li>
       <li><a  onclick="openTab(event, 'section9')">MQTT Configuration</a></li>
@@ -52,13 +49,13 @@
           <button onclick="clearAllCheckboxes()">Clear all</button>
 
 
-          <ul id = "WaterLevelCheckBox1" ><input type="checkbox" onclick="selectLI(WaterLevelCheckBox1)" class="checkboxes1" > <label for="waterlevel">Water Level</label>
-            <li><input type="checkbox" class="checkboxes1"> <label for="waterlevel" > Live Data</label></li>
-            <li><input type="checkbox" class="checkboxes1"> <label for="waterlevel" >Historical Data</label></li>
+          <ul id = "WaterLevelCheckBox1" ><input type="checkbox" onclick="selectLI(WaterLevelCheckBox1);updateGraphsDisplay();"  > <label for="waterlevel">Water Level</label>
+            <li><input type="checkbox" class="checkboxesGraphs" onclick="updateGraphsDisplay();"> <label for="waterlevel" > Live Data</label></li>
+            <li><input type="checkbox" class="checkboxesGraphs" onclick="updateGraphsDisplay();"> <label for="waterlevel" >Historical Data</label></li>
           </ul>
-          <ul id = "WaterTempCheckBox1" ><input type="checkbox" onclick="selectLI(WaterTempCheckBox1)" class="checkboxes1" > <label for="watertemp">Water Temperature</label>
-            <li ><input type="checkbox" class="checkboxes1"> <label for="watertemp" > Live Data</label></li>
-            <li><input type="checkbox" class="checkboxes1"> <label for="watertemp" >Historical Data</label></li>
+          <ul id = "WaterTempCheckBox1" ><input type="checkbox" onclick="selectLI(WaterTempCheckBox1);updateGraphsDisplay();" > <label for="watertemp">Water Temperature</label>
+            <li ><input type="checkbox" class="checkboxesGraphs" onclick="updateGraphsDisplay();" > <label for="watertemp" > Live Data</label></li>
+            <li><input type="checkbox" class="checkboxesGraphs" onclick="updateGraphsDisplay();"> <label for="watertemp" >Historical Data</label></li>
           </ul>
         
         
@@ -66,8 +63,47 @@
         </section>
 
         <section id="graphs">
-        <div id="chartContainerH" style="height: 300px; width: 100%;"></div>
-        <div id="chartContainerL" style="height: 300px; width: 100%;"></div>
+          <div class="graphElement">
+            <canvas id="airTemp" width="100" height="100"></canvas>
+          </div>
+
+          <div class="graphElement">
+            <label for="airTempHistory">Choose a Historical Graph:</label>
+            <select name="airTempHistory" id="airTempHistoryDropdown" onchange="showHistoricalGraph(event,this.value,this.name)">
+              <option value=""> Please select Graph</option>
+              <option value="airTempDaily" >Daily Averages</option>
+              <option value="airTempMonthly" >Monthly Averages</option>
+              <option value="airTempYearly" >Yearly Averages</option>
+            </select>
+
+            <div id="airTempHistory" class="historyGraphs">
+              <canvas id="airTempDaily" width="100" height="100"></canvas>
+              <canvas id="airTempMonthly" width="100" height="100"></canvas>
+              <canvas id="airTempYearly" width="100" height="100"></canvas>
+            </div>
+          </div>
+          
+          <div class="graphElement">
+            <canvas id="airHumidity" width="100" height="100"></canvas>
+          </div>
+
+          <div class="graphElement">
+          <label for="airHumidityHistory">Choose a Historical Graph:</label>
+          <select name="airHumidityHistory" id="airHumidityHistoryDropdown" onchange="showHistoricalGraph(event,this.value,this.name)">
+            <option value=""> Please select Graph</option>
+            <option value="airHumidityDaily" >Daily Averages</option>
+            <option value="airHumidityMonthly" >Monthly Averages</option>
+            <option value="airHumidityYearly" >Yearly Averages</option>
+          </select>
+
+          <div id="airHumidityHistory" class="historyGraphs">
+          <canvas id="airHumidityDaily" width="100" height="100"></canvas>
+          <canvas id="airHumidityMonthly" width="100" height="100"></canvas>
+          <canvas id="airHumidityYearly" width="100" height="100"></canvas>
+          </div>
+          </div>
+
+        
         </section>
       </section>
      
@@ -104,7 +140,10 @@
 
       
   <button onclick="logoutButton()">Logout</button>
+  
 
-   
+
 </body>
+<script src="graphs.js" type="text/javascript"></script>
+
 </html>

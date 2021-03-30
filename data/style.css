@@ -1,7 +1,7 @@
     
 html {
   font-family: Helvetica;
-  display: inline-block;
+  display: block; 
   margin: 0px auto;
   text-align: center;
 }
@@ -63,8 +63,11 @@ li{
 }
 
 .graphs {
-  
+  display: inline-block;
+
 }
+
+
 
 
 *:focus {

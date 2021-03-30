@@ -401,6 +401,11 @@ String processor(const String& var){
       return request->requestAuthentication();
     request->send(SPIFFS, "/script.js", "text/javascript");
   });
+  server.on("/graphs.js", HTTP_GET, [](AsyncWebServerRequest *request){
+    if(!request->authenticate(http_username, http_password))
+      return request->requestAuthentication();
+    request->send(SPIFFS, "/graphs.js", "text/javascript");
+  });
 
 /*
 
@@ -418,7 +423,12 @@ String processor(const String& var){
     request->send(SPIFFS, "/data2.json", "application/json");
   });
 */
-
+ // Route to load data2.json file 
+  server.on("/test.json", HTTP_GET, [](AsyncWebServerRequest *request){
+    if(!request->authenticate(http_username, http_password))
+      return request->requestAuthentication();
+    request->send(SPIFFS, "/tests.json", "application/json");
+  });
 
 
   // Route to set GPIO to HIGH
