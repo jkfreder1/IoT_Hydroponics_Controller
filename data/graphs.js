@@ -21,7 +21,7 @@ var defaultOptions = {
     },
     layout: {
         padding: {
-           left: 100,
+           left: 300,
            right: 100,
            top: 100,
            bottom: 100,
@@ -85,6 +85,14 @@ var myChartAirTempDaily = new Chart(ctxairTempDaily, {
     
 });
 
+var ctxairTempWeekly = document.getElementById('airTempWeekly').getContext('2d');
+var myChartAirTempWeekly = new Chart(ctxairTempWeekly, {
+    type: 'line',
+    data: defaultData,
+    options: defaultOptions,
+    
+});
+
 var ctxairTempMonthly = document.getElementById('airTempMonthly').getContext('2d');
 var myChartAirTempMonthly = new Chart(ctxairTempMonthly, {
     type: 'line',
@@ -93,13 +101,6 @@ var myChartAirTempMonthly = new Chart(ctxairTempMonthly, {
     
 });
 
-var ctxairTempYearly = document.getElementById('airTempYearly').getContext('2d');
-var myChartAirTempYearly = new Chart(ctxairTempYearly, {
-    type: 'line',
-    data: defaultData,
-    options: defaultOptions,
-    
-});
 
 var ctxairHumidity = document.getElementById('airHumidity').getContext('2d');
 var myChartAirHumidity = new Chart(ctxairHumidity, {
@@ -117,6 +118,14 @@ var myChartAirHumidityDaily = new Chart(ctxairHumidityDaily, {
     
 });
 
+var ctxairHumidityWeekly = document.getElementById('airHumidityWeekly').getContext('2d');
+var myChartAirHumidityWeekly= new Chart(ctxairHumidityWeekly, {
+    type: 'line',
+    data: defaultData,
+    options: defaultOptions,
+    
+});
+
 var ctxairHumidityMonthly = document.getElementById('airHumidityMonthly').getContext('2d');
 var myChartAirHumidityMonthly= new Chart(ctxairHumidityMonthly, {
     type: 'line',
@@ -125,13 +134,7 @@ var myChartAirHumidityMonthly= new Chart(ctxairHumidityMonthly, {
     
 });
 
-var ctxairHumidityYearly = document.getElementById('airHumidityYearly').getContext('2d');
-var myChartAirHumidityYearly= new Chart(ctxairHumidityYearly, {
-    type: 'line',
-    data: defaultData,
-    options: defaultOptions,
-    
-});
+
 
 
 
@@ -167,14 +170,14 @@ setInterval(function ( ){
 window.onload = (event) => {
     secondaryInit(myChartAirTemp,'Air Temperature Live Data', 'Temperature (C)');
     secondaryInit(myChartAirTempDaily, 'Air Temperature Daily Averages', 'Temperature (C)');
+    secondaryInit(myChartAirTempWeekly, 'Air Temperature Weekly Averages', 'Temperature (C)');
     secondaryInit(myChartAirTempMonthly, 'Air Temperature Monthly Averages', 'Temperature (C)');
-    secondaryInit(myChartAirTempYearly, 'Air Temperature Yearly Averages', 'Temperature (C)');
-
-
+    
     secondaryInit(myChartAirHumidity,'Air Humidity Live Data', '%');
     secondaryInit(myChartAirHumidityDaily,'Air Humidity Daily Averages', '%');
+    secondaryInit(myChartAirHumidityWeekly,'Air Humidity Weekly Averages', '%');
     secondaryInit(myChartAirHumidityMonthly,'Air Humidity Monthly Averages', '%');
-    secondaryInit(myChartAirHumidityYearly,'Air Humidity Yearly Averages', '%');
+    
 
     
     hideHistoricals();

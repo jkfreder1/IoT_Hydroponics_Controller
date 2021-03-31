@@ -28,7 +28,7 @@
   <h1>ESP32 Hydroponics Web Server </h1>
   <div class="tabs">
     <ul>
-      <li><a  onclick="openTab(event, 'section2', 'section2')">Graphs</a></li>
+      <li><a  onclick="openTab(event, 'section2')">Graphs</a></li>
       <li><a  onclick="openTab(event, 'section4')">Tables</a></li>
       <li><a  onclick="openTab(event, 'section7')">Password change</a></li>
       <li><a  onclick="openTab(event, 'section8')">Parameter Configuration</a></li>
@@ -43,11 +43,20 @@
         <p id="error">Sensor data for Water Temperature has been flagged for data: _____. Check Water Temperature sensor. </p>
       </section>
       <section id="section2" class="tabcontent">
-        Select Graphs to Display
+        <div style="font-size: 20px;padding: 20px;color: #0F3376;">Select Graphs to Display </div>
+        <br>
+       
         <section class="checkboxContainer">
-          <button onclick="selectAllCheckboxes()">Select all</button>
-          <button onclick="clearAllCheckboxes()">Clear all</button>
+          
 
+          <ul id = "AirTempCheckBox1" ><input type="checkbox" onclick="selectLI(AirTempCheckBox1);updateGraphsDisplay();"  > <label for="airtemp">Air Temperature</label>
+            <li><input type="checkbox" class="checkboxesGraphs" onclick="updateGraphsDisplay();"> <label for="airtemp" > Live Data</label></li>
+            <li><input type="checkbox" class="checkboxesGraphs" onclick="updateGraphsDisplay();"> <label for="airtemp" >Historical Data</label></li>
+          </ul>
+          <ul id = "AirHumidCheckBox1" ><input type="checkbox" onclick="selectLI(AirHumidCheckBox1);updateGraphsDisplay();" > <label for="airhumid">Air Humidity</label>
+            <li ><input type="checkbox" class="checkboxesGraphs" onclick="updateGraphsDisplay();" > <label for="airhumid" > Live Data</label></li>
+            <li><input type="checkbox" class="checkboxesGraphs" onclick="updateGraphsDisplay();"> <label for="airhumid" >Historical Data</label></li>
+          </ul>
 
           <ul id = "WaterLevelCheckBox1" ><input type="checkbox" onclick="selectLI(WaterLevelCheckBox1);updateGraphsDisplay();"  > <label for="waterlevel">Water Level</label>
             <li><input type="checkbox" class="checkboxesGraphs" onclick="updateGraphsDisplay();"> <label for="waterlevel" > Live Data</label></li>
@@ -57,11 +66,18 @@
             <li ><input type="checkbox" class="checkboxesGraphs" onclick="updateGraphsDisplay();" > <label for="watertemp" > Live Data</label></li>
             <li><input type="checkbox" class="checkboxesGraphs" onclick="updateGraphsDisplay();"> <label for="watertemp" >Historical Data</label></li>
           </ul>
+
+          <ul id = "pHCheckBox1" ><input type="checkbox" onclick="selectLI(pHCheckBox1);updateGraphsDisplay();" > <label for="pH">pH</label>
+            <li ><input type="checkbox" class="checkboxesGraphs" onclick="updateGraphsDisplay();" > <label for="pH" > Live Data</label></li>
+            <li><input type="checkbox" class="checkboxesGraphs" onclick="updateGraphsDisplay();"> <label for="pH" >Historical Data</label></li>
+          </ul>
         
         
         
         </section>
-
+        <br>
+        <button onclick="selectAllCheckboxes();updateGraphsDisplay();">Select all</button>
+        <button onclick="clearAllCheckboxes();updateGraphsDisplay();">Clear all</button>
         <section id="graphs">
           <div class="graphElement">
             <canvas id="airTemp" width="100" height="100"></canvas>
@@ -72,14 +88,14 @@
             <select name="airTempHistory" id="airTempHistoryDropdown" onchange="showHistoricalGraph(event,this.value,this.name)">
               <option value=""> Please select Graph</option>
               <option value="airTempDaily" >Daily Averages</option>
+              <option value="airTempWeekly" >Weekly Averages</option>
               <option value="airTempMonthly" >Monthly Averages</option>
-              <option value="airTempYearly" >Yearly Averages</option>
             </select>
 
             <div id="airTempHistory" class="historyGraphs">
               <canvas id="airTempDaily" width="100" height="100"></canvas>
+              <canvas id="airTempWeekly" width="100" height="100"></canvas>
               <canvas id="airTempMonthly" width="100" height="100"></canvas>
-              <canvas id="airTempYearly" width="100" height="100"></canvas>
             </div>
           </div>
           
@@ -92,14 +108,14 @@
           <select name="airHumidityHistory" id="airHumidityHistoryDropdown" onchange="showHistoricalGraph(event,this.value,this.name)">
             <option value=""> Please select Graph</option>
             <option value="airHumidityDaily" >Daily Averages</option>
+            <option value="airHumidityWeekly" >Weekly Averages</option>
             <option value="airHumidityMonthly" >Monthly Averages</option>
-            <option value="airHumidityYearly" >Yearly Averages</option>
           </select>
 
           <div id="airHumidityHistory" class="historyGraphs">
           <canvas id="airHumidityDaily" width="100" height="100"></canvas>
+          <canvas id="airHumidityWeekly" width="100" height="100"></canvas>
           <canvas id="airHumidityMonthly" width="100" height="100"></canvas>
-          <canvas id="airHumidityYearly" width="100" height="100"></canvas>
           </div>
           </div>
 
