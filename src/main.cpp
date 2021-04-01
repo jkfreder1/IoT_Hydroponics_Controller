@@ -219,6 +219,10 @@ JsonArray data4 = tds.createNestedArray("dataset");
 //int tdsCount = 0;
 int totCount4 = 0;
 
+JsonArray data5 = tds.createNestedArray("dataset");
+//int tdsCount = 0;
+int totCount5 = 0;
+
 JsonArray dailyAirTempData = dailyAirTempAvg.createNestedArray("dataset");
 JsonArray dailyAirHumData = dailyAirHumAvg.createNestedArray("dataset");
 JsonArray dailyWaterTempData = dailyWaterTempAvg.createNestedArray("dataset");
@@ -457,6 +461,78 @@ String processor(const String& var){
   });
  }
 
+ void routesLoop() {
+ // Route to load data1.json file 
+ server.on("/data1.json", HTTP_GET, [](AsyncWebServerRequest *request){
+    if(!request->authenticate(http_username, http_password))
+      return request->requestAuthentication();
+    request->send(SPIFFS, "/data1.json", "application/json");
+  });
+
+   // Route to load data2.json file 
+  server.on("/data2.json", HTTP_GET, [](AsyncWebServerRequest *request){
+    if(!request->authenticate(http_username, http_password))
+      return request->requestAuthentication();
+    request->send(SPIFFS, "/data2.json", "application/json");
+  });
+
+   // Route to load data3.json file 
+ server.on("/data3.json", HTTP_GET, [](AsyncWebServerRequest *request){
+    if(!request->authenticate(http_username, http_password))
+      return request->requestAuthentication();
+    request->send(SPIFFS, "/data3.json", "application/json");
+  });
+
+   // Route to load data4.json file 
+  server.on("/data4.json", HTTP_GET, [](AsyncWebServerRequest *request){
+    if(!request->authenticate(http_username, http_password))
+      return request->requestAuthentication();
+    request->send(SPIFFS, "/data4.json", "application/json");
+  });
+
+ // Route to load data4.json file 
+  server.on("/data5.json", HTTP_GET, [](AsyncWebServerRequest *request){
+    if(!request->authenticate(http_username, http_password))
+      return request->requestAuthentication();
+    request->send(SPIFFS, "/data5.json", "application/json");
+  });
+
+    // Route to load daily1.json file 
+  server.on("/daily1.json", HTTP_GET, [](AsyncWebServerRequest *request){
+    if(!request->authenticate(http_username, http_password))
+      return request->requestAuthentication();
+    request->send(SPIFFS, "/daily1.json", "application/json");
+  });
+
+   // Route to load daily2.json file 
+  server.on("/daily2.json", HTTP_GET, [](AsyncWebServerRequest *request){
+    if(!request->authenticate(http_username, http_password))
+      return request->requestAuthentication();
+    request->send(SPIFFS, "/daily2.json", "application/json");
+  });
+
+   // Route to load daily3.json file 
+  server.on("/daily3.json", HTTP_GET, [](AsyncWebServerRequest *request){
+    if(!request->authenticate(http_username, http_password))
+      return request->requestAuthentication();
+    request->send(SPIFFS, "/daily3.json", "application/json");
+  });
+
+   // Route to load daily4.json file 
+  server.on("/daily4.json", HTTP_GET, [](AsyncWebServerRequest *request){
+    if(!request->authenticate(http_username, http_password))
+      return request->requestAuthentication();
+    request->send(SPIFFS, "/daily4.json", "application/json");
+  });
+ 
+  // Route to load daily4.json file 
+  server.on("/daily5.json", HTTP_GET, [](AsyncWebServerRequest *request){
+    if(!request->authenticate(http_username, http_password))
+      return request->requestAuthentication();
+    request->send(SPIFFS, "/daily4.json", "application/json");
+  });
+ }
+
 
 
 void setup(){
@@ -687,11 +763,13 @@ void loop(){
   
   float fakeAirTemp = 65 + rand() % (( 85 + 1 ) -65);
   float fakeAirHumid = 65 + rand() % (( 85 + 1 ) -65);
+  float fakeWaterTemp = 65 + rand() % (( 85 + 1 ) -65);
+  float fakeTDS = 65 + rand() % (( 85 + 1 ) -65);
 
   store_data(fakeAirTemp, airTemp, data1, airTempCount, jsonData1);
   store_data(fakeAirHumid, airHum, data2, airTempCount, jsonData2);
-  //store_data(avgWaterTemp, waterTemp, data3, airTempCount, jsonData3);
-  //store_data(avgTDS, tds, data4, airTempCount, jsonData4);
+  store_data(fakeWaterTemp, waterTemp, data3, airTempCount, jsonData3);
+  store_data(fakeTDS, tds, data4, airTempCount, jsonData4);
   airTempCount++;
   totCount1 = 0;
   avgCount = 1;
@@ -706,52 +784,22 @@ void loop(){
  if(dailyCount == 5){
    store_daily(data1, dailyAirTempData, dailyAirTempAvg, jsonDaily1);
    store_daily(data2, dailyAirHumData, dailyAirHumAvg, jsonDaily2);
-   //store_daily(data3, dailyWaterTempData, dailyWaterTempAvg, jsonDaily3);
-   //store_daily(data4, dailyTdsData, dailyTdsAvg, jsonDaily4);
-   //store_daily(data5, dailypHData, dailypHAvg, jsonDaily5);
+   store_daily(data3, dailyWaterTempData, dailyWaterTempAvg, jsonDaily3);
+   store_daily(data4, dailyTdsData, dailyTdsAvg, jsonDaily4);
+   store_daily(data5, dailypHData, dailypHAvg, jsonDaily5);
    serializeJsonPretty(daily1, Serial);
    serializeJsonPretty(daily2, Serial);
    dailyCount = 0;
-
-
-    // Route to load data2.json file 
-  server.on("/daily1.json", HTTP_GET, [](AsyncWebServerRequest *request){
-    if(!request->authenticate(http_username, http_password))
-      return request->requestAuthentication();
-    request->send(SPIFFS, "/daily1.json", "application/json");
-  });
-
-   // Route to load data2.json file 
-  server.on("/daily2.json", HTTP_GET, [](AsyncWebServerRequest *request){
-    if(!request->authenticate(http_username, http_password))
-      return request->requestAuthentication();
-    request->send(SPIFFS, "/daily2.json", "application/json");
-  });
  }
+
+routesLoop();
+  
+ 
 
 // routes();
 // Route to load data1.json file 
 
-  server.on("/data1.json", HTTP_GET, [](AsyncWebServerRequest *request){
-    if(!request->authenticate(http_username, http_password))
-      return request->requestAuthentication();
-    request->send(SPIFFS, "/data1.json", "application/json");
-  });
-
-   // Route to load data2.json file 
-  server.on("/data2.json", HTTP_GET, [](AsyncWebServerRequest *request){
-    if(!request->authenticate(http_username, http_password))
-      return request->requestAuthentication();
-    request->send(SPIFFS, "/data2.json", "application/json");
-  });
-
-  
-   // Route to load data2.json file 
-  server.on("/test.json", HTTP_GET, [](AsyncWebServerRequest *request){
-    if(!request->authenticate(http_username, http_password))
-      return request->requestAuthentication();
-    request->send(SPIFFS, "/test.json", "application/json");
-  });
+ 
 
 
 

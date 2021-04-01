@@ -134,7 +134,133 @@ var myChartAirHumidityMonthly= new Chart(ctxairHumidityMonthly, {
     
 });
 
+var ctxwaterTemp = document.getElementById('waterTemp').getContext('2d');
+var myChartWaterTemp = new Chart(ctxwaterTemp, {
+    type: 'line',
+    data: defaultData,
+    options: defaultOptions,
+    
+});
 
+var ctxwaterTempDaily = document.getElementById('waterTempDaily').getContext('2d');
+var myChartWaterTempDaily = new Chart(ctxwaterTempDaily, {
+    type: 'line',
+    data: defaultData,
+    options: defaultOptions,
+    
+});
+
+var ctxwaterTempWeekly = document.getElementById('waterTempWeekly').getContext('2d');
+var myChartWaterTempWeekly= new Chart(ctxwaterTempWeekly, {
+    type: 'line',
+    data: defaultData,
+    options: defaultOptions,
+    
+});
+
+var ctxwaterTempMonthly = document.getElementById('waterTempMonthly').getContext('2d');
+var myChartWaterTempMonthly= new Chart(ctxwaterTempMonthly, {
+    type: 'line',
+    data: defaultData,
+    options: defaultOptions,
+    
+});
+
+var ctxwaterLvl = document.getElementById('waterLvl').getContext('2d');
+var myChartWaterLvl = new Chart(ctxwaterLvl, {
+    type: 'line',
+    data: defaultData,
+    options: defaultOptions,
+    
+});
+
+var ctxwaterLvlDaily = document.getElementById('waterLvlDaily').getContext('2d');
+var myChartWaterLvlDaily = new Chart(ctxwaterLvlDaily, {
+    type: 'line',
+    data: defaultData,
+    options: defaultOptions,
+    
+});
+
+var ctxwaterLvlWeekly = document.getElementById('waterLvlWeekly').getContext('2d');
+var myChartWaterLvlWeekly= new Chart(ctxwaterLvlWeekly, {
+    type: 'line',
+    data: defaultData,
+    options: defaultOptions,
+    
+});
+
+var ctxwaterLvlMonthly = document.getElementById('waterLvlMonthly').getContext('2d');
+var myChartWaterLvlMonthly= new Chart(ctxwaterLvlMonthly, {
+    type: 'line',
+    data: defaultData,
+    options: defaultOptions,
+    
+});
+
+var ctxpH = document.getElementById('pH').getContext('2d');
+var myChartpH = new Chart(ctxpH, {
+    type: 'line',
+    data: defaultData,
+    options: defaultOptions,
+    
+});
+
+var ctxpHDaily = document.getElementById('pHDaily').getContext('2d');
+var myChartpHDaily = new Chart(ctxpHDaily, {
+    type: 'line',
+    data: defaultData,
+    options: defaultOptions,
+    
+});
+
+var ctxpHWeekly = document.getElementById('pHWeekly').getContext('2d');
+var myChartpHWeekly= new Chart(ctxpHWeekly, {
+    type: 'line',
+    data: defaultData,
+    options: defaultOptions,
+    
+});
+
+var ctxpHMonthly = document.getElementById('pHMonthly').getContext('2d');
+var myChartpHMonthly= new Chart(ctxpHMonthly, {
+    type: 'line',
+    data: defaultData,
+    options: defaultOptions,
+    
+});
+
+var ctxnutrientLvl = document.getElementById('nutrientLvl').getContext('2d');
+var myChartNutrientLvl = new Chart(ctxnutrientLvl, {
+    type: 'line',
+    data: defaultData,
+    options: defaultOptions,
+    
+});
+
+var ctxnutrientLvlDaily = document.getElementById('nutrientLvlDaily').getContext('2d');
+var myChartNutrientLvlDaily = new Chart(ctxnutrientLvlDaily, {
+    type: 'line',
+    data: defaultData,
+    options: defaultOptions,
+    
+});
+
+var ctxnutrientLvlWeekly = document.getElementById('nutrientLvlWeekly').getContext('2d');
+var myChartNutrientLvlWeekly= new Chart(ctxnutrientLvlWeekly, {
+    type: 'line',
+    data: defaultData,
+    options: defaultOptions,
+    
+});
+
+var ctxnutrientLvlMonthly = document.getElementById('nutrientLvlMonthly').getContext('2d');
+var myChartNutrientLvlMonthly= new Chart(ctxnutrientLvlMonthly, {
+    type: 'line',
+    data: defaultData,
+    options: defaultOptions,
+    
+});
 
 
 
@@ -164,8 +290,21 @@ setInterval(function ( ){
     //JSON_request("/timestamps.json");
     JSON_request("/data1.json",myChartAirTemp);
     JSON_request("/data2.json",myChartAirHumidity);
+    JSON_request("/data3.json",myChartWaterTemp);
+    JSON_request("/data5.json",myChartpHDaily);
+    JSON_request("/data6.json",myChartWaterLvl);
 
-   }, 200000 ) ;
+    JSON_request("/daily1.json",myChartAirTempDaily);
+    JSON_request("/daily2.json",myChartAirHumidityDaily);
+    JSON_request("/daily3.json",myChartWaterTempDaily);
+    JSON_request("/daily5.json",myChartpHDaily);
+    JSON_request("/daily6.json",myChartWaterLvlDaily);
+
+
+
+
+
+   }, 20000 ) ;
 
 window.onload = (event) => {
     secondaryInit(myChartAirTemp,'Air Temperature Live Data', 'Temperature (C)');
@@ -177,6 +316,21 @@ window.onload = (event) => {
     secondaryInit(myChartAirHumidityDaily,'Air Humidity Daily Averages', '%');
     secondaryInit(myChartAirHumidityWeekly,'Air Humidity Weekly Averages', '%');
     secondaryInit(myChartAirHumidityMonthly,'Air Humidity Monthly Averages', '%');
+
+    secondaryInit(myChartWaterTemp,'Water Temperature Live Data', 'Temperature (C)');
+    secondaryInit(myChartWaterTempDaily,'Water Temperature Daily Averages', 'Temperature (C)');
+    secondaryInit(myChartWaterTempWeekly,'Water Temperature Weekly Averages', 'Temperature (C)');
+    secondaryInit(myChartWaterTempMonthly,'Water Temperature Monthly Averages', 'Temperature (C)');
+
+    secondaryInit(myChartWaterLvl,'Water Level Live Data', '%');
+    secondaryInit(myChartWaterLvlDaily,'Water Level Daily Averages', '%');
+    secondaryInit(myChartWaterLvlWeekly,'Water Level Weekly Averages', '%');
+    secondaryInit(myChartWaterLvlMonthly,'Water Level Monthly Averages', '%');
+
+    secondaryInit(myChartpH,'pH Live Data', '%');
+    secondaryInit(myChartpHDaily,'pH Daily Averages', '%');
+    secondaryInit(myChartpHWeekly,'pH Weekly Averages', '%');
+    secondaryInit(myChartpHMonthly,'pH Monthly Averages', '%');
     
 
     

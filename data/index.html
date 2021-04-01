@@ -30,9 +30,7 @@
     <ul>
       <li><a  onclick="openTab(event, 'section2')">Graphs</a></li>
       <li><a  onclick="openTab(event, 'section4')">Tables</a></li>
-      <li><a  onclick="openTab(event, 'section7')">Password change</a></li>
-      <li><a  onclick="openTab(event, 'section8')">Parameter Configuration</a></li>
-      <li><a  onclick="openTab(event, 'section9')">MQTT Configuration</a></li>
+      <li><a  onclick="openTab(event, 'section8')">Configuration</a></li>
       <li><a  onclick="openTab(event, 'section1')">Home</a></li>
 
     </ul>
@@ -57,16 +55,14 @@
             <li ><input type="checkbox" class="checkboxesGraphs" onclick="updateGraphsDisplay();" > <label for="airhumid" > Live Data</label></li>
             <li><input type="checkbox" class="checkboxesGraphs" onclick="updateGraphsDisplay();"> <label for="airhumid" >Historical Data</label></li>
           </ul>
-
-          <ul id = "WaterLevelCheckBox1" ><input type="checkbox" onclick="selectLI(WaterLevelCheckBox1);updateGraphsDisplay();"  > <label for="waterlevel">Water Level</label>
-            <li><input type="checkbox" class="checkboxesGraphs" onclick="updateGraphsDisplay();"> <label for="waterlevel" > Live Data</label></li>
-            <li><input type="checkbox" class="checkboxesGraphs" onclick="updateGraphsDisplay();"> <label for="waterlevel" >Historical Data</label></li>
-          </ul>
           <ul id = "WaterTempCheckBox1" ><input type="checkbox" onclick="selectLI(WaterTempCheckBox1);updateGraphsDisplay();" > <label for="watertemp">Water Temperature</label>
             <li ><input type="checkbox" class="checkboxesGraphs" onclick="updateGraphsDisplay();" > <label for="watertemp" > Live Data</label></li>
             <li><input type="checkbox" class="checkboxesGraphs" onclick="updateGraphsDisplay();"> <label for="watertemp" >Historical Data</label></li>
           </ul>
-
+          <ul id = "WaterLevelCheckBox1" ><input type="checkbox" onclick="selectLI(WaterLevelCheckBox1);updateGraphsDisplay();"  > <label for="waterlevel">Water Level</label>
+            <li><input type="checkbox" class="checkboxesGraphs" onclick="updateGraphsDisplay();"> <label for="waterlevel" > Live Data</label></li>
+            <li><input type="checkbox" class="checkboxesGraphs" onclick="updateGraphsDisplay();"> <label for="waterlevel" >Historical Data</label></li>
+          </ul>
           <ul id = "pHCheckBox1" ><input type="checkbox" onclick="selectLI(pHCheckBox1);updateGraphsDisplay();" > <label for="pH">pH</label>
             <li ><input type="checkbox" class="checkboxesGraphs" onclick="updateGraphsDisplay();" > <label for="pH" > Live Data</label></li>
             <li><input type="checkbox" class="checkboxesGraphs" onclick="updateGraphsDisplay();"> <label for="pH" >Historical Data</label></li>
@@ -116,6 +112,86 @@
           <canvas id="airHumidityDaily" width="100" height="100"></canvas>
           <canvas id="airHumidityWeekly" width="100" height="100"></canvas>
           <canvas id="airHumidityMonthly" width="100" height="100"></canvas>
+          </div>
+          </div>
+
+          <div class="graphElement">
+            <canvas id="waterTemp" width="100" height="100"></canvas>
+          </div>
+
+          <div class="graphElement">
+          <label for="waterTempHistory">Choose a Historical Graph:</label>
+          <select name="waterTempHistory" id="waterTempHistoryDropdown" onchange="showHistoricalGraph(event,this.value,this.name)">
+            <option value=""> Please select Graph</option>
+            <option value="waterTempDaily" >Daily Averages</option>
+            <option value="waterTempWeekly" >Weekly Averages</option>
+            <option value="waterTempMonthly" >Monthly Averages</option>
+          </select>
+
+          <div id="waterTempHistory" class="historyGraphs">
+          <canvas id="waterTempDaily" width="100" height="100"></canvas>
+          <canvas id="waterTempWeekly" width="100" height="100"></canvas>
+          <canvas id="waterTempMonthly" width="100" height="100"></canvas>
+          </div>
+          </div>
+
+          <div class="graphElement">
+            <canvas id="waterLvl" width="100" height="100"></canvas>
+          </div>
+
+          <div class="graphElement">
+          <label for="waterLvlHistory">Choose a Historical Graph:</label>
+          <select name="waterLvlHistory" id="waterLvlHistoryDropdown" onchange="showHistoricalGraph(event,this.value,this.name)">
+            <option value=""> Please select Graph</option>
+            <option value="waterLvlDaily" >Daily Averages</option>
+            <option value="waterLvlWeekly" >Weekly Averages</option>
+            <option value="waterLvlMonthly" >Monthly Averages</option>
+          </select>
+
+          <div id="waterLvlHistory" class="historyGraphs">
+          <canvas id="waterLvlDaily" width="100" height="100"></canvas>
+          <canvas id="waterLvlWeekly" width="100" height="100"></canvas>
+          <canvas id="waterLvlMonthly" width="100" height="100"></canvas>
+          </div>
+          </div>
+
+          <div class="graphElement">
+            <canvas id="pH" width="100" height="100"></canvas>
+          </div>
+
+          <div class="graphElement">
+          <label for="pHHistory">Choose a Historical Graph:</label>
+          <select name="pHHistory" id="pHHistoryDropdown" onchange="showHistoricalGraph(event,this.value,this.name)">
+            <option value=""> Please select Graph</option>
+            <option value="pHDaily" >Daily Averages</option>
+            <option value="pHWeekly" >Weekly Averages</option>
+            <option value="pHMonthly" >Monthly Averages</option>
+          </select>
+
+          <div id="pHHistory" class="historyGraphs">
+          <canvas id="pHDaily" width="100" height="100"></canvas>
+          <canvas id="pHWeekly" width="100" height="100"></canvas>
+          <canvas id="pHMonthly" width="100" height="100"></canvas>
+          </div>
+          </div>
+
+          <div class="graphElement">
+            <canvas id="nutrientLvl" width="100" height="100"></canvas>
+          </div>
+
+          <div class="graphElement">
+          <label for="nutrientLvlHistory">Choose a Historical Graph:</label>
+          <select name="nutrientLvlHistory" id="nutrientLvlHistoryDropdown" onchange="showHistoricalGraph(event,this.value,this.name)">
+            <option value=""> Please select Graph</option>
+            <option value="nutrientLvlDaily" >Daily Averages</option>
+            <option value="nutrientLvlWeekly" >Weekly Averages</option>
+            <option value="nutrientLvlMonthly" >Monthly Averages</option>
+          </select>
+
+          <div id="nutrientLvlHistory" class="historyGraphs">
+          <canvas id="nutrientLvlDaily" width="100" height="100"></canvas>
+          <canvas id="nutrientLvlWeekly" width="100" height="100"></canvas>
+          <canvas id="nutrientLvlMonthly" width="100" height="100"></canvas>
           </div>
           </div>
 
