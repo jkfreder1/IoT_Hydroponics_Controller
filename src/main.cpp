@@ -15,9 +15,6 @@
 #include <stdlib.h>
 #include <ArduinoJson.h>
 #include <PubSubClient.h>
-#include <string.h>
-#include <bits/stdc++.h> 
-
 using namespace std;
 deque<int> intd;
 deque<int> inta;
@@ -30,17 +27,26 @@ int trigPin = 33;    // Trigger
 int echoPin = 25;    // Echo
 long duration, cm, inches;
 
-float waterTempHighParam=90;
-float waterTempLowParam=40;
-float airHumHighParam=80;
-float airHumLowParam=20;
-float airTempHighParam=90;
-float airTempLowParam=50;
+int waterTempHighParam=90;
+int waterTempLowParam=40;
+int airHumHighParam=60;
+int airHumLowParam=20;
+int airTempHighParam=80;
+int airTempLowParam=50;
+int sonarHighParam=2;
+int sonarLowParam=8;
+int tdshighParam=400;
+int tdslowParam=50;
+int phhighParam=9;
+int phlowParam=2;
 
-long sonarHighParam=2;
-long sonarLowParam=8;
 int counter=0;
-int counter3 = 0;
+/*
+#define uS_TO_S_FACTOR 1000000 //////////sleep
+#define TIME_TO_SLEEP  20        
+#define BUTTON_PIN_BITMASK 0x200000000
+*/
+
 // Add your MQTT Broker IP address, example:
 //const char* mqtt_server = "192.168.1.144";
 //mqtt credentials
@@ -80,7 +86,7 @@ int analogBufferTemp[SCOUNT];
 int analogBufferIndex = 0,copyIndex = 0;
 float averageVoltage = 0,tdsValue = 0,temperature = 25;
 
-float calibration_value = 120.34;//ph
+float calibration_value = 21;
 int phval = 0; 
 unsigned long int avgval; 
 int array1;
@@ -90,11 +96,16 @@ int array3;
 float h;
 float f;
 float temperatureF;
-int ph_act;
+float ph_act;
 
 int button=0;
 int counter2;
 int clear;
+
+
+int h_offset,f_offset,ph_act_offset,inches_offset,temperatureF_offset,tds_offset;
+int h_input=32,f_input=72,ph_act_input=7,inches_input=5,temperatureF_input=67,tds_value_input=83;
+
 
 uint8_t LED1pin = 26;
 bool LED1status = LOW;
@@ -176,7 +187,6 @@ String jsonDaily4 = "/daily4.json";
 StaticJsonDocument<1024> daily5;
 String jsonDaily5 = "/daily5.json";
 
-/*
 StaticJsonDocument<1024> weekly1;
 StaticJsonDocument<1024> weekly2;
 StaticJsonDocument<1024> weekly3;
@@ -188,7 +198,6 @@ StaticJsonDocument<1024> monthly2;
 StaticJsonDocument<1024> monthly3;
 StaticJsonDocument<1024> monthly4;
 StaticJsonDocument<1024> monthly5;
-*/
 
 JsonObject airTemp = doc1.to<JsonObject>();
 JsonObject airHum = doc2.to<JsonObject>();
@@ -203,27 +212,27 @@ JsonObject dailyTdsAvg = daily4.to<JsonObject>();
 JsonObject dailypHAvg = daily5.to<JsonObject>();
 
 
-JsonArray data1 = airTemp.createNestedArray("dataset");
+JsonArray data1 = airTemp.createNestedArray("air temp data");
 int airTempCount = 0;
 int totCount1 = 0;
 
-JsonArray data2 = airHum.createNestedArray("dataset");
+JsonArray data2 = airHum.createNestedArray("air humidity data");
 //int airHumCount = 0;
 int totCount2 = 0;
 
-JsonArray data3 = waterTemp.createNestedArray("dataset");
+JsonArray data3 = waterTemp.createNestedArray("water temp data");
 //int waterTempCount = 0;
 int totCount3 = 0;
 
-JsonArray data4 = tds.createNestedArray("dataset");
+JsonArray data4 = tds.createNestedArray("tds data");
 //int tdsCount = 0;
 int totCount4 = 0;
 
-JsonArray dailyAirTempData = dailyAirTempAvg.createNestedArray("dataset");
-JsonArray dailyAirHumData = dailyAirHumAvg.createNestedArray("dataset");
-JsonArray dailyWaterTempData = dailyWaterTempAvg.createNestedArray("dataset");
-JsonArray dailyTdsData = dailyTdsAvg.createNestedArray("dataset");
-JsonArray dailypHData = dailypHAvg.createNestedArray("dataset");
+JsonArray dailyAirTempData = dailyAirTempAvg.createNestedArray("daily average");
+JsonArray dailyAirHumData = dailyAirHumAvg.createNestedArray("daily average");
+JsonArray dailyWaterTempData = dailyWaterTempAvg.createNestedArray("daily average");
+JsonArray dailyTdsData = dailyTdsAvg.createNestedArray("daily average");
+JsonArray dailypHData = dailypHAvg.createNestedArray("daily average");
 
 int dailyCount = 0;
 int weeklyCount = 0;
@@ -235,17 +244,12 @@ float avgWaterTemp = 0;
 float avgpH = 0;
 float avgTDS = 0;
 
-float avgCount = 1;
+float dailyAirTemp = 0;
 
-float calcAverage(float avg, float data, int count){
-  if (count == 1){
-    avg = data;
-    return avg;
-  }
-  else{
-    avg = avg + ((data - avg)/count);
-    return avg;
-  }
+float calcAverage(float avg, float data){
+  avg += data;
+  avg = avg/2;
+  return avg;
 }
 
 void printJSON(){
@@ -276,13 +280,10 @@ void store_data(float val, JsonObject root, JsonArray data, int count, String fi
 
 void store_daily(JsonArray liveData, JsonArray dailyData, JsonObject root, String fileName){
   File outfile = SPIFFS.open(fileName, "w");
-  float tempVal = 0;
-  float count = 1;
-  for (int i = 0; i < 5; i++){
-     tempVal = calcAverage(tempVal, liveData[i], count);
-     count++;
+  for (int i = 0; i < 24; i++){
+    dailyAirTemp = calcAverage(dailyAirTemp, liveData[i]);
   }
-  dailyData.add(tempVal);
+  dailyData.add(dailyAirTemp);
   if(serializeJsonPretty(root, outfile) == 0){
     Serial.println("Failed to write to file");
   }
@@ -315,25 +316,13 @@ int getMedianNum(int bArray[], int iFilterLen)//////////tds sensor
 } 
 
 
-int store;
+int sleeptime;
 void IRAM_ATTR incrCounter(){
   counter++;
   counter2++;
-  if(counter>160){
-    store=1;;
-  }
+  sleeptime++;
 }
 
-int h_offset,f_offset,ph_act_offset,inches_offset,temperatureF_offset,tds_offset;
-int h_input,f_input,ph_act_input,inches_input,temperatureF_input,tds_value_input;
-void calibration(float hum,float far,int ph,int in,float atemp,float tds){
-  h_offset=h_input-hum;
-  f_offset=f_input-far;
-  ph_act_offset=ph_act_input-ph_act;
-  inches_offset=inches_input-inches;
-  temperatureF_offset=temperatureF_input-temperatureF;
-  tds_offset=tds_value_input-tdsValue;
-}
 void buttonISR(){
   if(counter2>10){
   button++;
@@ -347,8 +336,9 @@ void button2ISR(){
     ESP.restart();
   }
 }
+int cal=0;
 void button3ISR(){
-  calibration(h,f,ph_act,inches,temperatureF,tdsValue);
+  cal=1;
 }
 
 
@@ -401,34 +391,16 @@ String processor(const String& var){
       return request->requestAuthentication();
     request->send(SPIFFS, "/script.js", "text/javascript");
   });
-  server.on("/graphs.js", HTTP_GET, [](AsyncWebServerRequest *request){
-    if(!request->authenticate(http_username, http_password))
-      return request->requestAuthentication();
-    request->send(SPIFFS, "/graphs.js", "text/javascript");
-  });
 
-/*
 
-  // Route to load data1.json file 
-  server.on("/data1.json", HTTP_GET, [](AsyncWebServerRequest *request){
-    if(!request->authenticate(http_username, http_password))
-      return request->requestAuthentication();
-    request->send(SPIFFS, "/data1.json", "application/json");
-  });
-
-   // Route to load data2.json file 
-  server.on("/data2.json", HTTP_GET, [](AsyncWebServerRequest *request){
+  // Route to load data.json file 
+  server.on("/data.json", HTTP_GET, [](AsyncWebServerRequest *request){
     if(!request->authenticate(http_username, http_password))
       return request->requestAuthentication();
     request->send(SPIFFS, "/data2.json", "application/json");
   });
-*/
- // Route to load data2.json file 
-  server.on("/test.json", HTTP_GET, [](AsyncWebServerRequest *request){
-    if(!request->authenticate(http_username, http_password))
-      return request->requestAuthentication();
-    request->send(SPIFFS, "/tests.json", "application/json");
-  });
+
+
 
 
   // Route to set GPIO to HIGH
@@ -463,7 +435,6 @@ void setup(){
   Serial.begin (115200);
   Serial.print("it is starting");
   //setup_wifi();
-
   /*
   client.setServer(mqttServer, mqttPort);
   client.setCallback(callback);
@@ -487,33 +458,34 @@ void setup(){
   timerAlarmWrite(timer, 1000000, true);
   timerAlarmEnable(timer);
 
-  pinMode(13,OUTPUT);///button interrupts
-  pinMode(18,INPUT);
+  pinMode(5,INPUT);
   pinMode(15,INPUT);
   pinMode(19,INPUT);
-  attachInterrupt(digitalPinToInterrupt(18), button3ISR,RISING);
+  attachInterrupt(digitalPinToInterrupt(5), button3ISR,RISING);
   attachInterrupt(digitalPinToInterrupt(15), buttonISR, RISING);
   attachInterrupt(digitalPinToInterrupt(19), button2ISR, RISING);
 
-
-
-  //pinMode(ledPin, OUTPUT);///////new web server
+  /*
+  esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP * uS_TO_S_FACTOR);/////sleep
+  esp_sleep_enable_ext0_wakeup(GPIO_NUM_15,1);
+  */
   
-  
+  /*
   AsyncWiFiManager wifiManager(&server,&dns);
-  wifiManager.autoConnect("AutoConnectAP","password");
+  wifiManager.autoConnect("AutoConnectAP");
     Serial.println("connected...yeey :)");
-    
-
+*/
   
   if(!SPIFFS.begin(true)){
     Serial.println("An Error has occurred while mounting SPIFFS");
     return;
   }
 
+  /*
   Serial.println(WiFi.localIP());
   routes();
   server.begin();
+  */
   
 }
 void reconnect() {
@@ -537,46 +509,80 @@ void reconnect() {
     }
   }
 }
+ int clear2=0; 
 
 void displayWaterTemp(float temperatureF){
   lcd.setCursor(0,0);//water temp display
-  if(temperatureF < waterTempLowParam){
+  if(temperatureF < waterTempLowParam && temperatureF>0){
   lcd.print("Error!");
   lcd.setCursor(0,1);
   lcd.print("Water temp low");
+  clear2=1;
   }
   else if(temperatureF > waterTempHighParam){
-    lcd.print("Error!");
+    lcd.print("Error!Water temp");
   lcd.setCursor(0,1);
-  lcd.print("Water temp high");
+  lcd.print("Is too high");
+  clear2=1;
+  }
+  else if(temperatureF<0){
+    clear2=1;
+    lcd.print("Critical error");
+    lcd.setCursor(0,1);
+    lcd.print("Check Sensor");
   }
   else{
+    if(clear2==1){
+      clear2=0;
+      lcd.clear();
+    }
   lcd.print("Water temp ");
     lcd.print(temperatureF);
   }
 }
 
+int clear3=0;
+
 void displayDHT(float h, float f){
   lcd.setCursor(0,0);//humidity display
-  if(h < airHumLowParam){
-  lcd.print("Error! AirHum");
+  if(h < airHumLowParam && !isnan(h)){
+  lcd.print("Error AirHum LOW");
+  clear2=1;
   }
-  else if(h > airHumHighParam){
-    lcd.print("Error! AirHum");
+  else if(h > airHumHighParam && !isnan(h)){
+    lcd.print("Error AirHumHIGH");
+    clear2=1;
   }
   else{
+    if(clear2==1){
+      clear2=0;
+      lcd.clear();
+    }
   lcd.print("humidity ");
     lcd.print(h);
     lcd.print("%");
   }
   lcd.setCursor(0,1); //air temp display
-  if(f < airTempLowParam){
+  if(f < airTempLowParam && !isnan(f)){
   lcd.print("Error! AirTemp");
+  clear3=1;
   }
-  else if(f > airTempHighParam){
+  else if(f > airTempHighParam && !isnan(f)){
     lcd.print("Error! AirTemp");
+    clear3=1;
+  }
+  else if (isnan(h) || isnan(f)) {
+    clear2=1;
+    lcd.setCursor(0,0);
+    lcd.print("Critical error");
+    lcd.setCursor(0,1);
+    lcd.print("Check Sensor");
   }
   else{
+    if(clear3==1){
+      clear3=0;
+      lcd.clear();
+    }
   lcd.print("Air Temp ");
     lcd.print(f);
     lcd.print("F");
@@ -586,16 +592,27 @@ void displayDHT(float h, float f){
 void displaySonar(long inches){
   lcd.setCursor(0,0);//sonar display
   if(inches > sonarLowParam){
-  lcd.print("Error!");
+  lcd.print("Error! The water");
   lcd.setCursor(0,1);
-  lcd.print("Water too low");
+  lcd.print("Is too low");
+  clear2=1;
   }
-  else if(inches < sonarHighParam){
-    lcd.print("Error!");
+  else if(inches < sonarHighParam&& inches > 0){
+    lcd.print("Error! The water");
   lcd.setCursor(0,1);
-  lcd.print("Water too high");
+  lcd.print("Is too high");
+  clear2=1;
+  }
+  else if(inches==0){
+    lcd.print("Critical error");
+    lcd.setCursor(0,1);
+    lcd.print("Check Sensor");
   }
   else{
+    if(clear2==1){
+      clear2=0;
+      lcd.clear();
+    }
     lcd.print(inches);
     lcd.print(" inches");
   }
@@ -604,14 +621,50 @@ void displaySonar(long inches){
 
 void displayTDS(float tdsValue){
   lcd.setCursor(0,0);
+  if(tdsValue<tdslowParam){
+    lcd.print("Error TDS Low");
+    clear2=1;
+  }
+  else if(tdsValue>tdshighParam){
+    lcd.print("Error TDS High");
+    clear2=1;
+  }
+  else{
+    if(clear2==1){
+      clear2=0;
+      lcd.clear();
+    }
+  lcd.setCursor(0,0);
   lcd.print(tdsValue);
   lcd.print(" ppm");
+  }
 }
 
 void displaypH(float ph_act){
   lcd.setCursor(0,0);
+  if(ph_act<phlowParam&&ph_act>0){
+    lcd.print("Error pH Low");
+    clear2=1;
+  }
+  else if(ph_act>phhighParam){
+    lcd.print("Error pH High");
+    clear2=1;
+  }
+  else if(ph_act<0){
+    lcd.print("Critical error");
+    lcd.setCursor(0,1);
+    lcd.print("Check pH Sensor");
+    clear2=1;
+  }
+  else{
+    if(clear2==1){
+      clear2=0;
+      lcd.clear();
+    }
+  lcd.setCursor(0,0);
   lcd.print(ph_act);
   lcd.print("pH");
+  }
 }
 
 
@@ -632,12 +685,13 @@ void loop(){
  printTimepoint = millis();
  for(copyIndex=0;copyIndex<SCOUNT;copyIndex++)
  analogBufferTemp[copyIndex]= analogBuffer[copyIndex];
- averageVoltage = getMedianNum(analogBufferTemp,SCOUNT) * (float)VREF/ 1024.0;
+ averageVoltage = getMedianNum(analogBufferTemp,SCOUNT) * (float)VREF/ 4096.0;//1024.0
  float compensationCoefficient=1.0+0.02*(temperature-25.0);
  float compensationVolatge=averageVoltage/compensationCoefficient;
- tdsValue=(133.42*compensationVolatge*compensationVolatge*compensationVolatge - 255.86*compensationVolatge*compensationVolatge + 857.39*compensationVolatge)*0.5;
+tdsValue=(133.42*compensationVolatge*compensationVolatge*compensationVolatge - 255.86*compensationVolatge*compensationVolatge + 857.39*compensationVolatge)*0.5;
+
 }
- //}
+ 
 
   //if(counter>60&&counter<70){
   digitalWrite(trigPin, LOW);//sonar sensor
@@ -652,12 +706,10 @@ void loop(){
   //}
 
   if(counter>10&&counter<15){
-    
     h = dht.readHumidity();//DHT temp humid
-    avgAirHum = calcAverage(avgAirHum, h, avgCount);
+    avgAirHum = calcAverage(avgAirHum, h);
     f = dht.readTemperature(true);
-    avgAirTemp = calcAverage(avgAirTemp, f, avgCount);
-    avgCount++;
+    avgAirTemp = calcAverage(avgAirTemp, f);
   }
 
   //if(counter>120&&counter<130){
@@ -670,8 +722,11 @@ void loop(){
  array2=analogRead(0);
  array3=analogRead(0);
  array1=array2+array3+array1;
- float volt=(float)array1*5.0/1024/3;
- ph_act = -5.70 * volt + calibration_value;
+ float volt=(float)array1*5.0/4096/3;
+ ph_act = (-5.70 * volt + calibration_value);
+ if(ph_act<4){
+   ph_act=ph_act+1;
+ }
  //}
 
  if(counter>15){
@@ -681,21 +736,15 @@ void loop(){
 
   //store live and historical data
  if(totCount1 > 5){
-  if(airTempCount == 24){
+  if(airTempCount == 5){
     airTempCount = 0;
   }
-  
-  float fakeAirTemp = 65 + rand() % (( 85 + 1 ) -65);
-  float fakeAirHumid = 65 + rand() % (( 85 + 1 ) -65);
-
-  store_data(fakeAirTemp, airTemp, data1, airTempCount, jsonData1);
-  store_data(fakeAirHumid, airHum, data2, airTempCount, jsonData2);
+  //store_data(avgAirTemp, airTemp, data1, airTempCount, jsonData1);
+  store_data(avgAirHum, airHum, data2, airTempCount, jsonData2);
   //store_data(avgWaterTemp, waterTemp, data3, airTempCount, jsonData3);
   //store_data(avgTDS, tds, data4, airTempCount, jsonData4);
   airTempCount++;
   totCount1 = 0;
-  avgCount = 1;
-  serializeJsonPretty(doc1, Serial);
   serializeJsonPretty(doc2, Serial);
   //printJSON();
   dailyCount++;
@@ -703,81 +752,28 @@ void loop(){
   monthlyCount++;
  }
 
- if(dailyCount == 5){
-   store_daily(data1, dailyAirTempData, dailyAirTempAvg, jsonDaily1);
+ if(dailyCount == 24){
+   //store_daily(data1, dailyAirTempData, dailyAirTempAvg, jsonDaily1);
    store_daily(data2, dailyAirHumData, dailyAirHumAvg, jsonDaily2);
    //store_daily(data3, dailyWaterTempData, dailyWaterTempAvg, jsonDaily3);
    //store_daily(data4, dailyTdsData, dailyTdsAvg, jsonDaily4);
    //store_daily(data5, dailypHData, dailypHAvg, jsonDaily5);
-   serializeJsonPretty(daily1, Serial);
    serializeJsonPretty(daily2, Serial);
    dailyCount = 0;
-
-
-    // Route to load data2.json file 
-  server.on("/daily1.json", HTTP_GET, [](AsyncWebServerRequest *request){
-    if(!request->authenticate(http_username, http_password))
-      return request->requestAuthentication();
-    request->send(SPIFFS, "/daily1.json", "application/json");
-  });
-
-   // Route to load data2.json file 
-  server.on("/daily2.json", HTTP_GET, [](AsyncWebServerRequest *request){
-    if(!request->authenticate(http_username, http_password))
-      return request->requestAuthentication();
-    request->send(SPIFFS, "/daily2.json", "application/json");
-  });
  }
 
-// routes();
-// Route to load data1.json file 
-
-  server.on("/data1.json", HTTP_GET, [](AsyncWebServerRequest *request){
-    if(!request->authenticate(http_username, http_password))
-      return request->requestAuthentication();
-    request->send(SPIFFS, "/data1.json", "application/json");
-  });
-
-   // Route to load data2.json file 
-  server.on("/data2.json", HTTP_GET, [](AsyncWebServerRequest *request){
-    if(!request->authenticate(http_username, http_password))
-      return request->requestAuthentication();
-    request->send(SPIFFS, "/data2.json", "application/json");
-  });
-
-  
-   // Route to load data2.json file 
-  server.on("/test.json", HTTP_GET, [](AsyncWebServerRequest *request){
-    if(!request->authenticate(http_username, http_password))
-      return request->requestAuthentication();
-    request->send(SPIFFS, "/test.json", "application/json");
-  });
-
-
-
-/*
 //counter2=0;
  //}
- if(store==1){
-    store=0;
-    intd.push_back(inches);
-    inta.push_back(h);
-    inta1.push_back(f);
-    intw.push_back(temperatureF);
-    inttds.push_back(tdsValue);
-    intph.push_back(ph_act);
- }
+ 
 
 if(clear==1){
   clear=0;
   lcd.clear();
 }
 
-if(button>4){//5
+if(button>5){
   button=0;
 }
-
-  
 
  switch (button){
     case 0:
@@ -785,43 +781,34 @@ if(button>4){//5
       lcd.print("Hydroponics");
       break;
     case 1:
-      displayDHT(h,f);
+      displayDHT(h+h_offset,f+f_offset);
       break;
     case 2:
-      displayWaterTemp(temperatureF);
+      displayWaterTemp(temperatureF+temperatureF_offset);
       break;
     case 3:
-      displayTDS(tdsValue);
+      displayTDS(tdsValue+tds_offset);
       break;
     case 4:
-      displaySonar(inches);
+      displaySonar(inches+inches_offset);
       break;
-    //case 5:
-      //displaypH(ph_act);
-      //break;
+    case 5:
+      displaypH(ph_act+ph_act_offset);
+      break;
     default: break;
  }
 
 
-  if(intph.size()>5){
-    intph.pop_front();
+  if(cal==1){
+    cal=0;
+  h_offset=h_input-h;
+  f_offset=f_input-f;
+  ph_act_offset=ph_act_input-ph_act;
+  inches_offset=inches_input-inches;
+  temperatureF_offset=temperatureF_input-temperatureF;
+  tds_offset=tds_value_input-tdsValue;
   }
-  if(inttds.size()>5){
-    inttds.pop_front();
-  }
-  if(intd.size()>5){
-    intd.pop_front();
-  }
-  if(inta.size()>5){
-    inta.pop_front();
-  }
-  if(inta1.size()>5){
-    inta1.pop_front();
-  }
-  if(intw.size()>5){
-    intw.pop_front();
-  }
-
+  /*
 if (!client.connected()) {
     reconnect();
   }
@@ -853,6 +840,10 @@ if (!client.connected()) {
     Serial.println(humString);
     client.publish("esp32/humidity", humString);
   }
-  
-*/
+  */
+
+  //if(sleeptime>200){
+    //esp_deep_sleep_start();/////sleep
+    //sleeptime=0;
+  //}
 }
