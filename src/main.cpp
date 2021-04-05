@@ -42,7 +42,7 @@ int phlowParam=2;
 
 int counter=0;
 /*
-#define uS_TO_S_FACTOR 1000000 //////////sleep
+#define uS_TO_S_FACTOR 1000000 //////////sleep DONT DELETE
 #define TIME_TO_SLEEP  20        
 #define BUTTON_PIN_BITMASK 0x200000000
 */
@@ -255,7 +255,7 @@ JsonObject monthlyWaterLevelAvg = monthly6.to<JsonObject>();
 JsonObject monthlyTime = monthlyTimeStamp.to<JsonObject>();
 
 
-JsonArray data1 = airTemp.createNestedArray("air temp data");
+JsonArray data1 = airTemp.createNestedArray("dataset");
 int airTempCount = 0;
 int totCount1 = 0;
 JsonArray data2 = airHum.createNestedArray("air humidity data");
@@ -481,6 +481,20 @@ String processor(const String& var){
     request->send(SPIFFS, "/script.js", "text/javascript");
   });
 
+  // Route to load script.js file
+  server.on("/graphs.js", HTTP_GET, [](AsyncWebServerRequest *request){
+    if(!request->authenticate(http_username, http_password))
+      return request->requestAuthentication();
+    request->send(SPIFFS, "/graphs.js", "text/javascript");
+  });
+
+  // Route to load script.js file
+  server.on("/tables.js", HTTP_GET, [](AsyncWebServerRequest *request){
+    if(!request->authenticate(http_username, http_password))
+      return request->requestAuthentication();
+    request->send(SPIFFS, "/tables.js", "text/javascript");
+  });
+
 
   // Route to load data.json file 
   server.on("/data.json", HTTP_GET, [](AsyncWebServerRequest *request){
@@ -492,20 +506,7 @@ String processor(const String& var){
 
 
 
-  // Route to set GPIO to HIGH
-  server.on("/on", HTTP_GET, [](AsyncWebServerRequest *request){
-    if(!request->authenticate(http_username, http_password))
-      return request->requestAuthentication();
-    digitalWrite(ledPin, HIGH);    
-    request->send(SPIFFS, "/index.html", String(), false, processor);
-  });
-  // Route to set GPIO to LOW
-  server.on("/off", HTTP_GET, [](AsyncWebServerRequest *request){
-    if(!request->authenticate(http_username, http_password))
-      return request->requestAuthentication();
-    digitalWrite(ledPin, LOW);    
-    request->send(SPIFFS, "/index.html", String(), false, processor);
-  });
+  
   server.on("/logout", HTTP_GET, [](AsyncWebServerRequest *request){
   request->send(401);
   });
@@ -627,26 +628,26 @@ void setup(){
   attachInterrupt(digitalPinToInterrupt(19), button2ISR, RISING);
 
   /*
-  esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP * uS_TO_S_FACTOR);/////sleep
+  esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP * uS_TO_S_FACTOR);/////sleep DONT DELETE
   esp_sleep_enable_ext0_wakeup(GPIO_NUM_15,1);
   */
   
-  /*
+  
   AsyncWiFiManager wifiManager(&server,&dns);
   wifiManager.autoConnect("AutoConnectAP");
     Serial.println("connected...yeey :)");
-*/
+
   
   if(!SPIFFS.begin(true)){
     Serial.println("An Error has occurred while mounting SPIFFS");
     return;
   }
 
-  /*
+  
   Serial.println(WiFi.localIP());
   routes();
   server.begin();
-  */
+  
   
 }
 void reconnect() {
@@ -671,19 +672,25 @@ void reconnect() {
   }
 }
  int clear2=0; 
+ int errorflag=0;
+ int errorflag1=0;
+ int errorflag2=0;
+ int errorflag3=0;
+ int errorflag4=0;
+ int errorflag5=0;
 
 void displayWaterTemp(float temperatureF){
   lcd.setCursor(0,0);//water temp display
   if(temperatureF < waterTempLowParam && temperatureF>0){
-  lcd.print("Error!");
+  lcd.print("Error!          ");
   lcd.setCursor(0,1);
-  lcd.print("Water temp low");
+  lcd.print("Water temp low  ");
   clear2=1;
   }
   else if(temperatureF > waterTempHighParam){
-    lcd.print("Error!Water temp");
+    lcd.print("Water temp      ");
   lcd.setCursor(0,1);
-  lcd.print("Is too high");
+  lcd.print("Is too high     ");
   clear2=1;
   }
   else if(temperatureF<0){
@@ -698,7 +705,7 @@ void displayWaterTemp(float temperatureF){
       clear2=0;
       lcd.clear();
     }
-  lcd.print("Water temp ");
+    lcd.print("Water temp ");
     lcd.print(temperatureF);
   }
 }
@@ -708,11 +715,11 @@ int clear3=0;
 void displayDHT(float h, float f){
   lcd.setCursor(0,0);//humidity display
   if(h < airHumLowParam && !isnan(h)){
-  lcd.print("Error AirHum LOW");
+  lcd.print("Air Humdity LOW ");
   clear2=1;
   }
   else if(h > airHumHighParam && !isnan(h)){
-    lcd.print("Error AirHumHIGH");
+    lcd.print("Air Humdity HIGH");
     clear2=1;
   }
   else{
@@ -722,15 +729,15 @@ void displayDHT(float h, float f){
     }
   lcd.print("humidity ");
     lcd.print(h);
-    lcd.print("%");
+    lcd.print("%    ");
   }
   lcd.setCursor(0,1); //air temp display
   if(f < airTempLowParam && !isnan(f)){
-  lcd.print("Error! AirTemp");
+  lcd.print("AirTemp is low  ");
   clear3=1;
   }
   else if(f > airTempHighParam && !isnan(f)){
-    lcd.print("Error! AirTemp");
+    lcd.print("AirTemp is high ");
     clear3=1;
   }
   else if (isnan(h) || isnan(f)) {
@@ -748,22 +755,22 @@ void displayDHT(float h, float f){
     }
   lcd.print("Air Temp ");
     lcd.print(f);
-    lcd.print("F");
+    lcd.print("F             ");
   }
 }
 
 void displaySonar(long inches){
   lcd.setCursor(0,0);//sonar display
   if(inches > sonarLowParam){
-  lcd.print("Error! The water");
+  lcd.print("Error The water ");
   lcd.setCursor(0,1);
-  lcd.print("Is too low");
+  lcd.print("Is too low      ");
   clear2=1;
   }
   else if(inches < sonarHighParam&& inches > 0){
-    lcd.print("Error! The water");
+    lcd.print("Error The water ");
   lcd.setCursor(0,1);
-  lcd.print("Is too high");
+  lcd.print("Is too high     ");
   clear2=1;
   }
   else if(inches==0){
@@ -778,7 +785,7 @@ void displaySonar(long inches){
       lcd.clear();
     }
     lcd.print(inches);
-    lcd.print(" inches");
+    lcd.print(" inches        ");
   }
 }
 
@@ -786,11 +793,11 @@ void displaySonar(long inches){
 void displayTDS(float tdsValue){
   lcd.setCursor(0,0);
   if(tdsValue<tdslowParam){
-    lcd.print("Error TDS Low");
+    lcd.print("Error TDS Low   ");
     clear2=1;
   }
   else if(tdsValue>tdshighParam){
-    lcd.print("Error TDS High");
+    lcd.print("Error TDS High  ");
     clear2=1;
   }
   else{
@@ -800,24 +807,18 @@ void displayTDS(float tdsValue){
     }
   lcd.setCursor(0,0);
   lcd.print(tdsValue);
-  lcd.print(" ppm");
+  lcd.print(" ppm          ");
   }
 }
 
 void displaypH(float ph_act){
   lcd.setCursor(0,0);
   if(ph_act<phlowParam&&ph_act>0){
-    lcd.print("Error pH Low");
+    lcd.print("Error pH is Low ");
     clear2=1;
   }
   else if(ph_act>phhighParam){
-    lcd.print("Error pH High");
-    clear2=1;
-  }
-  else if(ph_act<0){
-    lcd.print("Critical error");
-    lcd.setCursor(0,1);
-    lcd.print("Check pH Sensor");
+    lcd.print("Error pH is High");
     clear2=1;
     errorpH = 1;
   }
@@ -828,7 +829,7 @@ void displaypH(float ph_act){
     }
   lcd.setCursor(0,0);
   lcd.print(ph_act);
-  lcd.print("pH");
+  lcd.print("pH            ");
   }
 }
 
@@ -854,8 +855,15 @@ void loop(){
  float compensationCoefficient=1.0+0.02*(temperature-25.0);
  float compensationVolatge=averageVoltage/compensationCoefficient;
 tdsValue=(133.42*compensationVolatge*compensationVolatge*compensationVolatge - 255.86*compensationVolatge*compensationVolatge + 857.39*compensationVolatge)*0.5;
-
+/*
+if(tdsValue==0){
+  errorflag1=1;
 }
+else{
+  errorflag1=0;
+}*/
+}
+
  
 
   //if(counter>60&&counter<70){
@@ -868,6 +876,13 @@ tdsValue=(133.42*compensationVolatge*compensationVolatge*compensationVolatge - 2
   duration = pulseIn(echoPin, HIGH);
   cm = (duration/2) / 29.1;
   inches = (duration/2) / 74;
+  if(inches==0){
+    errorflag2=1;
+    clear2=1;
+  }
+  else{
+    errorflag2=0;
+  }
   //}
 
   if(counter>10&&counter<15){
@@ -878,9 +893,24 @@ tdsValue=(133.42*compensationVolatge*compensationVolatge*compensationVolatge - 2
     avgCount++;
   }
 
+  if (isnan(h) || isnan(f)){
+    errorflag3=1;
+    clear2=1;
+  }
+  else{
+    errorflag3=0;
+  }
+
   //if(counter>120&&counter<130){
   sensors.requestTemperatures();//Water temp
   temperatureF = sensors.getTempFByIndex(0);
+  if(temperatureF<0){
+    errorflag4=1;
+    clear2=1;
+  }
+  else{
+    errorflag4=0;
+  }
   //}
 
 //if(counter>150){
@@ -892,6 +922,13 @@ tdsValue=(133.42*compensationVolatge*compensationVolatge*compensationVolatge - 2
  ph_act = (-5.70 * volt + calibration_value);
  if(ph_act<4){
    ph_act=ph_act+1;
+ }
+  if(ph_act<0){
+   errorflag5=1;
+   clear2=1;
+ }
+ else{
+   errorflag5=0;
  }
  //}
 
@@ -907,7 +944,7 @@ tdsValue=(133.42*compensationVolatge*compensationVolatge*compensationVolatge - 2
   }
   
   float fakeAirTemp = 65 + rand() % (( 85 + 1 ) -65);
-  float fakeAirHumid = 65 + rand() % (( 85 + 1 ) -65);
+  float fakeAirHumid = 30 + rand() % (( 80 + 1 ) -30);
   float fakeWaterTemp = 65 + rand() % (( 85 + 1 ) -65);
   float fakeTDS = 65 + rand() % (( 85 + 1 ) -65);
   float fakepH = 65 + rand() % (( 85 + 1 ) -65);
@@ -966,14 +1003,6 @@ tdsValue=(133.42*compensationVolatge*compensationVolatge*compensationVolatge - 2
 
 routesLoop();
   
- 
-
-// routes();
-// Route to load data1.json file 
-
- 
-
-
 
 /*
 //counter2=0;
@@ -989,25 +1018,80 @@ if(button>5){
   button=0;
 }
 
+if(errorflag1==1||errorflag2==1||errorflag3==1||errorflag4==1||errorflag5==1){
+  errorflag=1;
+}
+else{
+  errorflag=0;
+}
+
  switch (button){
     case 0:
-      lcd.setCursor(0,0);
-      lcd.print("Hydroponics");
+      if(errorflag==1){
+        lcd.setCursor(0,0);
+        lcd.print("Critical Error  ");
+        lcd.setCursor(0,1);
+        lcd.print("Check Sensors   ");
+      }
+      if(errorflag==0){
+        lcd.setCursor(0,0);
+        lcd.print("Hydroponics     ");
+      }
       break;
     case 1:
-      displayDHT(h+h_offset,f+f_offset);
+      if(errorflag==1){
+        lcd.setCursor(0,0);
+        lcd.print("Critical Error  ");
+        lcd.setCursor(0,1);
+        lcd.print("Check Sensors   ");
+      }
+      if(errorflag==0){
+        displayDHT(h+h_offset,f+f_offset);
+      }
       break;
     case 2:
-      displayWaterTemp(temperatureF+temperatureF_offset);
+      if(errorflag==1){
+        lcd.setCursor(0,0);
+        lcd.print("Critical Error  ");
+        lcd.setCursor(0,1);
+        lcd.print("Check Sensors   ");
+      }
+      if(errorflag==0){
+        displayWaterTemp(temperatureF+temperatureF_offset);
+      }
       break;
     case 3:
-      displayTDS(tdsValue+tds_offset);
+      if(errorflag==1){
+        lcd.setCursor(0,0);
+        lcd.print("Critical Error  ");
+        lcd.setCursor(0,1);
+        lcd.print("Check Sensors   ");
+      }
+      if(errorflag==0){
+        displayTDS(tdsValue+tds_offset);
+      }
       break;
     case 4:
-      displaySonar(inches+inches_offset);
+      if(errorflag==1){
+        lcd.setCursor(0,0);
+        lcd.print("Critical Error  ");
+        lcd.setCursor(0,1);
+        lcd.print("Check Sensors   ");
+      }
+      if(errorflag==0){
+        displaySonar(inches+inches_offset);
+      }
       break;
     case 5:
-      displaypH(ph_act+ph_act_offset);
+      if(errorflag==1){
+        lcd.setCursor(0,0);
+        lcd.print("Critical Error  ");
+        lcd.setCursor(0,1);
+        lcd.print("Check Sensors   ");
+      }
+      if(errorflag==0){
+        displaypH(ph_act+ph_act_offset);
+      }
       break;
     default: break;
  }
@@ -1057,7 +1141,7 @@ if (!client.connected()) {
   */
 
   //if(sleeptime>200){
-    //esp_deep_sleep_start();/////sleep
+    //esp_deep_sleep_start();/////sleep DONT DELETE
     //sleeptime=0;
   //}
 }

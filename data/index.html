@@ -29,7 +29,7 @@
   <div class="tabs">
     <ul>
       <li><a  onclick="openTab(event, 'section2')">Graphs</a></li>
-      <li><a  onclick="openTab(event, 'section4')">Tables</a></li>
+      <li><a  onclick="openTab(event, 'section3')">Tables</a></li>
       <li><a  onclick="openTab(event, 'section8')">Configuration</a></li>
       <li><a  onclick="openTab(event, 'section1')">Home</a></li>
 
@@ -67,16 +67,20 @@
             <li ><input type="checkbox" class="checkboxesGraphs" onclick="updateGraphsDisplay();" > <label for="pH" > Live Data</label></li>
             <li><input type="checkbox" class="checkboxesGraphs" onclick="updateGraphsDisplay();"> <label for="pH" >Historical Data</label></li>
           </ul>
-        
-        
-        
+          <ul id = "NutrientLvlCheckBox1" ><input type="checkbox" onclick="selectLI(NutrientLvlCheckBox1);updateGraphsDisplay();" > <label for="nutrientlevel">Nutrient Level</label>
+            <li ><input type="checkbox" class="checkboxesGraphs" onclick="updateGraphsDisplay();" > <label for="nutrientlevel" > Live Data</label></li>
+            <li><input type="checkbox" class="checkboxesGraphs" onclick="updateGraphsDisplay();"> <label for="nutrientlevel" >Historical Data</label></li>
+          </ul>
         </section>
         <br>
-        <button onclick="selectAllCheckboxes();updateGraphsDisplay();">Select all</button>
-        <button onclick="clearAllCheckboxes();updateGraphsDisplay();">Clear all</button>
+
+        <button onclick="selectAllCheckboxes('section2');updateGraphsDisplay();">Select all</button>
+        <button onclick="clearAllCheckboxes('section2');updateGraphsDisplay();">Clear all</button>
         <section id="graphs">
-          <div class="graphElement">
-            <canvas id="airTemp" width="100" height="100"></canvas>
+          <div class="graphElement" >
+            <div class="chart-container" >
+            <canvas id="airTemp" ></canvas>
+            </div>
           </div>
 
           <div class="graphElement">
@@ -200,6 +204,49 @@
       </section>
      
       <section id="section3" class="tabcontent">
+
+        <div style="font-size: 20px;padding: 20px;color: #0F3376;">Select Tables to Display </div>
+        <br>
+       
+        <section class="checkboxContainer">
+
+          <ul id = "AirTempCheckBox2" ><input type="checkbox" onclick="selectLI(AirTempCheckBox2);updateTablesDisplay();"  > <label for="airtemp">Air Temperature</label>
+            <li><input type="checkbox" class="checkboxesGraphs" onclick="updateTablesDisplay();"> <label for="airtemp" > Live Data</label></li>
+            <li><input type="checkbox" class="checkboxesTables" onclick="updateTablesDisplay();"> <label for="airtemp" >Historical Data</label></li>
+          </ul>
+          <ul id = "AirHumidCheckBox2" ><input type="checkbox" onclick="selectLI(AirHumidCheckBox2);updateTablesDisplay();" > <label for="airhumid">Air Humidity</label>
+            <li ><input type="checkbox" class="checkboxesTables" onclick="updateTablesDisplay();" > <label for="airhumid" > Live Data</label></li>
+            <li><input type="checkbox" class="checkboxesTables" onclick="updateTablesDisplay();"> <label for="airhumid" >Historical Data</label></li>
+          </ul>
+          <ul id = "WaterTempCheckBox2" ><input type="checkbox" onclick="selectLI(WaterTempCheckBox2);updateTablesDisplay();" > <label for="watertemp">Water Temperature</label>
+            <li ><input type="checkbox" class="checkboxesTables" onclick="updateTablesDisplay();" > <label for="watertemp" > Live Data</label></li>
+            <li><input type="checkbox" class="checkboxesTables" onclick="updateTablesDisplay();"> <label for="watertemp" >Historical Data</label></li>
+          </ul>
+          <ul id = "WaterLevelCheckBox2" ><input type="checkbox" onclick="selectLI(WaterLevelCheckBox2);updateTablesDisplay();"  > <label for="waterlevel">Water Level</label>
+            <li><input type="checkbox" class="checkboxesTables" onclick="updateTablesDisplay();"> <label for="waterlevel" > Live Data</label></li>
+            <li><input type="checkbox" class="checkboxesTables" onclick="updateTablesDisplay();"> <label for="waterlevel" >Historical Data</label></li>
+          </ul>
+          <ul id = "pHCheckBox2" ><input type="checkbox" onclick="selectLI(pHCheckBox2);updateTablesDisplay();" > <label for="pH">pH</label>
+            <li ><input type="checkbox" class="checkboxesTables" onclick="updateTablesDisplay();" > <label for="pH" > Live Data</label></li>
+            <li><input type="checkbox" class="checkboxesTables" onclick="updateTablesDisplay();"> <label for="pH" >Historical Data</label></li>
+          </ul>
+          <ul id = "NutrientLvlCheckBox2" ><input type="checkbox" onclick="selectLI(NutrientLvlCheckBox2);updateTablesDisplay();" > <label for="nutrientlevel">Nutrient Level</label>
+            <li ><input type="checkbox" class="checkboxesTables" onclick="updateTablesDisplay();" > <label for="nutrientlevel" > Live Data</label></li>
+            <li><input type="checkbox" class="checkboxesTables" onclick="updateTablesDisplay();"> <label for="nutrientlevel" >Historical Data</label></li>
+          </ul>
+        </section>
+        <br>
+
+
+        <button onclick="selectAllCheckboxes('section3');updateTablesDisplay();">Select all</button>
+        <button onclick="clearAllCheckboxes('section3');updateTablesDisplay();">Clear all</button>
+
+        <section id="tables">
+          <table id="example-table">
+
+
+
+        </section>
       </section>
 
       <section id="section4" class="tabcontent">
@@ -236,6 +283,9 @@
 
 
 </body>
+<script src="tables.js" type="text/javascript"></script>
 <script src="graphs.js" type="text/javascript"></script>
+
+
 
 </html>
