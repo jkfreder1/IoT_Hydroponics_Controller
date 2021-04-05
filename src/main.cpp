@@ -102,6 +102,11 @@ int button=0;
 int counter2;
 int clear;
 
+bool errorAir = 0;
+bool errorWaterTemp = 0;
+bool errorpH = 0;
+bool errorTDS = 0;
+bool errorWaterLevel = 0;
 
 int h_offset,f_offset,ph_act_offset,inches_offset,temperatureF_offset,tds_offset;
 int h_input=32,f_input=72,ph_act_input=7,inches_input=5,temperatureF_input=67,tds_value_input=83;
@@ -159,101 +164,179 @@ hw_timer_t * timer = NULL;
 //database initialization
 StaticJsonDocument<512> doc1;
 String jsonData1 = "/data1.json";
-
 StaticJsonDocument<512> doc2;
 String jsonData2 = "/data2.json";
-
 StaticJsonDocument<512> doc3;
 String jsonData3 = "/data3.json";
-
 StaticJsonDocument<512> doc4;
 String jsonData4 = "/data4.json";
-
 StaticJsonDocument<512> doc5;
 String jsonData5 = "/data5.json";
-
+StaticJsonDocument<512> doc6;
+String jsonData6 = "/data6.json";
+StaticJsonDocument<512> timeStamp;
+String jsonTimeStamp = "/timeStamp.json";
+//daily documents
 StaticJsonDocument<1024> daily1;
 String jsonDaily1 = "/daily1.json";
-
 StaticJsonDocument<1024> daily2;
 String jsonDaily2 = "/daily2.json";
-
 StaticJsonDocument<1024> daily3;
 String jsonDaily3 = "/daily3.json";
-
 StaticJsonDocument<1024> daily4;
 String jsonDaily4 = "/daily4.json";
-
 StaticJsonDocument<1024> daily5;
 String jsonDaily5 = "/daily5.json";
-
+StaticJsonDocument<1024> daily6;
+String jsonDaily6 = "/daily6.json";
+StaticJsonDocument<1024> dailyTimeStamp;
+String jsonDailyTimeStamp = "/dailyTimeStamp.json";
+//weekly documents
 StaticJsonDocument<1024> weekly1;
+String jsonWeekly1 = "/weekly1.json";
 StaticJsonDocument<1024> weekly2;
+String jsonWeekly2 = "/weekly2.json";
 StaticJsonDocument<1024> weekly3;
+String jsonWeekly3 = "/weekly3.json";
 StaticJsonDocument<1024> weekly4;
+String jsonWeekly4 = "/weekly4.json";
 StaticJsonDocument<1024> weekly5;
-
+String jsonWeekly5 = "/weekly5.json";
+StaticJsonDocument<1024> weekly6;
+String jsonWeekly6 = "/weekly6.json";
+StaticJsonDocument<1024> weeklyTimeStamp;
+String jsonWeeklyTimeStamp = "/weeklyTimeStamp.json";
+//monthly documents
 StaticJsonDocument<1024> monthly1;
+String jsonMonthly1 = "/monthly1.json";
 StaticJsonDocument<1024> monthly2;
+String jsonMonthly2 = "/monthly2.json";
 StaticJsonDocument<1024> monthly3;
+String jsonMonthly3 = "/monthly3.json";
 StaticJsonDocument<1024> monthly4;
+String jsonMonthly4 = "/monthly4.json";
 StaticJsonDocument<1024> monthly5;
+String jsonMonthly5 = "/monthly5.json";
+StaticJsonDocument<1024> monthly6;
+String jsonMonthly6= "/monthly6.json";
+StaticJsonDocument<1024> monthlyTimeStamp;
+String jsonMonthlyTimeStamp = "/monthlyTimeStamp.json";
 
 JsonObject airTemp = doc1.to<JsonObject>();
 JsonObject airHum = doc2.to<JsonObject>();
 JsonObject waterTemp = doc3.to<JsonObject>();
 JsonObject tds = doc4.to<JsonObject>();
 JsonObject pH = doc5.to<JsonObject>();
+JsonObject waterLevel = doc6.to<JsonObject>();
+JsonObject timex = timeStamp.to<JsonObject>();
 
 JsonObject dailyAirTempAvg = daily1.to<JsonObject>();
 JsonObject dailyAirHumAvg = daily2.to<JsonObject>();
 JsonObject dailyWaterTempAvg = daily3.to<JsonObject>();
 JsonObject dailyTdsAvg = daily4.to<JsonObject>();
 JsonObject dailypHAvg = daily5.to<JsonObject>();
+JsonObject dailyWaterLevelAvg = daily6.to<JsonObject>();
+JsonObject dailyTime = dailyTimeStamp.to<JsonObject>();
+
+JsonObject weeklyAirTempAvg = weekly1.to<JsonObject>();
+JsonObject weeklyAirHumAvg = weekly2.to<JsonObject>();
+JsonObject weeklyWaterTempAvg = weekly3.to<JsonObject>();
+JsonObject weeklyTdsAvg = weekly4.to<JsonObject>();
+JsonObject weeklypHAvg = weekly5.to<JsonObject>();
+JsonObject weeklyWaterLevelAvg = weekly6.to<JsonObject>();
+JsonObject weeklyTime = weeklyTimeStamp.to<JsonObject>();
+
+JsonObject monthlyAirTempAvg = monthly1.to<JsonObject>();
+JsonObject monthlyAirHumAvg = monthly2.to<JsonObject>();
+JsonObject monthlyWaterTempAvg = monthly3.to<JsonObject>();
+JsonObject monthlyTdsAvg = monthly4.to<JsonObject>();
+JsonObject monthlypHAvg = monthly5.to<JsonObject>();
+JsonObject monthlyWaterLevelAvg = monthly6.to<JsonObject>();
+JsonObject monthlyTime = monthlyTimeStamp.to<JsonObject>();
 
 
 JsonArray data1 = airTemp.createNestedArray("air temp data");
 int airTempCount = 0;
 int totCount1 = 0;
-
 JsonArray data2 = airHum.createNestedArray("air humidity data");
 //int airHumCount = 0;
 int totCount2 = 0;
-
 JsonArray data3 = waterTemp.createNestedArray("water temp data");
 //int waterTempCount = 0;
 int totCount3 = 0;
-
 JsonArray data4 = tds.createNestedArray("tds data");
 //int tdsCount = 0;
 int totCount4 = 0;
-
-JsonArray data5 = tds.createNestedArray("dataset");
+JsonArray data5 = pH.createNestedArray("dataset");
 //int tdsCount = 0;
 int totCount5 = 0;
+JsonArray data6 = waterLevel.createNestedArray("dataset");
+//int tdsCount = 0;
+int totCount6 = 0;
 
 JsonArray dailyAirTempData = dailyAirTempAvg.createNestedArray("dataset");
 JsonArray dailyAirHumData = dailyAirHumAvg.createNestedArray("dataset");
 JsonArray dailyWaterTempData = dailyWaterTempAvg.createNestedArray("dataset");
 JsonArray dailyTdsData = dailyTdsAvg.createNestedArray("dataset");
 JsonArray dailypHData = dailypHAvg.createNestedArray("dataset");
+JsonArray dailyWaterLevelData = dailyWaterLevelAvg.createNestedArray("dataset");
+
+JsonArray weeklyAirTempData = weeklyAirTempAvg.createNestedArray("dataset");
+JsonArray weeklyAirHumData = weeklyAirHumAvg.createNestedArray("dataset");
+JsonArray weeklyWaterTempData = weeklyWaterTempAvg.createNestedArray("dataset");
+JsonArray weeklyTdsData = weeklyTdsAvg.createNestedArray("dataset");
+JsonArray weeklypHData = weeklypHAvg.createNestedArray("dataset");
+JsonArray weeklyWaterLevelData = weeklyWaterLevelAvg.createNestedArray("dataset");
+
+JsonArray monthlyAirTempData = monthlyAirTempAvg.createNestedArray("dataset");
+JsonArray monthlyAirHumData = monthlyAirHumAvg.createNestedArray("dataset");
+JsonArray monthlyWaterTempData = monthlyWaterTempAvg.createNestedArray("dataset");
+JsonArray monthlyTdsData = monthlyTdsAvg.createNestedArray("dataset");
+JsonArray monthlypHData = monthlypHAvg.createNestedArray("dataset");
+JsonArray monthlyWaterLevelData = monthlyWaterLevelAvg.createNestedArray("dataset");
 
 int dailyCount = 0;
 int weeklyCount = 0;
 int monthlyCount = 0;
+int avgCount = 1;
 
 float avgAirTemp = 0;
 float avgAirHum = 0;
 float avgWaterTemp = 0;
 float avgpH = 0;
 float avgTDS = 0;
+float avgWaterLevel = 0;
 
 float dailyAirTemp = 0;
+float dailyAirHum = 0;
+float dailyWaterTemp = 0;
+float dailypH = 0;
+float dailyTDS = 0;
+float dailyWaterLevel = 0;
 
-float calcAverage(float avg, float data){
-  avg += data;
-  avg = avg/2;
-  return avg;
+float weeklyAirTemp = 0;
+float weeklyAirHum = 0;
+float weeklyWaterTemp = 0;
+float weeklypH = 0;
+float weeklyTDS = 0;
+float weeklyWaterLevel = 0;
+
+float monthlyAirTemp = 0;
+float monthlyAirHum = 0;
+float monthlyWaterTemp = 0;
+float monthlypH = 0;
+float monthlyTDS = 0;
+float monthlyWaterLevel = 0;
+
+float calcAverage(float avg, float data, int count){
+  if (count == 1){
+    avg = data;
+    return avg;
+  }
+  else {
+    avg = avg + ((data - avg)/count);
+    return avg;
+  }
 }
 
 void printJSON(){
@@ -282,12 +365,14 @@ void store_data(float val, JsonObject root, JsonArray data, int count, String fi
   outfile.close();
 }
 
-void store_daily(JsonArray liveData, JsonArray dailyData, JsonObject root, String fileName){
+void store_daily(JsonArray liveData, JsonArray dailyData, JsonObject root, String fileName, int dataCount){
   File outfile = SPIFFS.open(fileName, "w");
-  for (int i = 0; i < 24; i++){
-    dailyAirTemp = calcAverage(dailyAirTemp, liveData[i]);
+  float tempVal = 0; 
+  int count = 1;
+  for (int i = 0; i < dataCount; i++){
+    tempVal = calcAverage(tempVal, liveData[i], count);
   }
-  dailyData.add(dailyAirTemp);
+  dailyData.add(tempVal);
   if(serializeJsonPretty(root, outfile) == 0){
     Serial.println("Failed to write to file");
   }
@@ -606,6 +691,7 @@ void displayWaterTemp(float temperatureF){
     lcd.print("Critical error");
     lcd.setCursor(0,1);
     lcd.print("Check Sensor");
+    errorWaterTemp = 1;
   }
   else{
     if(clear2==1){
@@ -653,6 +739,7 @@ void displayDHT(float h, float f){
     lcd.print("Critical error");
     lcd.setCursor(0,1);
     lcd.print("Check Sensor");
+    errorAir = 0;
   }
   else{
     if(clear3==1){
@@ -683,6 +770,7 @@ void displaySonar(long inches){
     lcd.print("Critical error");
     lcd.setCursor(0,1);
     lcd.print("Check Sensor");
+    errorWaterLevel = 1;
   }
   else{
     if(clear2==1){
@@ -731,6 +819,7 @@ void displaypH(float ph_act){
     lcd.setCursor(0,1);
     lcd.print("Check pH Sensor");
     clear2=1;
+    errorpH = 1;
   }
   else{
     if(clear2==1){
@@ -783,9 +872,10 @@ tdsValue=(133.42*compensationVolatge*compensationVolatge*compensationVolatge - 2
 
   if(counter>10&&counter<15){
     h = dht.readHumidity();//DHT temp humid
-    avgAirHum = calcAverage(avgAirHum, h);
+    avgAirHum = calcAverage(avgAirHum, h, avgCount);
     f = dht.readTemperature(true);
-    avgAirTemp = calcAverage(avgAirTemp, f);
+    avgAirTemp = calcAverage(avgAirTemp, f, avgCount);
+    avgCount++;
   }
 
   //if(counter>120&&counter<130){
@@ -811,8 +901,8 @@ tdsValue=(133.42*compensationVolatge*compensationVolatge*compensationVolatge - 2
  }
 
   //store live and historical data
- if(totCount1 > 5){
-  if(airTempCount == 5){
+ if(totCount1 > 2){
+  if(airTempCount == 24){
     airTempCount = 0;
   }
   
@@ -820,30 +910,59 @@ tdsValue=(133.42*compensationVolatge*compensationVolatge*compensationVolatge - 2
   float fakeAirHumid = 65 + rand() % (( 85 + 1 ) -65);
   float fakeWaterTemp = 65 + rand() % (( 85 + 1 ) -65);
   float fakeTDS = 65 + rand() % (( 85 + 1 ) -65);
+  float fakepH = 65 + rand() % (( 85 + 1 ) -65);
+  float fakeWaterLevel = 65 + rand() % (( 85 + 1 ) -65);
 
   store_data(fakeAirTemp, airTemp, data1, airTempCount, jsonData1);
   store_data(fakeAirHumid, airHum, data2, airTempCount, jsonData2);
   store_data(fakeWaterTemp, waterTemp, data3, airTempCount, jsonData3);
   store_data(fakeTDS, tds, data4, airTempCount, jsonData4);
+  store_data(fakepH, pH, data5, airTempCount, jsonData5);
+  store_data(fakeWaterLevel, waterLevel, data6, airTempCount, jsonData6);
   airTempCount++;
   totCount1 = 0;
+  avgCount = 1;
   serializeJsonPretty(doc2, Serial);
   //printJSON();
   dailyCount++;
-  weeklyCount++;
-  monthlyCount++;
+  //weeklyCount++;
+  //monthlyCount++;
  }
 
  if(dailyCount == 24){
-   //store_daily(data1, dailyAirTempData, dailyAirTempAvg, jsonDaily1);
-   store_daily(data2, dailyAirHumData, dailyAirHumAvg, jsonDaily2);
-   store_daily(data3, dailyWaterTempData, dailyWaterTempAvg, jsonDaily3);
-   store_daily(data4, dailyTdsData, dailyTdsAvg, jsonDaily4);
-   store_daily(data5, dailypHData, dailypHAvg, jsonDaily5);
+   store_daily(data1, dailyAirTempData, dailyAirTempAvg, jsonDaily1, 24);
+   store_daily(data2, dailyAirHumData, dailyAirHumAvg, jsonDaily2, 24);
+   store_daily(data3, dailyWaterTempData, dailyWaterTempAvg, jsonDaily3, 24);
+   store_daily(data4, dailyTdsData, dailyTdsAvg, jsonDaily4, 24);
+   store_daily(data5, dailypHData, dailypHAvg, jsonDaily5, 24);
+   store_daily(data6, dailyWaterLevelData, dailyWaterLevelAvg, jsonDaily6, 24);
    serializeJsonPretty(daily1, Serial);
    serializeJsonPretty(daily2, Serial);
    dailyCount = 0;
+   weeklyCount++;
  }
+
+ if(weeklyCount == 7){
+   store_daily(dailyAirTempData, weeklyAirTempData, weeklyAirTempAvg, jsonWeekly1, 7);
+   store_daily(dailyAirHumData, weeklyAirHumData, weeklyAirHumAvg, jsonWeekly2, 7);
+   store_daily(dailyWaterTempData, weeklyWaterTempData, weeklyWaterTempAvg, jsonWeekly3, 7);
+   store_daily(dailyTdsData, weeklyTdsData, weeklyTdsAvg, jsonWeekly4, 7);
+   store_daily(dailypHData, weeklypHData, weeklypHAvg, jsonWeekly5, 7);
+   store_daily(dailyWaterLevelData, weeklyWaterLevelData, weeklyWaterLevelAvg, jsonWeekly6, 7);
+   weeklyCount = 0;
+   monthlyCount++;
+ }
+
+ if(monthlyCount == 4){
+   store_daily(weeklyAirTempData, monthlyAirTempData, monthlyAirTempAvg, jsonMonthly1, 4);
+   store_daily(weeklyAirHumData, monthlyAirHumData, monthlyAirHumAvg, jsonMonthly2, 4);
+   store_daily(weeklyWaterTempData, monthlyWaterTempData, monthlyWaterTempAvg, jsonMonthly3, 4);
+   store_daily(weeklyTdsData, monthlyTdsData, monthlyTdsAvg, jsonMonthly4, 4);
+   store_daily(weeklypHData, monthlypHData, monthlypHAvg, jsonMonthly5, 4);
+   store_daily(weeklyWaterLevelData, monthlyWaterLevelData, monthlyWaterLevelAvg, jsonMonthly6, 4);
+   monthlyCount = 0;
+ }
+
 
 routesLoop();
   
