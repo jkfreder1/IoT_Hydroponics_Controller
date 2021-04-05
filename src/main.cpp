@@ -212,19 +212,19 @@ JsonObject dailyTdsAvg = daily4.to<JsonObject>();
 JsonObject dailypHAvg = daily5.to<JsonObject>();
 
 
-JsonArray data1 = airTemp.createNestedArray("air temp data");
+JsonArray data1 = airTemp.createNestedArray("dataset");
 int airTempCount = 0;
 int totCount1 = 0;
 
-JsonArray data2 = airHum.createNestedArray("air humidity data");
+JsonArray data2 = airHum.createNestedArray("dataset");
 //int airHumCount = 0;
 int totCount2 = 0;
 
-JsonArray data3 = waterTemp.createNestedArray("water temp data");
+JsonArray data3 = waterTemp.createNestedArray("dataset");
 //int waterTempCount = 0;
 int totCount3 = 0;
 
-JsonArray data4 = tds.createNestedArray("tds data");
+JsonArray data4 = tds.createNestedArray("dataset");
 //int tdsCount = 0;
 int totCount4 = 0;
 
@@ -396,6 +396,20 @@ String processor(const String& var){
     request->send(SPIFFS, "/script.js", "text/javascript");
   });
 
+  // Route to load script.js file
+  server.on("/graphs.js", HTTP_GET, [](AsyncWebServerRequest *request){
+    if(!request->authenticate(http_username, http_password))
+      return request->requestAuthentication();
+    request->send(SPIFFS, "/graphs.js", "text/javascript");
+  });
+
+  // Route to load script.js file
+  server.on("/tables.js", HTTP_GET, [](AsyncWebServerRequest *request){
+    if(!request->authenticate(http_username, http_password))
+      return request->requestAuthentication();
+    request->send(SPIFFS, "/tables.js", "text/javascript");
+  });
+
 
   // Route to load data.json file 
   server.on("/data.json", HTTP_GET, [](AsyncWebServerRequest *request){
@@ -407,20 +421,7 @@ String processor(const String& var){
 
 
 
-  // Route to set GPIO to HIGH
-  server.on("/on", HTTP_GET, [](AsyncWebServerRequest *request){
-    if(!request->authenticate(http_username, http_password))
-      return request->requestAuthentication();
-    digitalWrite(ledPin, HIGH);    
-    request->send(SPIFFS, "/index.html", String(), false, processor);
-  });
-  // Route to set GPIO to LOW
-  server.on("/off", HTTP_GET, [](AsyncWebServerRequest *request){
-    if(!request->authenticate(http_username, http_password))
-      return request->requestAuthentication();
-    digitalWrite(ledPin, LOW);    
-    request->send(SPIFFS, "/index.html", String(), false, processor);
-  });
+  
   server.on("/logout", HTTP_GET, [](AsyncWebServerRequest *request){
   request->send(401);
   });
@@ -546,22 +547,22 @@ void setup(){
   esp_sleep_enable_ext0_wakeup(GPIO_NUM_15,1);
   */
   
-  /*
+  
   AsyncWiFiManager wifiManager(&server,&dns);
   wifiManager.autoConnect("AutoConnectAP");
     Serial.println("connected...yeey :)");
-*/
+
   
   if(!SPIFFS.begin(true)){
     Serial.println("An Error has occurred while mounting SPIFFS");
     return;
   }
 
-  /*
+  
   Serial.println(WiFi.localIP());
   routes();
   server.begin();
-  */
+  
   
 }
 void reconnect() {
@@ -817,9 +818,9 @@ tdsValue=(133.42*compensationVolatge*compensationVolatge*compensationVolatge - 2
   }
   
   float fakeAirTemp = 65 + rand() % (( 85 + 1 ) -65);
-  float fakeAirHumid = 65 + rand() % (( 85 + 1 ) -65);
+  float fakeAirHumid = 30 + rand() % (( 80 + 1 ) -30);
   float fakeWaterTemp = 65 + rand() % (( 85 + 1 ) -65);
-  float fakeTDS = 65 + rand() % (( 85 + 1 ) -65);
+  float fakeTDS = 500  + rand() % (( 700 + 1 ) - 500);
 
   store_data(fakeAirTemp, airTemp, data1, airTempCount, jsonData1);
   store_data(fakeAirHumid, airHum, data2, airTempCount, jsonData2);
@@ -835,7 +836,7 @@ tdsValue=(133.42*compensationVolatge*compensationVolatge*compensationVolatge - 2
  }
 
  if(dailyCount == 24){
-   //store_daily(data1, dailyAirTempData, dailyAirTempAvg, jsonDaily1);
+   store_daily(data1, dailyAirTempData, dailyAirTempAvg, jsonDaily1);
    store_daily(data2, dailyAirHumData, dailyAirHumAvg, jsonDaily2);
    store_daily(data3, dailyWaterTempData, dailyWaterTempAvg, jsonDaily3);
    store_daily(data4, dailyTdsData, dailyTdsAvg, jsonDaily4);
@@ -847,14 +848,6 @@ tdsValue=(133.42*compensationVolatge*compensationVolatge*compensationVolatge - 2
 
 routesLoop();
   
- 
-
-// routes();
-// Route to load data1.json file 
-
- 
-
-
 
 /*
 //counter2=0;

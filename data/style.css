@@ -54,14 +54,21 @@ button {
   
 }
 
+.chart-container{
+  position:relative; width:500px; height:600px; right: 10px; top: 40px;
+  
+ 
+} 
+
+/*
 canvas{
-  max-width:80%;
-  align-self: center;
 
-min-height:80%;
-}
+  align-self: left;
 
+  
+} 
 
+*/
 
 
 .graphs {

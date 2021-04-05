@@ -5,16 +5,16 @@ function logoutButton() {
   setTimeout(function(){ window.open("/logged-out","_self"); }, 1000);
 }
 
-function selectAllCheckboxes(){
+function selectAllCheckboxes(section){
   
-  checkboxes = document.getElementsByClassName('checkboxContainer')[0].getElementsByTagName('input');
+  checkboxes = document.getElementById(section).getElementsByClassName('checkboxContainer')[0].getElementsByTagName('input');
   for (var i = 0; i < checkboxes.length; i++) {
     checkboxes[i].checked = true;
   }
 }
 
-function clearAllCheckboxes(){
-  checkboxes = document.getElementsByClassName('checkboxContainer')[0].getElementsByTagName('input')
+function clearAllCheckboxes(section){
+  checkboxes = document.getElementById(section).getElementsByClassName('checkboxContainer')[0].getElementsByTagName('input')
   for (var i = 0; i < checkboxes.length; i++) {
     checkboxes[i].checked = false;
   }
@@ -44,6 +44,22 @@ function updateGraphsDisplay() {
     graphs[i].style.display = 'none';
 
   }
+  console.log(checkboxes);  
+}
+
+function updateTablesDisplay() {
+  checkboxes = document.getElementsByClassName('checkboxesTables');
+  /*
+  graphs = document.getElementsByClassName("graphElement");
+
+  for(i=0; i<checkboxes.length; i++){
+    if(checkboxes[i].checked == true)
+    graphs[i].style.display = 'block';
+    else
+    graphs[i].style.display = 'none';
+
+  }
+  */
   console.log(checkboxes);  
 }
 
@@ -106,216 +122,8 @@ function openTab(evt, tabSection, tabName) {
 }
 
 window.onload = (event) => {
-}
-
-/*
-function renderChart(tabName){
-
-  // initialize variables 
-  var chartTitleL = "blank";
-  var yAxisL = "blank";
-  var xAxisL = "time";
-  var jsonFileL = "/test.json";
-  var chartTitleH = "blank";
-  var yAxisH = "blank";
-  var xAxisH = "Day";
-  var jsonFileH = "/test.json";
-  
-  // set variables to correct lables dependent on section the page is in
-  switch(tabName) {
-    case "section2":
-      chartTitleL = "Live Air Temperature";
-      yAxisL = "Fahrenheit";
-      jsonFileL = "/data1.json";
-      chartTitleH = "Daily Air Temperature Averages";
-      yAxisH = "Fahrenheit";
-      jsonFileH = "/daily1.json";
-      break;
-    case "section3":
-      chartTitleL = "Live Air Humidity";
-      yAxisL = "%";
-      jsonFileL = "/data2.json";
-      chartTitleH = "Daily Air Humidity Averages";
-      yAxisH = "%";
-      jsonFileH = "/daily2.json";
-      break;
-    default:
-      // code block
-  }
-  
-  // initialize data arrays
-  var dataPointsL = [];
-  var dataPointsH =  [];
-  
-  
-  var chartL = new CanvasJS.Chart("chartContainerL", {
-    height: 360,
-
-    animationEnabled: true,
-    theme: "light2",
-    title: {
-      text: chartTitleL
-    },
-    axisY: {
-      title: yAxisL,
-      titleFontSize: 24,
-    },
-    axisX: {
-      title: xAxisL
-    },
-    data: [{
-      type: "line",
-      //yValueFormatString: "#,### Units",
-      dataPoints: dataPointsL
-    }]
-   });
-
-  
-   var chartH = new CanvasJS.Chart("chartContainerH", {
-    height: 360,
-
-    animationEnabled: true,
-    theme: "light2",
-    title: {
-      text: chartTitleH
-    },
-    axisY: {
-      title: yAxisH,
-      titleFontSize: 24,
-    },
-    axisX: {
-      title: xAxisH
-    },
-    data: [{
-      type: "line",
-      //yValueFormatString: "#,### Units",
-      dataPoints: dataPointsH
-    }]
-   });
-
-  
-   function addDataL(data) {
-    dataPointsL.length = 0;
-    for (var i = 0; i < data.dataset.length; i++) {
-      dataPointsL.push({
-        x: i,
-        y: data.dataset[i],
-      });
-    }
-    chartL.render();
-   }
-  
-   function addDataH(data) {
-
-    dataPointsH.length = 0;
-    for (var i = 0; i < data.dataset.length; i++) {
-      dataPointsH.push({
-        x: i,
-        y: data.dataset[i],
-      });
-    }
-    chartH.render();
-   }
-  
-   setInterval(function ( ){ 
-    let xhttpL = new XMLHttpRequest();
-    xhttpL.onreadystatechange = function() {
-     if (this.readyState == 4 && this.status == 200) {
-        var myArrL = JSON.parse(this.responseText);
-        addDataL(myArrL);
-      }
-    };
-    xhttpL.open("GET", jsonFileL, true);
-    xhttpL.send();
-   }, 5000 ) ;
-  
-   setInterval(function ( ){ 
-
-    let xhttpH = new XMLHttpRequest();
-    xhttpH.onreadystatechange = function() {
-     if (this.readyState == 4 && this.status == 200) {
-        var myArrH = JSON.parse(this.responseText);
-        addDataH(myArrH);
-      }
-    };
-    xhttpH.open("GET", jsonFileH, true);
-    if(dataPointsL.length>4)
-      xhttpH.send();
-   }, 5000 ) ;
-   
-
-  }
-  
-  
-  
-  
- 
-*/
-
-
-
-
-/*
-var tableData = [
-  {id:1, name:"Billy Bob", age:"12", gender:"male", height:1, col:"red", dob:"", cheese: 1},
-]
-
-var table = new Tabulator("#example-table", {
-  data:tableData, //set initial table data
-
-  columns:[
-      {title:"Name", field:"name"},
-      {title:"Age", field:"age"},
-      {title:"Gender", field:"gender"},
-      {title:"Height", field:"height"},
-      {title:"Favourite Color", field:"col"},
-      {title:"Date Of Birth", field:"dob"},
-      {title:"Cheese Preference", field:"cheese"},
-  ],
-});
-*/
-/*
-window.onload = function() {
-  var dataPoints = [];
-  
-  var chart = new CanvasJS.Chart("chartContainer", {
- animationEnabled: true,
- theme: "light2",
- title: {
-   text: "Line Chart"
- },
- axisY: {
-   title: "Measurement",
-   titleFontSize: 24,
- },
- data: [{
-   type: "line",
-   //yValueFormatString: "#,### Units",
-   dataPoints: dataPoints
- }]
-});
-
-
-function addData(data) {
- for (var i = 0; i < data.dataset.length; i++) {
-   dataPoints.push({
-     x: data.dataset[i],
-     y: i,
-   });
- }
- chart.render();
 
 }
 
-setInterval(function ( ){ 
- var xhttp = new XMLHttpRequest();
- xhttp.onreadystatechange = function() {
-  if (this.readyState == 4 && this.status == 200) {
-     var myArr = JSON.parse(this.responseText);
-     //addData(myArr);
-   }
- };
- xhttp.open("GET", "/test.json", true);
- xhttp.send();
-}, 800 ) ;
-*/
+
+
