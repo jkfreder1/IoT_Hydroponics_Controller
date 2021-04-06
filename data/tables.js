@@ -1,22 +1,84 @@
-var liveColumns = [
-    {title:"Date", field:"date"},
-    {title:"Temperature", field: "dataset"}
-]
+
+
+//define array of table data
 var tableData = [
-    {id:1, name:"Billy Bob", age:"12", gender:"male", height:1, col:"red", dob:"", cheese:1},
-    {id:2, name:"Mary May", age:"1", gender:"female", height:2, col:"blue", dob:"14/05/1982", cheese:true},
+    {date: 1}
+]
+var test = [
+    {date: 2, dataset: 2}
 ]
 
+//create table and assign data
+var table = new Tabulator("#example-table", {
+    reactiveData:true, //enable reactive data
+    data:tableData, //assign data array
+    layout:"fitDataTable",
 
-var tableAirTemp = new Tabulator("#example-table", {
-    data:tableData,
     columns:[
-        {title:"Date", field:"date"},
-        {title:"Temperature", field: "dataset"}
-    ],
+          {title:"Date", field:"time"},
+          {title:"Temperature", field:"dataset"},
+          
+    ]
+});
+
+var airTempTable = new Tabulator("#airTempT", {
+    reactiveData:true, //enable reactive data
+    data:tableData, //assign data array
+    layout:"fitDataTable",
+
+    columns:[
+          {title:"Date", field:"time"},
+          {title:"Temperature", field:"dataset"},
+          
+    ]
+});
+var airTempDailyTable = new Tabulator("#airTempDailyT", {
+    reactiveData:true, //enable reactive data
+    data:tableData, //assign data array
+    layout:"fitDataTable",
+
+    columns:[
+          {title:"Date", field:"time"},
+          {title:"Temperature", field:"dataset"},
+          
+    ]
+});
+
+var airTempWeeklyTable = new Tabulator("#airTempWeeklyT", {
+    reactiveData:true, //enable reactive data
+    data:tableData, //assign data array
+    layout:"fitDataTable",
+
+    columns:[
+          {title:"Date", field:"time"},
+          {title:"Temperature", field:"dataset"},
+          
+    ]
+});
+
+var airTempMonthlyTable = new Tabulator("#airTempMonthlyT", {
+    reactiveData:true, //enable reactive data
+    data:tableData, //assign data array
+    layout:"fitDataTable",
+
+    columns:[
+          {title:"Date", field:"time"},
+          {title:"Temperature", field:"dataset"},
+          
+    ]
 });
 
 
-function addTableData(table, data) {
-    table.setData(data);
+
+
+function addTableData(table, data,timestamps) {
+    var newData = [];
+    var row = {};
+    for (var i = 0; i < data.dataset.length; i++) {
+        row['time'] = timestamps[i];
+        row['dataset'] = data.dataset[i];
+        newData.push(row);
+     }
+    table.setData(newData);
 }
+

@@ -237,49 +237,148 @@
         </section>
         <br>
 
-
         <button onclick="selectAllCheckboxes('section3');updateTablesDisplay();">Select all</button>
-        <button onclick="clearAllCheckboxes('section3');updateTablesDisplay();">Clear all</button>
+        <button onclick="clearAllCheckboxes('section3');updateTablesDisplay();">Clear all</button> <br>
 
         <section id="tables">
-          <table id="example-table">
+          <div class="tableElement" >
+            <div id="airTempT"></div>
+          </div>
 
+          <div class="tableElement">
+            <label for="airTempHistoryT">Choose a Historical Table:</label>
+            <select name="airTempHistoryT" id="airTempHistoryDropdownT" onchange="showHistoricalTable(event,this.value,this.name)">
+              <option value=""> Please select Table</option>
+              <option value="airTempDailyT" >Daily Averages</option>
+              <option value="airTempWeeklyT" >Weekly Averages</option>
+              <option value="airTempMonthlyT" >Monthly Averages</option>
+            </select>
 
+            <div id="airTempHistoryT" class="historyTables">
+              <div id="airTempDailyT"></div>
+              <div id="airTempWeeklyT"></div>
+              <div id="airTempMonthlyT"></div>
+            </div>
+          </div>
+          
+          <div class="tableElement">
+            <div id="airHumidityT"></div>
+          </div>
 
+          <div class="tableElement">
+          <label for="airHumidityHistoryT">Choose a Historical Graph:</label>
+          <select name="airHumidityHistoryT" id="airHumidityHistoryDropdownT" onchange="showHistoricalTable(event,this.value,this.name)">
+            <option value=""> Please select Table</option>
+            <option value="airHumidityDailyT" >Daily Averages</option>
+            <option value="airHumidityWeeklyT" >Weekly Averages</option>
+            <option value="airHumidityMonthlyT" >Monthly Averages</option>
+          </select>
+
+          <div id="airHumidityHistoryT" class="historyTables">
+            <div id="airHumidityDailyT"></div>
+            <div id="airHumidityWeeklyT"></div>
+            <div id="airHumidityMonthlyT"></div>
+          </div>
+          </div>
+
+          <div class="tableElement">
+            <div id="waterTempT"></div>
+          </div>
+
+          <div class="tableElement">
+          <label for="waterTempHistoryT">Choose a Historical Graph:</label>
+          <select name="waterTempHistoryT" id="waterTempHistoryDropdownT" onchange="showHistoricalTable(event,this.value,this.name)">
+            <option value=""> Please select Table</option>
+            <option value="waterTempDailyT" >Daily Averages</option>
+            <option value="waterTempWeeklyT" >Weekly Averages</option>
+            <option value="waterTempMonthlyT" >Monthly Averages</option>
+          </select>
+
+          <div id="waterTempHistoryT" class="historyTables">
+            <div id="waterTempDailyT"></div>
+            <div id="waterTempWeeklyT"></div>
+            <div id="waterTempMonthlyT"></div>
+          </div>
+          </div>
+
+          <div class="tableElement">
+            <div id="waterLvlT"></div>
+          </div>
+
+          <div class="tableElement">
+          <label for="waterLvlHistoryT">Choose a Historical Graph:</label>
+          <select name="waterLvlHistoryT" id="waterLvlHistoryDropdownT" onchange="showHistoricalTable(event,this.value,this.name)">
+            <option value=""> Please select Table</option>
+            <option value="waterLvlDailyT" >Daily Averages</option>
+            <option value="waterLvlWeeklyT" >Weekly Averages</option>
+            <option value="waterLvlMonthlyT" >Monthly Averages</option>
+          </select>
+
+          <div id="waterLvlHistoryT" class="historyTables">
+            <div id="waterLvlDailyT"></div>
+            <div id="waterLvlWeeklyT"></div>
+            <div id="waterLvlMonthlyT"></div>
+          </div>
+          </div>
+
+          <div class="tableElement">
+            <div id="pHT"></div>
+          </div>
+
+          <div class="tableElement">
+          <label for="pHHistoryT">Choose a Historical Graph:</label>
+          <select name="pHHistoryT" id="pHHistoryDropdownT" onchange="showHistoricalTable(event,this.value,this.name)">
+            <option value=""> Please select Table</option>
+            <option value="pHDailyT" >Daily Averages</option>
+            <option value="pHWeeklyT" >Weekly Averages</option>
+            <option value="pHMonthlyT" >Monthly Averages</option>
+          </select>
+
+          <div id="pHHistoryT" class="historyTables">
+            <div id="pHDailyT"></div>
+            <div id="pHWeeklyT"></div>
+            <div id="pHMonthlyT"></div>
+          </div>
+          </div>
+
+          <div class="tableElement">
+            <div id="nutrientLvlT"></div>
+          </div>
+
+          <div class="tableElement">
+          <label for="nutrientLvlHistoryT">Choose a Historical Graph:</label>
+          <select name="nutrientLvlHistoryT" id="nutrientLvlHistoryDropdownT" onchange="showHistoricalTable(event,this.value,this.name)">
+            <option value=""> Please select Table</option>
+            <option value="nutrientLvlDailyT" >Daily Averages</option>
+            <option value="nutrientLvlWeeklyT" >Weekly Averages</option>
+            <option value="nutrientLvlMonthlyT" >Monthly Averages</option>
+          </select>
+
+          <div id="nutrientLvlHistoryT" class="historyTables">
+            <div id="nutrientLvlDailyT"></div>
+            <div id="nutrientLvlWeeklyT"></div>
+            <div id="nutrientLvlMonthlyT"></div>
+          </div>
+          </div>
+
+        
         </section>
-      </section>
 
-      <section id="section4" class="tabcontent">
-        <h2>Section 4</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Perspiciatis, ullam natus tenetur molestiae commodi nesciunt, neque adipisci alias nostrum saepe inventore magnam. Molestias laboriosam, tempora quidem assumenda harum. Numquam, delectus.</p>
-      </section>    
- 
-      <section id="section5" class="tabcontent">
-        <h2>Section 5</h2>
 
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Perspiciatis, ullam natus tenetur molestiae commodi nesciunt, neque adipisci alias nostrum saepe inventore magnam. Molestias laboriosam, tempora quidem assumenda harum. Numquam, delectus.</p>
       </section>
-      <section id="section6" class="tabcontent">
-        <h2>Section 6</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Perspiciatis, ullam natus tenetur molestiae commodi nesciunt, neque adipisci alias nostrum saepe inventore magnam. Molestias laboriosam, tempora quidem assumenda harum. Numquam, delectus.</p>
-      </section>
-      <section id="section7" class="tabcontent">
-        <h2>Section 7</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Perspiciatis, ullam natus tenetur molestiae commodi nesciunt, neque adipisci alias nostrum saepe inventore magnam. Molestias laboriosam, tempora quidem assumenda harum. Numquam, delectus.</p>
-      </section>
+      <div id="example-table"></div><br>
+
+      
       <section id="section8" class="tabcontent">
         <h2>Section 8</h2>
         <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Perspiciatis, ullam natus tenetur molestiae commodi nesciunt, neque adipisci alias nostrum saepe inventore magnam. Molestias laboriosam, tempora quidem assumenda harum. Numquam, delectus.</p>
       </section>
-      <section id="section9" class="tabcontent">
-        <h2>Section 9</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Perspiciatis, ullam natus tenetur molestiae commodi nesciunt, neque adipisci alias nostrum saepe inventore magnam. Molestias laboriosam, tempora quidem assumenda harum. Numquam, delectus.</p>
-      </section>
+      
     
 
       
   <button onclick="logoutButton()">Logout</button>
-  
+
 
 
 </body>
