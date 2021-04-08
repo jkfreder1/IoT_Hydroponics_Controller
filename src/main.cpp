@@ -15,6 +15,7 @@
 #include <stdlib.h>
 #include <ArduinoJson.h>
 #include <PubSubClient.h>
+#include "time.h"
 using namespace std;
 deque<int> intd;
 deque<int> inta;
@@ -50,8 +51,8 @@ int counter=0;
 // Add your MQTT Broker IP address, example:
 //const char* mqtt_server = "192.168.1.144";
 //mqtt credentials
-const char* ssid = "ATT9JNx4NI";
-const char* password = "6fzv98tb2x?5";
+const char* ssid = "Clairvoyant";
+const char* password = "PaLe1SaRacHer";
 const char* mqttServer = "192.168.1.66";
 const int mqttPort = 1883;
 const char* mqttUser = "user";
@@ -328,6 +329,49 @@ float monthlypH = 0;
 float monthlyTDS = 0;
 float monthlyWaterLevel = 0;
 
+int dailyArray = 0;
+int weeklyArray = 0;
+int monthlyArray = 0;
+
+const char* ntpServer = "pool.ntp.org";
+
+void printLocalTime(){
+  struct tm timeinfo;
+  if(!getLocalTime(&timeinfo)){
+    Serial.println("Failed to obtain time");
+    return;
+  }
+  Serial.println(&timeinfo, "%A, %B %d %Y %H:%M:%S");
+  /*
+  Serial.print("Day of week: ");
+  Serial.println(&timeinfo, "%A");
+  Serial.print("Month: ");
+  Serial.println(&timeinfo, "%B");
+  Serial.print("Day of Month: ");
+  Serial.println(&timeinfo, "%d");
+  Serial.print("Year: ");
+  Serial.println(&timeinfo, "%Y");
+  Serial.print("Hour: ");
+  Serial.println(&timeinfo, "%H");
+  Serial.print("Hour (12 hour format): ");
+  Serial.println(&timeinfo, "%I");
+  Serial.print("Minute: ");
+  Serial.println(&timeinfo, "%M");
+  Serial.print("Second: ");
+  Serial.println(&timeinfo, "%S");
+  
+
+  Serial.println("Time variables");
+  char timeHour[3];
+  strftime(timeHour,3, "%H", &timeinfo);
+  Serial.println(timeHour);
+  char timeWeekDay[10];
+  strftime(timeWeekDay,10, "%A", &timeinfo);
+  Serial.println(timeWeekDay);
+  Serial.println();
+  */
+}
+
 float calcAverage(float avg, float data, int count){
   if (count == 1){
     avg = data;
@@ -365,14 +409,15 @@ void store_data(float val, JsonObject root, JsonArray data, int count, String fi
   outfile.close();
 }
 
-void store_daily(JsonArray liveData, JsonArray dailyData, JsonObject root, String fileName, int dataCount){
+void store_daily(JsonArray liveData, JsonArray dailyData, JsonObject root, String fileName, int dataCount, int arrayCount){
   File outfile = SPIFFS.open(fileName, "w");
   float tempVal = 0; 
   int count = 1;
   for (int i = 0; i < dataCount; i++){
     tempVal = calcAverage(tempVal, liveData[i], count);
   }
-  dailyData.add(tempVal);
+  dailyData[arrayCount] = tempVal;
+  //dailyData.add(tempVal);
   if(serializeJsonPretty(root, outfile) == 0){
     Serial.println("Failed to write to file");
   }
@@ -596,7 +641,6 @@ String processor(const String& var){
 void setup(){
   Serial.begin (115200);
   Serial.print("it is starting");
-  //setup_wifi();
   /*
   client.setServer(mqttServer, mqttPort);
   client.setCallback(callback);
@@ -643,10 +687,34 @@ void setup(){
     return;
   }
 
+  store_data(0, dailyAirTempAvg, dailyAirTempData, 0, jsonDaily1);
+  store_data(0, dailyAirHumAvg, dailyAirHumData, 0, jsonDaily2);
+  store_data(0, dailyWaterTempAvg, dailyWaterTempData, 0, jsonDaily3);
+  store_data(0, dailyTdsAvg, dailyTdsData, 0, jsonDaily4);
+  store_data(0, dailypHAvg, dailypHData, 0, jsonDaily5);
+  store_data(0, dailyWaterLevelAvg, dailyWaterLevelData, 0, jsonDaily6);
+
+  store_data(0, weeklyAirTempAvg, weeklyAirTempData, 0, jsonWeekly1);
+  store_data(0, weeklyAirHumAvg, weeklyAirHumData, 0, jsonWeekly2);
+  store_data(0, weeklyWaterTempAvg, weeklyWaterTempData, 0, jsonWeekly3);
+  store_data(0, weeklyTdsAvg, weeklyTdsData, 0, jsonWeekly4);
+  store_data(0, weeklypHAvg, weeklypHData, 0, jsonWeekly5);
+  store_data(0, weeklyWaterLevelAvg, weeklyWaterLevelData, 0, jsonWeekly6);
+
+  store_data(0, monthlyAirTempAvg, monthlyAirTempData, 0, jsonMonthly1);
+  store_data(0, monthlyAirHumAvg, monthlyAirHumData, 0, jsonMonthly2);
+  store_data(0, monthlyWaterTempAvg, monthlyWaterTempData, 0, jsonMonthly3);
+  store_data(0, monthlyTdsAvg, monthlyTdsData, 0, jsonMonthly4);
+  store_data(0, monthlypHAvg, monthlypHData, 0, jsonMonthly5);
+  store_data(0, monthlyWaterLevelAvg, monthlyWaterLevelData, 0, jsonMonthly6);
+
   
   Serial.println(WiFi.localIP());
   routes();
   server.begin();
+
+  //configTime(0, 0, ntpServer);
+  //printLocalTime();
   
   
 }
@@ -885,13 +953,10 @@ else{
   }
   //}
 
-  if(counter>10&&counter<15){
+  //if(counter>10&&counter<15){
     h = dht.readHumidity();//DHT temp humid
-    avgAirHum = calcAverage(avgAirHum, h, avgCount);
     f = dht.readTemperature(true);
-    avgAirTemp = calcAverage(avgAirTemp, f, avgCount);
-    avgCount++;
-  }
+  //}
 
   if (isnan(h) || isnan(f)){
     errorflag3=1;
@@ -931,10 +996,23 @@ else{
    errorflag5=0;
  }
  //}
+ if(counter>10&&counter<15){ //take averages for all sensors
+  avgAirTemp = calcAverage(avgAirTemp, f, avgCount);
+  avgAirHum = calcAverage(avgAirHum, h, avgCount);
+  avgWaterLevel = calcAverage(avgWaterLevel, inches, avgCount);
+  avgpH = calcAverage(avgpH, ph_act, avgCount);
+  avgWaterTemp = calcAverage(avgWaterTemp, temperatureF, avgCount);
+  avgTDS = calcAverage(avgTDS, tdsValue, avgCount);
+  avgCount++;
+ }
 
  if(counter>15){
  counter=0;
  totCount1++;
+ }
+
+ if(totCount1 > 5){
+   totCount2++;
  }
 
   //store live and historical data
@@ -967,12 +1045,16 @@ else{
  }
 
  if(dailyCount == 24){
-   store_daily(data1, dailyAirTempData, dailyAirTempAvg, jsonDaily1, 24);
-   store_daily(data2, dailyAirHumData, dailyAirHumAvg, jsonDaily2, 24);
-   store_daily(data3, dailyWaterTempData, dailyWaterTempAvg, jsonDaily3, 24);
-   store_daily(data4, dailyTdsData, dailyTdsAvg, jsonDaily4, 24);
-   store_daily(data5, dailypHData, dailypHAvg, jsonDaily5, 24);
-   store_daily(data6, dailyWaterLevelData, dailyWaterLevelAvg, jsonDaily6, 24);
+   if(dailyArray == 24){
+     dailyArray = 0;
+   }
+   store_daily(data1, dailyAirTempData, dailyAirTempAvg, jsonDaily1, 24, dailyArray);
+   store_daily(data2, dailyAirHumData, dailyAirHumAvg, jsonDaily2, 24, dailyArray);
+   store_daily(data3, dailyWaterTempData, dailyWaterTempAvg, jsonDaily3, 24, dailyArray);
+   store_daily(data4, dailyTdsData, dailyTdsAvg, jsonDaily4, 24, dailyArray);
+   store_daily(data5, dailypHData, dailypHAvg, jsonDaily5, 24, dailyArray);
+   store_daily(data6, dailyWaterLevelData, dailyWaterLevelAvg, jsonDaily6, 24, dailyArray);
+   dailyArray++;
    serializeJsonPretty(daily1, Serial);
    serializeJsonPretty(daily2, Serial);
    dailyCount = 0;
@@ -980,23 +1062,31 @@ else{
  }
 
  if(weeklyCount == 7){
-   store_daily(dailyAirTempData, weeklyAirTempData, weeklyAirTempAvg, jsonWeekly1, 7);
-   store_daily(dailyAirHumData, weeklyAirHumData, weeklyAirHumAvg, jsonWeekly2, 7);
-   store_daily(dailyWaterTempData, weeklyWaterTempData, weeklyWaterTempAvg, jsonWeekly3, 7);
-   store_daily(dailyTdsData, weeklyTdsData, weeklyTdsAvg, jsonWeekly4, 7);
-   store_daily(dailypHData, weeklypHData, weeklypHAvg, jsonWeekly5, 7);
-   store_daily(dailyWaterLevelData, weeklyWaterLevelData, weeklyWaterLevelAvg, jsonWeekly6, 7);
+   if(weeklyArray == 7){
+     weeklyArray = 0;
+   }
+   store_daily(dailyAirTempData, weeklyAirTempData, weeklyAirTempAvg, jsonWeekly1, 7, weeklyArray);
+   store_daily(dailyAirHumData, weeklyAirHumData, weeklyAirHumAvg, jsonWeekly2, 7, weeklyArray);
+   store_daily(dailyWaterTempData, weeklyWaterTempData, weeklyWaterTempAvg, jsonWeekly3, 7, weeklyArray);
+   store_daily(dailyTdsData, weeklyTdsData, weeklyTdsAvg, jsonWeekly4, 7, weeklyArray);
+   store_daily(dailypHData, weeklypHData, weeklypHAvg, jsonWeekly5, 7, weeklyArray);
+   store_daily(dailyWaterLevelData, weeklyWaterLevelData, weeklyWaterLevelAvg, jsonWeekly6, 7, weeklyArray);
+   weeklyArray++;
    weeklyCount = 0;
    monthlyCount++;
  }
 
  if(monthlyCount == 4){
-   store_daily(weeklyAirTempData, monthlyAirTempData, monthlyAirTempAvg, jsonMonthly1, 4);
-   store_daily(weeklyAirHumData, monthlyAirHumData, monthlyAirHumAvg, jsonMonthly2, 4);
-   store_daily(weeklyWaterTempData, monthlyWaterTempData, monthlyWaterTempAvg, jsonMonthly3, 4);
-   store_daily(weeklyTdsData, monthlyTdsData, monthlyTdsAvg, jsonMonthly4, 4);
-   store_daily(weeklypHData, monthlypHData, monthlypHAvg, jsonMonthly5, 4);
-   store_daily(weeklyWaterLevelData, monthlyWaterLevelData, monthlyWaterLevelAvg, jsonMonthly6, 4);
+   if(monthlyArray == 4){
+     monthlyArray = 0;
+   }
+   store_daily(weeklyAirTempData, monthlyAirTempData, monthlyAirTempAvg, jsonMonthly1, 4, monthlyArray);
+   store_daily(weeklyAirHumData, monthlyAirHumData, monthlyAirHumAvg, jsonMonthly2, 4, monthlyArray);
+   store_daily(weeklyWaterTempData, monthlyWaterTempData, monthlyWaterTempAvg, jsonMonthly3, 4, monthlyArray);
+   store_daily(weeklyTdsData, monthlyTdsData, monthlyTdsAvg, jsonMonthly4, 4, monthlyArray);
+   store_daily(weeklypHData, monthlypHData, monthlypHAvg, jsonMonthly5, 4, monthlyArray);
+   store_daily(weeklyWaterLevelData, monthlyWaterLevelData, monthlyWaterLevelAvg, jsonMonthly6, 4, monthlyArray);
+   monthlyArray++;
    monthlyCount = 0;
  }
 
