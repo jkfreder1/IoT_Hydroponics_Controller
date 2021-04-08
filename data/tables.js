@@ -5,7 +5,7 @@ var tableData = [
     {date: 1}
 ]
 var test = [
-    {date: 2, dataset: 2}
+    {}
 ]
 
 //create table and assign data
@@ -21,7 +21,78 @@ var table = new Tabulator("#example-table", {
     ]
 });
 
-var airTempTable = new Tabulator("#airTempT", {
+var tableAirTempSummary = new Tabulator("#airTemp-summary", {
+    reactiveData:true, //enable reactive data
+    data:test, //assign data array
+    layout:"fitDataTable",
+
+    columns:[
+          {title:"Date", field:"time"},
+          {title:"Temperature", field:"dataset"},
+          
+    ]
+});
+
+var tableAirHumidSummary = new Tabulator("#airHumid-summary", {
+    reactiveData:true, //enable reactive data
+    data:test, //assign data array
+    layout:"fitDataTable",
+
+    columns:[
+          {title:"Date", field:"time"},
+          {title:"Temperature", field:"dataset"},
+          
+    ]
+});
+
+var tableWaterTempSummary = new Tabulator("#waterTemp-summary", {
+    reactiveData:true, //enable reactive data
+    data:test, //assign data array
+    layout:"fitDataTable",
+    columns:[
+          {title:"Date", field:"time"},
+          {title:"Temperature", field:"dataset"},
+          
+    ]
+});
+
+var tableWaterLvlSummary = new Tabulator("#waterLvl-summary", {
+    reactiveData:true, //enable reactive data
+    data:test, //assign data array
+    layout:"fitDataTable",
+    columns:[
+          {title:"Date", field:"time"},
+          {title:"Temperature", field:"dataset"},
+          
+    ]
+});
+
+var tablepHSummary = new Tabulator("#pH-summary", {
+    reactiveData:true, //enable reactive data
+    data:test, //assign data array
+    layout:"fitDataTable",
+    columns:[
+          {title:"Date", field:"time"},
+          {title:"Temperature", field:"dataset"},
+          
+    ]
+});
+var tableNutrientLvlSummary = new Tabulator("#nutrientLvl-summary", {
+    reactiveData:true, //enable reactive data
+    data:test, //assign data array
+    layout:"fitDataTable",
+    columns:[
+          {title:"Date", field:"time"},
+          {title:"Temperature", field:"dataset"},
+          
+    ]
+});
+
+
+
+
+
+var tableAirTemp = new Tabulator("#airTempT", {
     reactiveData:true, //enable reactive data
     data:tableData, //assign data array
     layout:"fitDataTable",
@@ -32,7 +103,7 @@ var airTempTable = new Tabulator("#airTempT", {
           
     ]
 });
-var airTempDailyTable = new Tabulator("#airTempDailyT", {
+var tableAirTempDaily = new Tabulator("#airTempDailyT", {
     reactiveData:true, //enable reactive data
     data:tableData, //assign data array
     layout:"fitDataTable",
@@ -44,7 +115,7 @@ var airTempDailyTable = new Tabulator("#airTempDailyT", {
     ]
 });
 
-var airTempWeeklyTable = new Tabulator("#airTempWeeklyT", {
+var tableAirTempWeekly = new Tabulator("#airTempWeeklyT", {
     reactiveData:true, //enable reactive data
     data:tableData, //assign data array
     layout:"fitDataTable",
@@ -56,7 +127,7 @@ var airTempWeeklyTable = new Tabulator("#airTempWeeklyT", {
     ]
 });
 
-var airTempMonthlyTable = new Tabulator("#airTempMonthlyT", {
+var tableAirTempMonthly = new Tabulator("#airTempMonthlyT", {
     reactiveData:true, //enable reactive data
     data:tableData, //assign data array
     layout:"fitDataTable",
@@ -69,12 +140,19 @@ var airTempMonthlyTable = new Tabulator("#airTempMonthlyT", {
 });
 
 
-
+function addSummary(table,data,timestamps){
+    let newData = [];
+    let row = {};
+    row['time'] = timestamps[23];
+    row['dataset'] = data.dataset[23];
+    newData.push(row);
+    table.setData(newData);
+}
 
 function addTableData(table, data,timestamps) {
-    var newData = [];
-    var row = {};
-    for (var i = 0; i < data.dataset.length; i++) {
+    let newData = [];
+    let row = {};
+    for (let i = 0; i < data.dataset.length; i++) {
         row['time'] = timestamps[i];
         row['dataset'] = data.dataset[i];
         newData.push(row);
