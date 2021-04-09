@@ -418,34 +418,34 @@ setInterval(function ( ){
 
     
     JSON_request("/data1.json",myChartAirTemp); 
-    /*
+    
     JSON_request("/data2.json",myChartAirHumidity);
     JSON_request("/data3.json",myChartWaterTemp);
     JSON_request("/data4.json",myChartNutrientLvl);
     JSON_request("/data5.json",myChartpH);
-    JSON_request("/data6.json",myChartWaterLvl);*/
+    JSON_request("/data6.json",myChartWaterLvl);
     
-    JSON_request("/data1.json",myChartAirTempDaily);
-    /*
-    JSON_request("/data2.json",myChartAirHumidityDaily);
-    JSON_request("/data3.json",myChartWaterTempDaily);
-    JSON_request("/data4.json",myChartNutrientLvlDaily);
-    JSON_request("/data5.json",myChartpHDaily);
-    JSON_request("/data6.json",myChartWaterLvlDaily); */
+    JSON_request("/daily1.json",myChartAirTempDaily);
+    
+    JSON_request("/daily2.json",myChartAirHumidityDaily);
+    JSON_request("/daily3.json",myChartWaterTempDaily);
+    JSON_request("/daily4.json",myChartNutrientLvlDaily);
+    JSON_request("/daily5.json",myChartpHDaily);
+    JSON_request("/daily6.json",myChartWaterLvlDaily); 
 
-    JSON_request("/data1.json",myChartAirTempWeekly); /*
-    JSON_request("/data2.json",myChartAirHumidityWeekly);
-    JSON_request("/data3.json",myChartWaterTempWeekly);
-    JSON_request("/data4.json",myChartNutrientLvlWeekly);
-    JSON_request("/data5.json",myChartpHWeekly);
-    JSON_request("/data6.json",myChartWaterLvlWeekly);*/
+    JSON_request("/weekly1.json",myChartAirTempWeekly); /*
+    JSON_request("/weekly2.json",myChartAirHumidityWeekly);
+    JSON_request("/weekly3.json",myChartWaterTempWeekly);
+    JSON_request("/weekly4.json",myChartNutrientLvlWeekly);
+    JSON_request("/weekly5.json",myChartpHWeekly);
+    JSON_request("/weekly6.json",myChartWaterLvlWeekly);*/
 
-    JSON_request("/data1.json",myChartAirTempMonthly);/*
-    JSON_request("/data2.json",myChartAirHumidityMonthly);
-    JSON_request("/data3.json",myChartWaterTempMonthly);
-    JSON_request("/data4.json",myChartNutrientLvlMonthly);
-    JSON_request("/data5.json",myChartpHMonthly);
-    JSON_request("/data6.json",myChartWaterLvlMonthly); */
+    JSON_request("/monthly1.json",myChartAirTempMonthly);/*
+    JSON_request("/monthly2.json",myChartAirHumidityMonthly);
+    JSON_request("/monthly3.json",myChartWaterTempMonthly);
+    JSON_request("/monthly4.json",myChartNutrientLvlMonthly);
+    JSON_request("/monthly5.json",myChartpHMonthly);
+    JSON_request("/monthly6.json",myChartWaterLvlMonthly); */
     
    }, 10000 ) ; 
 
