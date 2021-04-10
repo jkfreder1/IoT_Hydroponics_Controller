@@ -753,6 +753,13 @@ void setup(){
   store_data(0, monthlypHAvg, monthlypHData, 0, jsonMonthly5);
   store_data(0, monthlyWaterLevelAvg, monthlyWaterLevelData, 0, jsonMonthly6);
 
+  printLocalTime(1, 0, jsonTimeStamp);
+  printLocalTime(2, 0, jsonDailyTimeStamp);
+  printLocalTime(3, 0, jsonWeeklyTimeStamp);
+  printLocalTime(4, 0, jsonMonthlyTimeStamp);
+
+
+
   
   Serial.println(WiFi.localIP());
   routes();
