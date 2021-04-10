@@ -16,6 +16,7 @@
 #include <ArduinoJson.h>
 #include <PubSubClient.h>
 #include "time.h"
+#include <AsyncTCP.h>
 using namespace std;
 deque<int> intd;
 deque<int> inta;
@@ -51,8 +52,8 @@ int counter=0;
 // Add your MQTT Broker IP address, example:
 //const char* mqtt_server = "192.168.1.144";
 //mqtt credentials
-const char* ssid = "Clairvoyant";
-const char* password = "PaLe1SaRacHer";
+const char* ssid = "ATT9JNx4NI";
+const char* password = "6fzv98tb2x?5";
 const char* mqttServer = "192.168.1.66";
 const int mqttPort = 1883;
 const char* mqttUser = "user";
@@ -64,6 +65,7 @@ char msg[50];
 int value = 0;
 float temperatureMQTT = 0;
 float humidityMQTT = 0;
+int ipadd[5];
 
 AsyncWebServer server(80);////////new web server
 DNSServer dns;
@@ -120,6 +122,131 @@ uint8_t LED2pin = 27;
 bool LED2status = LOW;
 
 bool runRoutes = true;
+String readFile(fs::FS &fs, const char * path){
+  //Serial.printf("Reading file: %s\r\n", path);
+  File file = fs.open(path, "r");
+  if(!file || file.isDirectory()){
+    Serial.println("- empty file or failed to open file");
+    return String();
+  }
+  //Serial.println("- read from file:");
+  String fileContent;
+  while(file.available()){
+    fileContent+=String((char)file.read());
+    //Serial.println(fileContent);
+  }
+  //Serial.println(fileContent);
+  return fileContent;
+}
+String getip_address(fs::FS &fs, const char * path){
+  //Serial.printf("Reading file: %s\r\n", path);
+  File file = fs.open(path, "r");
+  if(!file || file.isDirectory()){
+    Serial.println("- empty file or failed to open file");
+    return String();
+  }
+  //Serial.println("- read from file:");
+  //String fileContent;
+  int i=0;
+  String A;
+  String first;
+  String second;
+  String third;
+  String fourth;
+  
+  while(file.available()){
+    A= String((char)file.read());
+    if(A=="."){
+      i=i+1;
+    }
+    else{
+      switch(i){
+        case 0:
+         first+=A;
+        break;
+        case 1:
+        second+=A;
+        break;
+        case 2:
+        third+=A;
+        break;
+        case 3:
+        fourth+=A;
+        break;
+        
+       }
+    }
+
+
+  }
+
+  ipadd[0]=first.toInt();
+  Serial.println("These are the IP numbers");
+  Serial.println(ipadd[0]);
+  ipadd[1]=second.toInt();
+  Serial.println(ipadd[1]);
+  ipadd[2]=third.toInt();
+  Serial.println(ipadd[2]);
+  ipadd[3]=fourth.toInt();
+  Serial.println(ipadd[3]);
+
+
+  
+
+
+  //Serial.println(fileContent);
+  return fourth;
+}
+
+void writeFile(fs::FS &fs, const char * path, const char * message){
+  Serial.printf("Writing file: %s\r\n", path);
+  File file = fs.open(path, "w");
+  if(!file){
+    Serial.println("- failed to open file for writing");
+    return;
+  }
+  Serial.print("&*");
+  Serial.print(message);
+  Serial.println("&*");
+  if(file.print(message)){
+    Serial.println("- file written");
+  } else {
+    Serial.println("- write failed");
+  }
+}
+String processor(const String& var){
+  //Serial.println(var);
+  /*if(var == "inputString"){
+    return readFile(SPIFFS, "/inputString.txt");
+  }*/
+  /*else if(var == "inputInt"){
+    return readFile(SPIFFS, "/inputInt.txt");
+  }*/
+  if(var == "floatHigher"){
+    return readFile(SPIFFS, "/floatHigher.txt");
+  }
+  else if (var=="floatLower"){
+    return readFile(SPIFFS, "/floatLower.txt");
+  }
+  else if (var=="mqttUsername"){
+  return readFile(SPIFFS, "/mqttUsername.txt");
+}
+  else if (var=="mqttPassword"){
+  return readFile(SPIFFS, "/mqttPassword.txt");
+}
+else if (var=="mqttServer"){
+  return readFile(SPIFFS, "/mqttServer.txt");
+}
+else if (var=="mqttPort"){
+  return readFile(SPIFFS, "/mqttPort.txt");
+}
+  return String();
+}
+
+void notFound(AsyncWebServerRequest *request) {
+  request->send(404, "text/plain", "Not found");
+}
+
 
 void callback(char* topic, byte* message, unsigned int length) {
   Serial.print("Message arrived on topic: ");
@@ -150,7 +277,30 @@ void callback(char* topic, byte* message, unsigned int length) {
   }
 }
 
+// Replace the next variables with your SSID/Password combination
+//const char* ssid = "ATT9JNx4NI";
+//const char* password = "6fzv98tb2x?5";
 
+// Add your MQTT Broker IP address, example:
+//const char* mqtt_server = "192.168.1.144";
+//const char* mqttServer = "192.168.1.66";
+//const char* mqttServer;
+//const int mqttPort = 1883;
+//const char* mqttUser="user";
+//const char* mqttUser= readFile(SPIFFS, "/mqttUsername.txt").c_str();
+//const char* mqttPassword = "password";
+//const char* mqttPassword="password";
+//new
+
+const char* MQTT_USERNAME = "mqttUsername";
+const char* MQTT_PASSWORD = "mqttPassword";
+const char* MQTT_SERVER = "mqttServer";
+const char* MQTT_PORT = "mqttPort";
+
+
+//const char* PARAM_INT = "inputInt";
+const char* PARAM_HIGHER = "floatHigher";
+const char* PARAM_LOWER = "floatLower";
 
 
 
@@ -338,6 +488,30 @@ int weeklyArray = 0;
 int monthlyArray = 0;
 
 const char* ntpServer = "pool.ntp.org";
+const char* connect_mqtt(){
+    String work;
+    //work=s;
+    work=readFile(SPIFFS,"/mqttServer.txt");
+    //Serial.print(work);
+  
+  //Serial.print(mqttServer2);
+  Serial.println("connect-");
+  
+  Serial.print(client.state());
+  Serial.print("working fine");
+  delay(2000);
+  return work.c_str();
+  
+}
+
+ int connect_port(){
+   String porty;
+   porty=readFile(SPIFFS,"/mqttPort.txt");
+   int port_int=porty.toInt();
+
+   return port_int;
+   
+}
 const long  gmtOffset_sec = -14400;
 const int   daylightOffset_sec = 0;
 
@@ -502,7 +676,7 @@ String readBME280Humidity() {
   }
 }
 
-String processor(const String& var){
+/*String processor(const String& var){
   Serial.println(var);
   if(var == "STATE"){
     if(digitalRead(ledPin)){
@@ -516,7 +690,26 @@ String processor(const String& var){
   }
   return String();
 }
+*/
+void setup_wifi() {
+  delay(10);
+  // We start by connecting to a WiFi network
+  Serial.println();
+  Serial.print("Connecting to ");
+  Serial.println(ssid);
 
+  WiFi.begin(ssid, password);
+
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+
+  Serial.println("");
+  Serial.println("WiFi connected");
+  Serial.println("IP address: ");
+  Serial.println(WiFi.localIP());
+}
  void routes(){
     // Route for root / web page
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
@@ -692,6 +885,7 @@ void setup(){
   client.setServer(mqttServer, mqttPort);
   client.setCallback(callback);
   */
+ //setup_wifi();
 
   pinMode(trigPin, OUTPUT);///sonar
   pinMode(echoPin, INPUT);
@@ -726,6 +920,9 @@ void setup(){
   AsyncWiFiManager wifiManager(&server,&dns);
   wifiManager.autoConnect("AutoConnectAP");
     Serial.println("connected...yeey :)");
+    
+
+
   
   if(!SPIFFS.begin(true)){
     Serial.println("An Error has occurred while mounting SPIFFS");
@@ -753,12 +950,81 @@ void setup(){
   store_data(0, monthlypHAvg, monthlypHData, 0, jsonMonthly5);
   store_data(0, monthlyWaterLevelAvg, monthlyWaterLevelData, 0, jsonMonthly6);
 
+<<<<<<< HEAD
   printLocalTime(1, 0, jsonTimeStamp);
   printLocalTime(2, 0, jsonDailyTimeStamp);
   printLocalTime(3, 0, jsonWeeklyTimeStamp);
   printLocalTime(4, 0, jsonMonthlyTimeStamp);
 
 
+=======
+  // Send web page with input fields to client
+  /*server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send_P(200, "text/html", "/index.html", processor);
+  });*/
+
+  // Send a GET request to <ESP_IP>/get?inputString=<inputMessage>
+  server.on("/get", HTTP_GET, [] (AsyncWebServerRequest *request) {
+    String inputMessage;
+    // GET inputString value on <ESP_IP>/get?inputString=<inputMessage>
+    /*if (request->hasParam(PARAM_STRING)) {
+      inputMessage = request->getParam(PARAM_STRING)->value();
+      writeFile(SPIFFS, "/inputString.txt", inputMessage.c_str());
+    }
+    // GET inputInt value on <ESP_IP>/get?inputInt=<inputMessage>
+    else if (request->hasParam(PARAM_INT)) {
+      inputMessage = request->getParam(PARAM_INT)->value();
+      writeFile(SPIFFS, "/inputInt.txt", inputMessage.c_str());
+      Serial.println(inputMessage);
+    }*/
+    // GET inputFloat value on <ESP_IP>/get?inputFloat=<inputMessage>
+    if (request->hasParam(PARAM_HIGHER)) {
+      inputMessage = request->getParam(PARAM_HIGHER)->value();
+      writeFile(SPIFFS, "/floatHigher.txt", inputMessage.c_str());
+    }
+    else if (request->hasParam(PARAM_LOWER)) {
+      inputMessage = request->getParam(PARAM_LOWER)->value();
+      writeFile(SPIFFS, "/floatLower.txt", inputMessage.c_str());
+    }
+    else if (request->hasParam(MQTT_USERNAME)) {
+      inputMessage = request->getParam(MQTT_USERNAME)->value();
+      writeFile(SPIFFS, "/mqttUsername.txt", inputMessage.c_str());
+    }
+    else if (request->hasParam(MQTT_PASSWORD)) {
+      inputMessage = request->getParam(MQTT_PASSWORD)->value();
+      writeFile(SPIFFS, "/mqttPassword.txt", inputMessage.c_str());
+    }
+    else if (request->hasParam(MQTT_SERVER)) {
+      inputMessage = request->getParam(MQTT_SERVER)->value();
+      writeFile(SPIFFS, "/mqttServer.txt", inputMessage.c_str());
+    }
+    else if (request->hasParam(MQTT_PORT)) {
+      inputMessage = request->getParam(MQTT_PORT)->value();
+      writeFile(SPIFFS, "/mqttPort.txt", inputMessage.c_str());
+    }
+    
+    else {
+      inputMessage = "No message sent";
+    }
+    Serial.println(inputMessage);
+    request->send(200, "text/text", inputMessage);
+  });
+  server.onNotFound(notFound);
+  getip_address(SPIFFS,"/mqttServer.txt");
+  //int a=192;
+  //int b= 168;
+  //int c=1;
+  //int d=66;
+  IPAddress cool(ipadd[0],ipadd[1],ipadd[2],ipadd[3]);
+  //cool = connect_mqtt();
+  int beans= connect_port();
+  client.setServer(cool,beans);
+  
+ 
+  
+  
+  //client.setCallback(callback);
+>>>>>>> 98adbdb57cebbb91f765900bc596cab996a74a19
 
   
   Serial.println(WiFi.localIP());
@@ -771,23 +1037,26 @@ void setup(){
 void reconnect() {
   // Loop until we're reconnected
 
-  while (!client.connected()) {
+  
     Serial.print("Attempting MQTT connection...");
     String clientId = "ESP32Client-";
     clientId += String(random(0xffff), HEX);
     // Attempt to connect
-    if (client.connect(clientId.c_str(),mqttUser,mqttPassword)) {
+    if (client.connect(clientId.c_str(),readFile(SPIFFS, "/mqttUsername.txt").c_str(),readFile(SPIFFS, "/mqttPassword.txt").c_str())) {
       Serial.println("connected");
-      // Subscribe
+      
       client.subscribe("esp32/output");
     } else {
+      Serial.print(readFile(SPIFFS, "/mqttUsername.txt").c_str());
+      Serial.print(readFile(SPIFFS, "/mqttPassword.txt").c_str());
+      Serial.print(readFile(SPIFFS, "/mqttServer.txt").c_str());
+      Serial.print(readFile(SPIFFS, "/mqttPort.txt").c_str());
       Serial.print("failed, rc=");
       Serial.print(client.state());
       Serial.println(" try again in 5 seconds");
       // Wait 5 seconds before retrying
       delay(5000);
     }
-  }
 }
  int clear2=0; 
  int errorflag=0;
@@ -1257,6 +1526,7 @@ else{
   temperatureF_offset=temperatureF_input-temperatureF;
   tds_offset=tds_value_input-tdsValue;
   }
+*/
 if (!client.connected()) {
     reconnect();
   }
@@ -1288,7 +1558,7 @@ if (!client.connected()) {
     Serial.println(humString);
     client.publish("esp32/humidity", humString);
   }
-  */
+  
 
   //if(sleeptime>200){
     //esp_deep_sleep_start();/////sleep DONT DELETE
