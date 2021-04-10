@@ -379,7 +379,7 @@ JsonObject waterTemp = doc3.to<JsonObject>();
 JsonObject tds = doc4.to<JsonObject>();
 JsonObject pH = doc5.to<JsonObject>();
 JsonObject waterLevel = doc6.to<JsonObject>();
-JsonObject timex = timeStamp.to<JsonObject>();
+JsonObject hourlyTimeStamp = timeStamp.to<JsonObject>();
 
 JsonObject dailyAirTempAvg = daily1.to<JsonObject>();
 JsonObject dailyAirHumAvg = daily2.to<JsonObject>();
@@ -424,6 +424,7 @@ int totCount5 = 0;
 JsonArray data6 = waterLevel.createNestedArray("dataset");
 //int tdsCount = 0;
 int totCount6 = 0;
+JsonArray data7 = hourlyTimeStamp.createNestedArray("dataset");
 
 JsonArray dailyAirTempData = dailyAirTempAvg.createNestedArray("dataset");
 JsonArray dailyAirHumData = dailyAirHumAvg.createNestedArray("dataset");
@@ -431,6 +432,7 @@ JsonArray dailyWaterTempData = dailyWaterTempAvg.createNestedArray("dataset");
 JsonArray dailyTdsData = dailyTdsAvg.createNestedArray("dataset");
 JsonArray dailypHData = dailypHAvg.createNestedArray("dataset");
 JsonArray dailyWaterLevelData = dailyWaterLevelAvg.createNestedArray("dataset");
+JsonArray dailyTimeStampArray = dailyTimeStamp.createNestedArray("dataset");
 
 JsonArray weeklyAirTempData = weeklyAirTempAvg.createNestedArray("dataset");
 JsonArray weeklyAirHumData = weeklyAirHumAvg.createNestedArray("dataset");
@@ -438,6 +440,7 @@ JsonArray weeklyWaterTempData = weeklyWaterTempAvg.createNestedArray("dataset");
 JsonArray weeklyTdsData = weeklyTdsAvg.createNestedArray("dataset");
 JsonArray weeklypHData = weeklypHAvg.createNestedArray("dataset");
 JsonArray weeklyWaterLevelData = weeklyWaterLevelAvg.createNestedArray("dataset");
+JsonArray weeklyTimeStampArray = weeklyTimeStamp.createNestedArray("dataset");
 
 JsonArray monthlyAirTempData = monthlyAirTempAvg.createNestedArray("dataset");
 JsonArray monthlyAirHumData = monthlyAirHumAvg.createNestedArray("dataset");
@@ -445,6 +448,7 @@ JsonArray monthlyWaterTempData = monthlyWaterTempAvg.createNestedArray("dataset"
 JsonArray monthlyTdsData = monthlyTdsAvg.createNestedArray("dataset");
 JsonArray monthlypHData = monthlypHAvg.createNestedArray("dataset");
 JsonArray monthlyWaterLevelData = monthlyWaterLevelAvg.createNestedArray("dataset");
+JsonArray monthlyTimeStampArray = monthlyTimeStamp.createNestedArray("dataset");
 
 int dailyCount = 0;
 int weeklyCount = 0;
@@ -508,42 +512,49 @@ const char* connect_mqtt(){
    return port_int;
    
 }
+const long  gmtOffset_sec = -14400;
+const int   daylightOffset_sec = 0;
 
-void printLocalTime(){
+void printLocalTime(int time, int count, String filename){
   struct tm timeinfo;
   if(!getLocalTime(&timeinfo)){
     Serial.println("Failed to obtain time");
     return;
   }
-  Serial.println(&timeinfo, "%A, %B %d %Y %H:%M:%S");
-  /*
-  Serial.print("Day of week: ");
-  Serial.println(&timeinfo, "%A");
-  Serial.print("Month: ");
-  Serial.println(&timeinfo, "%B");
-  Serial.print("Day of Month: ");
-  Serial.println(&timeinfo, "%d");
-  Serial.print("Year: ");
-  Serial.println(&timeinfo, "%Y");
-  Serial.print("Hour: ");
-  Serial.println(&timeinfo, "%H");
-  Serial.print("Hour (12 hour format): ");
-  Serial.println(&timeinfo, "%I");
-  Serial.print("Minute: ");
-  Serial.println(&timeinfo, "%M");
-  Serial.print("Second: ");
-  Serial.println(&timeinfo, "%S");
-  
 
-  Serial.println("Time variables");
-  char timeHour[3];
-  strftime(timeHour,3, "%H", &timeinfo);
-  Serial.println(timeHour);
-  char timeWeekDay[10];
-  strftime(timeWeekDay,10, "%A", &timeinfo);
-  Serial.println(timeWeekDay);
-  Serial.println();
-  */
+  String s;
+  File outfile = SPIFFS.open(filename, "w");
+
+  switch (time) {
+  case 1:
+    char timeHourly[10];
+    strftime(timeHourly,10, "%H:%M:%S", &timeinfo);
+    s = timeHourly;
+    data7[count] = s;
+    break;
+  case 2:
+    char timeDaily[10];
+    strftime(timeDaily,10, "%m/%d", &timeinfo);
+    s = timeDaily;
+    dailyTimeStampArray[count] = s;
+    break;
+  case 3:
+    char timeWeekly[10];
+    strftime(timeWeekly,10, "%m/%d", &timeinfo);
+    s = timeWeekly;
+    weeklyTimeStampArray[count] = s;
+    break;
+  case 4:
+    char timeMonthly[10];
+    strftime(timeMonthly,10, "%A %Y", &timeinfo);
+    s = timeMonthly;
+    monthlyTimeStampArray[count] = s;
+    break;
+  default:
+    break;
+
+}
+  outfile.close();
 }
 
 float calcAverage(float avg, float data, int count){
@@ -906,7 +917,6 @@ void setup(){
   esp_sleep_enable_ext0_wakeup(GPIO_NUM_15,1);
   */
   
-  
   AsyncWiFiManager wifiManager(&server,&dns);
   wifiManager.autoConnect("AutoConnectAP");
     Serial.println("connected...yeey :)");
@@ -1012,10 +1022,8 @@ void setup(){
   routes();
   server.begin();
 
-  //configTime(0, 0, ntpServer);
-  //printLocalTime();
-  
-  
+  configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
+
 }
 void reconnect() {
   // Loop until we're reconnected
@@ -1335,18 +1343,17 @@ else{
   store_data(fakeAirTemp, airTemp, data1, airTempCount, jsonData1);
   store_data(fakeAirHumid, airHum, data2, airTempCount, jsonData2);
   store_data(fakeWaterTemp, waterTemp, data3, airTempCount, jsonData3);
-  
   store_data(fakeTDS, tds, data4, airTempCount, jsonData4);
   store_data(fakepH, pH, data5, airTempCount, jsonData5);
-  store_data(fakeWaterLevel, waterLevel, data6, airTempCount, jsonData6); 
+  store_data(fakeWaterLevel, waterLevel, data6, airTempCount, jsonData6);
+  printLocalTime(1, airTempCount, jsonTimeStamp);
   airTempCount++;
   totCount1 = 0;
   avgCount = 1;
-  serializeJsonPretty(doc2, Serial);
+  //serializeJsonPretty(doc2, Serial);
+  //serializeJsonPretty(timeStamp, Serial);
   //printJSON();
   dailyCount++;
-  //weeklyCount++;
-  //monthlyCount++;
  }
 
  if(dailyCount == 24){
@@ -1359,9 +1366,10 @@ else{
    store_daily(data4, dailyTdsData, dailyTdsAvg, jsonDaily4, 24, dailyArray);
    store_daily(data5, dailypHData, dailypHAvg, jsonDaily5, 24, dailyArray);
    store_daily(data6, dailyWaterLevelData, dailyWaterLevelAvg, jsonDaily6, 24, dailyArray);
+   printLocalTime(2, dailyArray, jsonDailyTimeStamp);
    dailyArray++;
-   serializeJsonPretty(daily1, Serial);
-   serializeJsonPretty(daily2, Serial);
+   //serializeJsonPretty(daily1, Serial);
+   //serializeJsonPretty(daily2, Serial);
    dailyCount = 0;
    weeklyCount++;
  }
@@ -1376,13 +1384,14 @@ else{
    store_daily(dailyTdsData, weeklyTdsData, weeklyTdsAvg, jsonWeekly4, 7, weeklyArray);
    store_daily(dailypHData, weeklypHData, weeklypHAvg, jsonWeekly5, 7, weeklyArray);
    store_daily(dailyWaterLevelData, weeklyWaterLevelData, weeklyWaterLevelAvg, jsonWeekly6, 7, weeklyArray);
+   printLocalTime(3, weeklyArray, jsonWeeklyTimeStamp);
    weeklyArray++;
    weeklyCount = 0;
    monthlyCount++;
  }
 
  if(monthlyCount == 4){
-   if(monthlyArray == 4){
+   if(monthlyArray == 12){
      monthlyArray = 0;
    }
    store_daily(weeklyAirTempData, monthlyAirTempData, monthlyAirTempAvg, jsonMonthly1, 4, monthlyArray);
@@ -1391,9 +1400,11 @@ else{
    store_daily(weeklyTdsData, monthlyTdsData, monthlyTdsAvg, jsonMonthly4, 4, monthlyArray);
    store_daily(weeklypHData, monthlypHData, monthlypHAvg, jsonMonthly5, 4, monthlyArray);
    store_daily(weeklyWaterLevelData, monthlyWaterLevelData, monthlyWaterLevelAvg, jsonMonthly6, 4, monthlyArray);
+   printLocalTime(4, monthlyArray, jsonMonthlyTimeStamp);
    monthlyArray++;
    monthlyCount = 0;
  }
+
 
 if(runRoutes==true){
   routesLoop();
