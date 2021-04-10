@@ -401,7 +401,33 @@
       
       <section id="section8" class="tabcontent">
         <h2>Section 8</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Perspiciatis, ullam natus tenetur molestiae commodi nesciunt, neque adipisci alias nostrum saepe inventore magnam. Molestias laboriosam, tempora quidem assumenda harum. Numquam, delectus.</p>
+        <p>
+          <form action="/get" target="hidden-form">
+            inputHigher (current value %floatHigher%): <input type="number " name="floatHigher">
+            <input type="submit" value="Submit" onclick="submitMessage()">
+          </form>
+          <form action="/get" target="hidden-form">
+            inputLower (current value %floatLower%): <input type="number " name="floatLower">
+            <input type="submit" value="Submit" onclick="submitMessage()">
+          </form>
+          <form action="/get" target="hidden-form">
+            mqttUsername (current value %mqttUsername%): <input type="text " name="mqttUsername">
+            <input type="submit" value="Submit" onclick="submitMessage()">
+          </form>
+          <form action="/get" target="hidden-form">
+            mqttPassword (current value %mqttPassword%): <input type="text " name="mqttPassword">
+            <input type="submit" value="Submit" onclick="submitMessage()">
+          </form>
+          <form action="/get" target="hidden-form">
+            mqttServer (current value %mqttServer%): <input type="text " name="mqttServer">
+            <input type="submit" value="Submit" onclick="submitMessage()">
+          </form>
+          <form action="/get" target="hidden-form">
+            mqttPort (current value %mqttPort%): <input type="number " name="mqttPort">
+            <input type="submit" value="Submit" onclick="submitMessage()">
+          </form>
+          
+          <iframe style="display:none" name="hidden-form"></iframe></p>
       </section>
       
     
