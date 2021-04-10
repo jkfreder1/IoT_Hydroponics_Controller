@@ -506,6 +506,11 @@ String processor(const String& var){
   return String();
 }
 
+inline const char * const BoolToString(bool b)
+{
+  return b ? "true" : "false";
+}
+
  void routes(){
     // Route for root / web page
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
@@ -546,9 +551,27 @@ String processor(const String& var){
   server.on("/logged-out", HTTP_GET, [](AsyncWebServerRequest *request){
    request->send(SPIFFS, "/logged_out.html", String(), false, processor);
   });
+  server.on("/airTempError", HTTP_GET, [](AsyncWebServerRequest *request){
+  request->send(200, "text/plain", BoolToString(false));
+  });
+  server.on("/airHumidError", HTTP_GET, [](AsyncWebServerRequest *request){
+  request->send(200, "text/plain", BoolToString(false));
+  });
+  server.on("/waterTempError", HTTP_GET, [](AsyncWebServerRequest *request){
+  request->send(200, "text/plain", BoolToString(false));
+  });
 
+  server.on("/waterLvlError", HTTP_GET, [](AsyncWebServerRequest *request){
+  request->send(200, "text/plain", BoolToString(false));
+  });
+  server.on("/pHError", HTTP_GET, [](AsyncWebServerRequest *request){
+  request->send(200, "text/plain", BoolToString(false));
+  });
+  server.on("/nutrientLvlError", HTTP_GET, [](AsyncWebServerRequest *request){
+  request->send(200, "text/plain", BoolToString(false));
+  });
  }
-
+ 
  void routesLoop() {
  // Route to load data1.json file 
  server.on("/data1.json", HTTP_GET, [](AsyncWebServerRequest *request){

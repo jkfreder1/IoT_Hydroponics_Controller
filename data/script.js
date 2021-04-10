@@ -106,18 +106,18 @@ function hideHistoricals(){
   // gather all historical containers that hold each of the historical categories
   let historyContainer = document.getElementsByClassName('historyGraphs');
   let historyGraphs;
-  let historyTables;
 
   // for each in historical container, hide the canvas elements (graphs) within it 
   for(i=0; i <historyContainer.length; i++){
     historyGraphs = historyContainer[i].getElementsByTagName("canvas");
-    for (k = 0; k < historyGraphs.length; k++) {
+    for (k = 1; k < historyGraphs.length; k++) {
       historyGraphs[k].style.display = "none";
     }
   }
   
   // set container equal to historical tables
   historyContainer = document.getElementsByClassName('historyTables');
+  let historyTables;
 
   // for each in historical container, hide the div elements (tables) within it 
   for(i=0; i <historyContainer.length; i++){
@@ -141,7 +141,7 @@ function openTab(evt, tabSection, tabName) {
   }
 
   // Get all elements with class="tabs" and remove the class "active"
-  tablinks = document.getElementsByClassName("tabs");
+  tablinks = document.getElementsByClassName("tabs")[0].getElementsByTagName('li');
   for (i = 0; i < tablinks.length; i++) {
     tablinks[i].className = tablinks[i].className.replace(" active", "");
   }
@@ -149,8 +149,12 @@ function openTab(evt, tabSection, tabName) {
   // Show the current tab, and add an "active" class to the button that opened the tab
   document.getElementById(tabSection).style.display = "block";
   evt.currentTarget.className += " active";
-  table.redraw();
+  //table.redraw();
 
+  
+}
+
+function showActiveTab(){
   
 }
 

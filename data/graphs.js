@@ -62,10 +62,10 @@ var defaultOptions = {
     },
     layout: {
         padding: {
-           left: 300,
-           right: 100,
-           top: 100,
-           bottom: 100,
+           left: 75,
+           right: 75,
+           top: 50,
+           bottom: 50,
        }
     },
     
@@ -93,7 +93,7 @@ var defaultOptions = {
         xAxes: [{
             scaleLabel: {
                 display: true,
-                labelString: 'Time',
+                //labelString: 'Time',
                 fontSize: 25,
                 padding: 10,
             },
@@ -310,8 +310,11 @@ var myChartNutrientLvlMonthly= new Chart(ctxnutrientLvlMonthly, {
 
 
 
-function addGraphData(chart, data) {
+function addGraphData(chart, data, timestamps) {
 
+    chart.data.labels.forEach((labels) =>  {
+        labels = timestamps
+    });
     chart.data.datasets.forEach((dataset) => {
         dataset.data = data.dataset;
     });
@@ -324,7 +327,7 @@ function JSON_request(jsonData,chart,table,timestamps){
     xhttpL.onreadystatechange = function() {
      if (this.readyState == 4 && this.status == 200) {
         var myArr = JSON.parse(this.responseText);
-        addGraphData(chart,myArr);
+        addGraphData(chart,myArr,timestamps);
         //addTableData(table,myArr,timestamps);
         //addSummary(table,myArr,timestamps);
       }
@@ -415,7 +418,7 @@ setInterval(function ( ){
     JSON_request("/monthly5.json",myChartpHMonthly);
     JSON_request("/monthly6.json",myChartWaterLvlMonthly);
     */
-
+/*
     
     JSON_request("/data1.json",myChartAirTemp); 
     
@@ -426,20 +429,20 @@ setInterval(function ( ){
     JSON_request("/data6.json",myChartWaterLvl);
     
     JSON_request("/daily1.json",myChartAirTempDaily);
-    
+    /*
     JSON_request("/daily2.json",myChartAirHumidityDaily);
     JSON_request("/daily3.json",myChartWaterTempDaily);
     JSON_request("/daily4.json",myChartNutrientLvlDaily);
     JSON_request("/daily5.json",myChartpHDaily);
-    JSON_request("/daily6.json",myChartWaterLvlDaily); 
-
+    JSON_request("/daily6.json",myChartWaterLvlDaily); */
+/*
     JSON_request("/weekly1.json",myChartAirTempWeekly); /*
     JSON_request("/weekly2.json",myChartAirHumidityWeekly);
     JSON_request("/weekly3.json",myChartWaterTempWeekly);
     JSON_request("/weekly4.json",myChartNutrientLvlWeekly);
     JSON_request("/weekly5.json",myChartpHWeekly);
     JSON_request("/weekly6.json",myChartWaterLvlWeekly);*/
-
+/*
     JSON_request("/monthly1.json",myChartAirTempMonthly);/*
     JSON_request("/monthly2.json",myChartAirHumidityMonthly);
     JSON_request("/monthly3.json",myChartWaterTempMonthly);
@@ -450,20 +453,20 @@ setInterval(function ( ){
    }, 10000 ) ; 
 
 window.onload = (event) => {
-    secondaryInit(myChartAirTemp,'Air Temperature Live Data', 'Temperature (C)', 60, 100,5);
-    secondaryInit(myChartAirTempDaily, 'Air Temperature Daily Averages', 'Temperature (C)', 60, 100,5);
-    secondaryInit(myChartAirTempWeekly, 'Air Temperature Weekly Averages', 'Temperature (C)', 60, 100,5);
-    secondaryInit(myChartAirTempMonthly, 'Air Temperature Monthly Averages', 'Temperature (C)', 60, 100,5);
+    secondaryInit(myChartAirTemp,'Air Temperature Live Data', 'Temperature (F)', 60, 100,5);
+    secondaryInit(myChartAirTempDaily, 'Air Temperature Daily Averages', 'Temperature (F)', 60, 100,5);
+    secondaryInit(myChartAirTempWeekly, 'Air Temperature Weekly Averages', 'Temperature (F)', 60, 100,5);
+    secondaryInit(myChartAirTempMonthly, 'Air Temperature Monthly Averages', 'Temperature (F)', 60, 100,5);
     
     secondaryInit(myChartAirHumidity,'Air Humidity Live Data', '%', 30, 80,5 );
     secondaryInit(myChartAirHumidityDaily,'Air Humidity Daily Averages', '%', 30, 80,5);
     secondaryInit(myChartAirHumidityWeekly,'Air Humidity Weekly Averages', '%', 30, 80,5);
     secondaryInit(myChartAirHumidityMonthly,'Air Humidity Monthly Averages', '%', 30, 80,5);
 
-    secondaryInit(myChartWaterTemp,'Water Temperature Live Data', 'Temperature (C)', 60, 100,5);
-    secondaryInit(myChartWaterTempDaily,'Water Temperature Daily Averages', 'Temperature (C)', 60, 100,5);
-    secondaryInit(myChartWaterTempWeekly,'Water Temperature Weekly Averages', 'Temperature (C)', 60, 100,5);
-    secondaryInit(myChartWaterTempMonthly,'Water Temperature Monthly Averages', 'Temperature (C)', 60, 100,5);
+    secondaryInit(myChartWaterTemp,'Water Temperature Live Data', 'Temperature (F)', 60, 100,5);
+    secondaryInit(myChartWaterTempDaily,'Water Temperature Daily Averages', 'Temperature (F)', 60, 100,5);
+    secondaryInit(myChartWaterTempWeekly,'Water Temperature Weekly Averages', 'Temperature (F)', 60, 100,5);
+    secondaryInit(myChartWaterTempMonthly,'Water Temperature Monthly Averages', 'Temperature (F)', 60, 100,5);
 
     secondaryInit(myChartWaterLvl,'Water Level Live Data', 'Distance from Water Surface (inches)',0,10,.5);
     secondaryInit(myChartWaterLvlDaily,'Water Level Daily Averages', 'Distance from Water Surface (inches)',0,10,.5);
@@ -483,6 +486,7 @@ window.onload = (event) => {
 
     
     hideHistoricals();
+    showActiveTab();
     /*
     table.redraw();
 
