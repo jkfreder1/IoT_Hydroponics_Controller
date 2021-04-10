@@ -1076,7 +1076,6 @@ else{
   store_data(fakeAirTemp, airTemp, data1, airTempCount, jsonData1);
   store_data(fakeAirHumid, airHum, data2, airTempCount, jsonData2);
   store_data(fakeWaterTemp, waterTemp, data3, airTempCount, jsonData3);
-  
   store_data(fakeTDS, tds, data4, airTempCount, jsonData4);
   store_data(fakepH, pH, data5, airTempCount, jsonData5);
   store_data(fakeWaterLevel, waterLevel, data6, airTempCount, jsonData6);
@@ -1084,8 +1083,8 @@ else{
   airTempCount++;
   totCount1 = 0;
   avgCount = 1;
-  serializeJsonPretty(doc2, Serial);
-  serializeJsonPretty(timeStamp, Serial);
+  //serializeJsonPretty(doc2, Serial);
+  //serializeJsonPretty(timeStamp, Serial);
   //printJSON();
   dailyCount++;
  }
@@ -1102,8 +1101,8 @@ else{
    store_daily(data6, dailyWaterLevelData, dailyWaterLevelAvg, jsonDaily6, 24, dailyArray);
    printLocalTime(2, dailyArray, jsonDailyTimeStamp);
    dailyArray++;
-   serializeJsonPretty(daily1, Serial);
-   serializeJsonPretty(daily2, Serial);
+   //serializeJsonPretty(daily1, Serial);
+   //serializeJsonPretty(daily2, Serial);
    dailyCount = 0;
    weeklyCount++;
  }
@@ -1138,6 +1137,7 @@ else{
    monthlyArray++;
    monthlyCount = 0;
  }
+
 
 if(runRoutes==true){
   routesLoop();
