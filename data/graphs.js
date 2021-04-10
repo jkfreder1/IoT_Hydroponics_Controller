@@ -1,3 +1,8 @@
+var timestampsLive = [];
+var timestampsDaily = [];
+var timestampsWeekly = [];
+var timestampsMonthly = [];
+
 
 var defaultData = {
 
@@ -45,7 +50,7 @@ var defaultDataMonthly = {
 
 var defaultOptions = {
     
-    maintainAspectRatio: false,
+    //maintainAspectRatio: false,
     title: {
         fontSize: 35,
         padding: 20,
@@ -314,54 +319,135 @@ function addGraphData(chart, data) {
     chart.update();
 }
 
-function JSON_request(jsonData,chart,table){
+function JSON_request(jsonData,chart,table,timestamps){
     let xhttpL = new XMLHttpRequest();
     xhttpL.onreadystatechange = function() {
      if (this.readyState == 4 && this.status == 200) {
         var myArr = JSON.parse(this.responseText);
         addGraphData(chart,myArr);
-        addTableData(table,myArr);
+        //addTableData(table,myArr,timestamps);
+        //addSummary(table,myArr,timestamps);
       }
     };
+    xhttpL.ontimeout = function (e) {
+        console.log('timeout occurred for ${jsonData}');
+      };
     xhttpL.open("GET", jsonData, true);
+    xhttpL.timeout = 5000;
+    xhttpL.send();
+}
+function JSON_requestTime(jsonData,timeContainer){
+    let xhttpL = new XMLHttpRequest();
+    xhttpL.onreadystatechange = function() {
+     if (this.readyState == 4 && this.status == 200) {
+        timeContainer = JSON.parse(this.responseText);
+      }
+    };
+    xhttpL.ontimeout = function (e) {
+        console.log('timeout occurred for ${jsonData}');
+      };
+    xhttpL.open("GET", jsonData, true);
+    xhttpL.timeout = 5000;
     xhttpL.send();
 }
 
-
 setInterval(function ( ){ 
-    //JSON_request("/timestamps.json");
-    JSON_request("/data1.json",myChartAirTemp,tableAirTemp);
+    /*
+    JSON_requestTime("/timeStamp.json",'timestampsLive');
+    JSON_requestTime("/dailyTimeStamp.json",'timestampsDaily');
+    JSON_requestTime("/weeklyTimeStamp.json",'timestampsWeekly');
+    JSON_requestTime("/monthlyTimeStamp.json",'timestampsMonthly');
+
+    JSON_request("/data1.json",myChartAirTemp,tableAirTemp,timestampsLive);
+    JSON_request("/data2.json",myChartAirHumidity,tableAirHumidity,timestampsLive);
+    JSON_request("/data3.json",myChartWaterTemp,tableWaterTemp,timestampsLive);
+    JSON_request("/data4.json",myChartNutrientLvl,tableNutrientLvl,timestampsLive);
+    JSON_request("/data5.json",myChartpH,tablepH,timestampsLive);
+    JSON_request("/data6.json",myChartWaterLvl,tableWaterLvl,timestampsLive);
+
+    JSON_request("/daily1.json",myChartAirTempDaily,tableAirTempDaily,timestampsDaily);
+    JSON_request("/daily2.json",myChartAirHumidityDaily,tableAirHumidityDaily,timestampsDaily);
+    JSON_request("/daily3.json",myChartWaterTempDaily,tableWaterTempDaily,timestampsDaily);
+    JSON_request("/daily4.json",myChartNutrientLvlDaily,tableNutrientLvlDaily,timestampsDaily);
+    JSON_request("/daily5.json",myChartpHDaily,tablepHDaily,timestampsDaily);
+    JSON_request("/daily6.json",myChartWaterLvlDaily,tableWaterLvlDaily,timestampsDaily);
+
+    JSON_request("/weekly1.json",myChartAirTempWeekly,tableAirTempWeekly,timestampsWeekly);
+    JSON_request("/weekly2.json",myChartAirHumidityWeekly,tableAirHumdidityWeekly,timestampsWeekly);
+    JSON_request("/weekly3.json",myChartWaterTempWeekly,tableWaterTempWeekly,timestampsWeekly);
+    JSON_request("/weekly4.json",myChartNutrientLvlWeekly,tableNutrientLvlWeekly,timestampsWeekly);
+    JSON_request("/weekly5.json",myChartpHWeekly,tablepHWeekly,timestampsWeekly);
+    JSON_request("/weekly6.json",myChartWaterLvlWeekly,tableWaterLvlWeekly,timestampsWeekly);
+
+    JSON_request("/monthly1.json",myChartAirTempMonthly,tableAirTempMonthly,timestampsMonthly);
+    JSON_request("/monthly2.json",myChartAirHumidityMonthly,tableAirHumidityMonthly,timestampsMonthly);
+    JSON_request("/monthly3.json",myChartWaterTempMonthly,tableWaterTempMonthly,timestampsMonthly);
+    JSON_request("/monthly4.json",myChartNutrientLvlMonthly,tableNutrientLvlMonthly,timestampsMonthly);
+    JSON_request("/monthly5.json",myChartpHMonthly,tablepHMonthly,timestampsMonthly);
+    JSON_request("/monthly6.json",myChartWaterLvlMonthly,tableWaterLvlMonthly,timestampsMonthly);
+*/
+/*
+    JSON_request("/data1.json",myChartAirTemp); 
     JSON_request("/data2.json",myChartAirHumidity);
     JSON_request("/data3.json",myChartWaterTemp);
     JSON_request("/data4.json",myChartNutrientLvl);
     JSON_request("/data5.json",myChartpH);
     JSON_request("/data6.json",myChartWaterLvl);
-
-/*
+    
     JSON_request("/daily1.json",myChartAirTempDaily);
     JSON_request("/daily2.json",myChartAirHumidityDaily);
-    /*
     JSON_request("/daily3.json",myChartWaterTempDaily);
+    JSON_request("/daily4.json",myChartNutrientLvlDaily);
     JSON_request("/daily5.json",myChartpHDaily);
     JSON_request("/daily6.json",myChartWaterLvlDaily);
-*/
 
-/*
-    JSON_request("/data1.json",myChartAirTempWeekly);
-    JSON_request("/data2.json",myChartAirHumidityWeekly);
+    JSON_request("/weekly1.json",myChartAirTempWeekly);
+    JSON_request("/weekly2.json",myChartAirHumidityWeekly);
+    JSON_request("/weekly3.json",myChartWaterTempWeekly);
+    JSON_request("/weekly4.json",myChartNutrientLvlWeekly);
+    JSON_request("/weekly5.json",myChartpHWeekly);
+    JSON_request("/weekly6.json",myChartWaterLvlWeekly);
+
+    JSON_request("/monthly1.json",myChartAirTempMonthly);
+    JSON_request("/monthly2.json",myChartAirHumidityMonthly);
+    JSON_request("/monthly3.json",myChartWaterTempMonthly);
+    JSON_request("/monthly4.json",myChartNutrientLvlMonthly);
+    JSON_request("/monthly5.json",myChartpHMonthly);
+    JSON_request("/monthly6.json",myChartWaterLvlMonthly);
+    */
+
     
-    JSON_request("/daily3.json",myChartWaterTempWeekly);
-    JSON_request("/daily5.json",myChartpHWeekly);
-    JSON_request("/daily6.json",myChartWaterLvlWeekly);
-*/ /*
-    JSON_request("/daily1.json",myChartAirTempMonthly);
-    JSON_request("/daily2.json",myChartAirHumidityMonthly);
+    JSON_request("/data1.json",myChartAirTemp); 
     
-    JSON_request("/daily3.json",myChartWaterTempMonthly);
-    JSON_request("/daily5.json",myChartpHMonthly);
-    JSON_request("/daily6.json",myChartWaterLvlMonthly);
-*/
-   }, 20000 ) ; 
+    JSON_request("/data2.json",myChartAirHumidity);
+    JSON_request("/data3.json",myChartWaterTemp);
+    JSON_request("/data4.json",myChartNutrientLvl);
+    JSON_request("/data5.json",myChartpH);
+    JSON_request("/data6.json",myChartWaterLvl);
+    
+    JSON_request("/daily1.json",myChartAirTempDaily);
+    
+    JSON_request("/daily2.json",myChartAirHumidityDaily);
+    JSON_request("/daily3.json",myChartWaterTempDaily);
+    JSON_request("/daily4.json",myChartNutrientLvlDaily);
+    JSON_request("/daily5.json",myChartpHDaily);
+    JSON_request("/daily6.json",myChartWaterLvlDaily); 
+
+    JSON_request("/weekly1.json",myChartAirTempWeekly); /*
+    JSON_request("/weekly2.json",myChartAirHumidityWeekly);
+    JSON_request("/weekly3.json",myChartWaterTempWeekly);
+    JSON_request("/weekly4.json",myChartNutrientLvlWeekly);
+    JSON_request("/weekly5.json",myChartpHWeekly);
+    JSON_request("/weekly6.json",myChartWaterLvlWeekly);*/
+
+    JSON_request("/monthly1.json",myChartAirTempMonthly);/*
+    JSON_request("/monthly2.json",myChartAirHumidityMonthly);
+    JSON_request("/monthly3.json",myChartWaterTempMonthly);
+    JSON_request("/monthly4.json",myChartNutrientLvlMonthly);
+    JSON_request("/monthly5.json",myChartpHMonthly);
+    JSON_request("/monthly6.json",myChartWaterLvlMonthly); */
+    
+   }, 10000 ) ; 
 
 window.onload = (event) => {
     secondaryInit(myChartAirTemp,'Air Temperature Live Data', 'Temperature (C)', 60, 100,5);
@@ -397,5 +483,9 @@ window.onload = (event) => {
 
     
     hideHistoricals();
+    /*
+    table.redraw();
 
+    addTableData(tableData,test);
+    table.redraw(); */
 };

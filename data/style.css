@@ -50,26 +50,21 @@ button {
   margin-left:25px;
 }
 
-.checkboxContainer ul {
-  
-}
 
 .chart-container{
   position:relative; width:500px; height:600px; right: 10px; top: 40px;
-  
- 
 } 
 
-/*
-canvas{
-
-  align-self: left;
-
+.summary-container{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  width: 650px;
+  align-self: center;
+  margin: auto;
   
-} 
-
-*/
-
+}
 
 .graphs {
   display: block;
@@ -157,3 +152,37 @@ h1{
   padding: 6px 12px;
   border: 1px solid rgb(0, 0, 0);
 }
+
+
+
+.summaryTitle {
+  font-family: Arial Narrow; 
+  margin: 0;
+  color: #0F3376;
+}
+
+
+
+.tabulator .tabulator-header .tabulator-col .tabulator-col-content .tabulator-col-title{
+  color:#1E88E5;
+  
+}
+
+.tabulator {
+  background-color:#ccc;
+  border: 1px solid #333;
+  border-radius: 10px;
+}
+
+.tabulator .tabulator-tableHolder .tabulator-table .tabulator-row{
+    color:#fff;
+    background-color: #666;
+  }
+
+
+
+
+
+
+
+
