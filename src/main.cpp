@@ -347,6 +347,9 @@ void printLocalTime(int time, int count, String filename){
     Serial.println("Failed to obtain time");
     return;
   }
+  else{
+    Serial.println("Time obtained/n");
+  }
 
   String s;
   File outfile = SPIFFS.open(filename, "w");
@@ -704,6 +707,13 @@ inline const char * const BoolToString(bool b)
   server.on("/monthly6.json", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(SPIFFS, "/monthly6.json", "application/json");
   });
+  
+ // Route to load timeStamp.json file 
+  server.on("/monthly6.json", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, "/monthly6.json", "application/json");
+  });
+  "/timeStamp.json";
+  "/dailyTimeStamp.json";
  }
 
 
@@ -750,6 +760,9 @@ void setup(){
   wifiManager.autoConnect("AutoConnectAP");
     Serial.println("connected...yeey :)");
   
+
+  configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
+
   if(!SPIFFS.begin(true)){
     Serial.println("An Error has occurred while mounting SPIFFS");
     return;
@@ -776,12 +789,11 @@ void setup(){
   store_data(0, monthlypHAvg, monthlypHData, 0, jsonMonthly5);
   store_data(0, monthlyWaterLevelAvg, monthlyWaterLevelData, 0, jsonMonthly6);
 
-  
+
   Serial.println(WiFi.localIP());
   routes();
   server.begin();
 
-  configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
 
 }
 void reconnect() {
@@ -1107,7 +1119,7 @@ else{
   totCount1 = 0;
   avgCount = 1;
   //serializeJsonPretty(doc2, Serial);
-  //serializeJsonPretty(timeStamp, Serial);
+  serializeJsonPretty(timeStamp, Serial);
   //printJSON();
   dailyCount++;
  }
@@ -1165,10 +1177,10 @@ else{
 if(runRoutes==true){
   routesLoop();
   runRoutes = false;
-  printf("run routes first");
+  //printf("run routes first");
 }
-else
-printf("routes completed");
+//else
+//printf("routes completed");
   
 
 /*
