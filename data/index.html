@@ -138,7 +138,7 @@
           <div class="graphElement">
           <label for="airHumidityHistory">Choose a Historical Graph:</label>
           <select name="airHumidityHistory" id="airHumidityHistoryDropdown" onchange="showHistoricalGraph(event,this.value,this.name)">
-            <option value=""> Please select Graph</option>
+            <option value=""> Please select a Graph</option>
             <option value="airHumidityDaily" >Daily Averages</option>
             <option value="airHumidityWeekly" >Weekly Averages</option>
             <option value="airHumidityMonthly" >Monthly Averages</option>
@@ -156,9 +156,9 @@
           </div>
 
           <div class="graphElement">
-          <label for="waterTempHistory">Choose a Historical Graph:</label>
+          <label for="waterTempHistory"> Choose a Historical Graph:</label> 
           <select name="waterTempHistory" id="waterTempHistoryDropdown" onchange="showHistoricalGraph(event,this.value,this.name)">
-            <option value=""> Please select Graph</option>
+            <option value=""> Please select a Graph</option>
             <option value="waterTempDaily" >Daily Averages</option>
             <option value="waterTempWeekly" >Weekly Averages</option>
             <option value="waterTempMonthly" >Monthly Averages</option>
@@ -274,6 +274,7 @@
 
         <section id="tables">
           <div class="tableElement" >
+            <h3>Air Temperature Live Data</h3>
             <div id="airTempT"></div>
           </div>
 
@@ -298,7 +299,7 @@
           </div>
 
           <div class="tableElement">
-          <label for="airHumidityHistoryT">Choose a Historical Graph:</label>
+          <label for="airHumidityHistoryT">Choose a Historical Table:</label>
           <select name="airHumidityHistoryT" id="airHumidityHistoryDropdownT" onchange="showHistoricalTable(event,this.value,this.name)">
             <option value=""> Please select Table</option>
             <option value="airHumidityDailyT" >Daily Averages</option>
@@ -318,7 +319,7 @@
           </div>
 
           <div class="tableElement">
-          <label for="waterTempHistoryT">Choose a Historical Graph:</label>
+          <label for="waterTempHistoryT">Choose a Historical Table:</label>
           <select name="waterTempHistoryT" id="waterTempHistoryDropdownT" onchange="showHistoricalTable(event,this.value,this.name)">
             <option value=""> Please select Table</option>
             <option value="waterTempDailyT" >Daily Averages</option>
@@ -338,7 +339,7 @@
           </div>
 
           <div class="tableElement">
-          <label for="waterLvlHistoryT">Choose a Historical Graph:</label>
+          <label for="waterLvlHistoryT">Choose a Historical Table:</label>
           <select name="waterLvlHistoryT" id="waterLvlHistoryDropdownT" onchange="showHistoricalTable(event,this.value,this.name)">
             <option value=""> Please select Table</option>
             <option value="waterLvlDailyT" >Daily Averages</option>
@@ -358,7 +359,7 @@
           </div>
 
           <div class="tableElement">
-          <label for="pHHistoryT">Choose a Historical Graph:</label>
+          <label for="pHHistoryT">Choose a Historical Table:</label>
           <select name="pHHistoryT" id="pHHistoryDropdownT" onchange="showHistoricalTable(event,this.value,this.name)">
             <option value=""> Please select Table</option>
             <option value="pHDailyT" >Daily Averages</option>
@@ -378,7 +379,7 @@
           </div>
 
           <div class="tableElement">
-          <label for="nutrientLvlHistoryT">Choose a Historical Graph:</label>
+          <label for="nutrientLvlHistoryT">Choose a Historical Table:</label>
           <select name="nutrientLvlHistoryT" id="nutrientLvlHistoryDropdownT" onchange="showHistoricalTable(event,this.value,this.name)">
             <option value=""> Please select Table</option>
             <option value="nutrientLvlDailyT" >Daily Averages</option>
