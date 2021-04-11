@@ -240,6 +240,13 @@ else if (var=="mqttServer"){
 else if (var=="mqttPort"){
   return readFile(SPIFFS, "/mqttPort.txt");
 }
+else if (var=="timeStamp1"){
+  return readFile(SPIFFS, "/timeStamp1.txt");
+}
+else if (var=="runTime1"){
+  return readFile(SPIFFS, "/runTime1.txt");
+}
+
   return String();
 }
 
@@ -301,6 +308,8 @@ const char* MQTT_PORT = "mqttPort";
 //const char* PARAM_INT = "inputInt";
 const char* PARAM_HIGHER = "floatHigher";
 const char* PARAM_LOWER = "floatLower";
+const char* TIMESTAMP_1="timeStamp1";
+const char* RUNTIME_1="runTime1";
 
 
 
@@ -557,6 +566,9 @@ void printLocalTime(int time, int count, String filename){
     break;
 
 }
+  if(serializeJsonPretty(hourlyTimeStamp, outfile) == 0){
+    Serial.println("Failed to write to file");
+  }
   outfile.close();
 }
 
@@ -694,12 +706,10 @@ String readBME280Humidity() {
   return String();
 }
 */
-
 inline const char * const BoolToString(bool b)
 {
   return b ? "true" : "false";
 }
-
  void routes(){
     // Route for root / web page
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
@@ -993,7 +1003,6 @@ void setup(){
   printLocalTime(4, 0, jsonMonthlyTimeStamp);
 
 
-
   // Send web page with input fields to client
   /*server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send_P(200, "text/html", "/index.html", processor);
@@ -1021,6 +1030,14 @@ void setup(){
     else if (request->hasParam(PARAM_LOWER)) {
       inputMessage = request->getParam(PARAM_LOWER)->value();
       writeFile(SPIFFS, "/floatLower.txt", inputMessage.c_str());
+    }
+    else if (request->hasParam(TIMESTAMP_1)) {
+      inputMessage = request->getParam(TIMESTAMP_1)->value();
+      writeFile(SPIFFS, "/timeStamp1.txt", inputMessage.c_str());
+    }
+    else if (request->hasParam(RUNTIME_1)) {
+      inputMessage = request->getParam(RUNTIME_1)->value();
+      writeFile(SPIFFS, "/runTime1.txt", inputMessage.c_str());
     }
     else if (request->hasParam(MQTT_USERNAME)) {
       inputMessage = request->getParam(MQTT_USERNAME)->value();
