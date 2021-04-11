@@ -888,9 +888,26 @@ inline const char * const BoolToString(bool b)
     request->send(SPIFFS, "/monthly6.json", "application/json");
   });
 
-  
- // "/timeStamp.json";
- // "/dailyTimeStamp.json";
+  // Route to load timeStamp.json file 
+  server.on("/timeStamp.json", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, "/timeStamp.json", "application/json");
+  });
+
+  // Route to load timeStamp.json file 
+  server.on("/dailyTimeStamp.json", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, "/dailyTimeStamp.json", "application/json");
+  });
+
+   // Route to load timeStamp.json file 
+  server.on("/weeklyTimeStamp.json", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, "/weeklyTimeStamp.json", "application/json");
+  });
+
+   // Route to load timeStamp.json file 
+  server.on("/monthlyTimeStamp.json", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, "/monthlyTimeStamp.json", "application/json");
+  });
+
  }
 
 
