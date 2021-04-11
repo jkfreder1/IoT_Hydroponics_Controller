@@ -357,9 +357,11 @@ function JSON_requestTime(jsonData,timeContainer){
 setInterval(function ( ){ 
     
     JSON_requestTime("/timeStamp.json",timestampsLive);
+    /*
     JSON_requestTime("/dailyTimeStamp.json",timestampsDaily);
     JSON_requestTime("/weeklyTimeStamp.json",timestampsWeekly);
     JSON_requestTime("/monthlyTimeStamp.json",timestampsMonthly);
+    */
     /*
     JSON_request("/data1.json",myChartAirTemp,tableAirTemp,timestampsLive);
     JSON_request("/data2.json",myChartAirHumidity,tableAirHumidity,timestampsLive);
@@ -389,8 +391,9 @@ setInterval(function ( ){
     JSON_request("/monthly5.json",myChartpHMonthly,tablepHMonthly,timestampsMonthly);
     JSON_request("/monthly6.json",myChartWaterLvlMonthly,tableWaterLvlMonthly,timestampsMonthly);
 */
-/*
+
     JSON_request("/data1.json",myChartAirTemp); 
+    /*
     JSON_request("/data2.json",myChartAirHumidity);
     JSON_request("/data3.json",myChartWaterTemp);
     JSON_request("/data4.json",myChartNutrientLvl);

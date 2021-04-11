@@ -573,7 +573,7 @@ float calcAverage(float avg, float data, int count){
 
 void printJSON(){
   uint8_t* pBuffer = nullptr;
-  File testfile = SPIFFS.open("/data.json", "r");
+  File testfile = SPIFFS.open("/timeStamp.json", "r");
   if(testfile){
     unsigned int fileSize = testfile.size();
     pBuffer = (uint8_t*)malloc(fileSize + 1);
@@ -1393,8 +1393,8 @@ else{
   totCount1 = 0;
   avgCount = 1;
   //serializeJsonPretty(doc2, Serial);
-  serializeJsonPretty(timeStamp, Serial);
-  //printJSON();
+  //serializeJsonPretty(timeStamp, Serial);
+  printJSON();
   dailyCount++;
  }
 
