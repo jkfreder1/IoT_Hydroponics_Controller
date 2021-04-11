@@ -26,7 +26,7 @@ deque<int> inttds;
 deque<int> intph;
 
 int trigPin = 33;    // Trigger
-int echoPin = 25;    // Echo
+int echoPin = 32;    // 25 Echo
 long duration, cm, inches;
 
 int waterTempHighParam=90;
@@ -240,6 +240,13 @@ else if (var=="mqttServer"){
 else if (var=="mqttPort"){
   return readFile(SPIFFS, "/mqttPort.txt");
 }
+else if (var=="timeStamp1"){
+  return readFile(SPIFFS, "/timeStamp1.txt");
+}
+else if (var=="runTime1"){
+  return readFile(SPIFFS, "/runTime1.txt");
+}
+
   return String();
 }
 
@@ -301,6 +308,8 @@ const char* MQTT_PORT = "mqttPort";
 //const char* PARAM_INT = "inputInt";
 const char* PARAM_HIGHER = "floatHigher";
 const char* PARAM_LOWER = "floatLower";
+const char* TIMESTAMP_1="timeStamp1";
+const char* RUNTIME_1="runTime1";
 
 
 
@@ -521,6 +530,9 @@ void printLocalTime(int time, int count, String filename){
     Serial.println("Failed to obtain time");
     return;
   }
+  else{
+    Serial.println("Time obtained/n");
+  }
 
   String s;
   File outfile = SPIFFS.open(filename, "w");
@@ -694,27 +706,10 @@ String readBME280Humidity() {
   return String();
 }
 */
-/*
-void setup_wifi() {
-  delay(10);
-  // We start by connecting to a WiFi network
-  Serial.println();
-  Serial.print("Connecting to ");
-  Serial.println(ssid);
-
-  WiFi.begin(ssid, password);
-
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
-  }
-
-  Serial.println("");
-  Serial.println("WiFi connected");
-  Serial.println("IP address: ");
-  Serial.println(WiFi.localIP());
+inline const char * const BoolToString(bool b)
+{
+  return b ? "true" : "false";
 }
-*/
  void routes(){
     // Route for root / web page
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
@@ -755,9 +750,27 @@ void setup_wifi() {
   server.on("/logged-out", HTTP_GET, [](AsyncWebServerRequest *request){
    request->send(SPIFFS, "/logged_out.html", String(), false, processor);
   });
+  server.on("/airTempError", HTTP_GET, [](AsyncWebServerRequest *request){
+  request->send(200, "text/plain", BoolToString(false));
+  });
+  server.on("/airHumidError", HTTP_GET, [](AsyncWebServerRequest *request){
+  request->send(200, "text/plain", BoolToString(false));
+  });
+  server.on("/waterTempError", HTTP_GET, [](AsyncWebServerRequest *request){
+  request->send(200, "text/plain", BoolToString(false));
+  });
 
+  server.on("/waterLvlError", HTTP_GET, [](AsyncWebServerRequest *request){
+  request->send(200, "text/plain", BoolToString(false));
+  });
+  server.on("/pHError", HTTP_GET, [](AsyncWebServerRequest *request){
+  request->send(200, "text/plain", BoolToString(false));
+  });
+  server.on("/nutrientLvlError", HTTP_GET, [](AsyncWebServerRequest *request){
+  request->send(200, "text/plain", BoolToString(false));
+  });
  }
-
+ 
  void routesLoop() {
  // Route to load data1.json file 
  server.on("/data1.json", HTTP_GET, [](AsyncWebServerRequest *request){
@@ -879,6 +892,32 @@ void setup_wifi() {
   server.on("/monthly6.json", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(SPIFFS, "/monthly6.json", "application/json");
   });
+  
+ // Route to load timeStamp.json file 
+  server.on("/monthly6.json", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, "/monthly6.json", "application/json");
+  });
+
+  // Route to load timeStamp.json file 
+  server.on("/timeStamp.json", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, "/timeStamp.json", "application/json");
+  });
+
+  // Route to load timeStamp.json file 
+  server.on("/dailyTimeStamp.json", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, "/dailyTimeStamp.json", "application/json");
+  });
+
+   // Route to load timeStamp.json file 
+  server.on("/weeklyTimeStamp.json", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, "/weeklyTimeStamp.json", "application/json");
+  });
+
+   // Route to load timeStamp.json file 
+  server.on("/monthlyTimeStamp.json", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, "/monthlyTimeStamp.json", "application/json");
+  });
+
  }
 
 
@@ -911,10 +950,10 @@ void setup(){
   timerAlarmEnable(timer);
 
   pinMode(5,INPUT);
-  pinMode(15,INPUT);
+  pinMode(17,INPUT);////15
   pinMode(19,INPUT);
   attachInterrupt(digitalPinToInterrupt(5), button3ISR,RISING);
-  attachInterrupt(digitalPinToInterrupt(15), buttonISR, RISING);
+  attachInterrupt(digitalPinToInterrupt(17), buttonISR, RISING);////15
   attachInterrupt(digitalPinToInterrupt(19), button2ISR, RISING);
 
   /*
@@ -929,6 +968,9 @@ void setup(){
 
 
   
+
+  configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
+
   if(!SPIFFS.begin(true)){
     Serial.println("An Error has occurred while mounting SPIFFS");
     return;
@@ -989,6 +1031,14 @@ void setup(){
       inputMessage = request->getParam(PARAM_LOWER)->value();
       writeFile(SPIFFS, "/floatLower.txt", inputMessage.c_str());
     }
+    else if (request->hasParam(TIMESTAMP_1)) {
+      inputMessage = request->getParam(TIMESTAMP_1)->value();
+      writeFile(SPIFFS, "/timeStamp1.txt", inputMessage.c_str());
+    }
+    else if (request->hasParam(RUNTIME_1)) {
+      inputMessage = request->getParam(RUNTIME_1)->value();
+      writeFile(SPIFFS, "/runTime1.txt", inputMessage.c_str());
+    }
     else if (request->hasParam(MQTT_USERNAME)) {
       inputMessage = request->getParam(MQTT_USERNAME)->value();
       writeFile(SPIFFS, "/mqttUsername.txt", inputMessage.c_str());
@@ -1028,12 +1078,10 @@ void setup(){
   
   //client.setCallback(callback);
 
-  
   Serial.println(WiFi.localIP());
   routes();
   server.begin();
 
-  configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
 
 }
 void reconnect() {
@@ -1302,9 +1350,9 @@ else{
   //}
 
 //if(counter>150){
- array1=analogRead(0);//////ph sensor
- array2=analogRead(0);
- array3=analogRead(0);
+ array1=analogRead(16);////// 0 ph sensor
+ array2=analogRead(16);//0
+ array3=analogRead(16);//0
  array1=array2+array3+array1;
  float volt=(float)array1*5.0/4096/3;
  ph_act = (-5.70 * volt + calibration_value);
@@ -1362,7 +1410,7 @@ else{
   totCount1 = 0;
   avgCount = 1;
   //serializeJsonPretty(doc2, Serial);
-  //serializeJsonPretty(timeStamp, Serial);
+  serializeJsonPretty(timeStamp, Serial);
   //printJSON();
   dailyCount++;
  }
@@ -1420,10 +1468,10 @@ else{
 if(runRoutes==true){
   routesLoop();
   runRoutes = false;
-  printf("run routes first");
+  //printf("run routes first");
 }
-else
-printf("routes completed");
+//else
+//printf("routes completed");
   
 
 /*
@@ -1529,6 +1577,7 @@ else{
   tds_offset=tds_value_input-tdsValue;
   }
 */
+/*
 if (!client.connected()) {
     reconnect();
   }
@@ -1561,7 +1610,7 @@ if (!client.connected()) {
     client.publish("esp32/humidity", humString);
   }
   
-
+*/
   //if(sleeptime>200){
     //esp_deep_sleep_start();/////sleep DONT DELETE
     //sleeptime=0;
