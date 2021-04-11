@@ -26,7 +26,7 @@ deque<int> inttds;
 deque<int> intph;
 
 int trigPin = 33;    // Trigger
-int echoPin = 25;    // Echo
+int echoPin = 32;    // 25 Echo
 long duration, cm, inches;
 
 int waterTempHighParam=90;
@@ -940,10 +940,10 @@ void setup(){
   timerAlarmEnable(timer);
 
   pinMode(5,INPUT);
-  pinMode(15,INPUT);
+  pinMode(17,INPUT);////15
   pinMode(19,INPUT);
   attachInterrupt(digitalPinToInterrupt(5), button3ISR,RISING);
-  attachInterrupt(digitalPinToInterrupt(15), buttonISR, RISING);
+  attachInterrupt(digitalPinToInterrupt(17), buttonISR, RISING);////15
   attachInterrupt(digitalPinToInterrupt(19), button2ISR, RISING);
 
   /*
@@ -1333,9 +1333,9 @@ else{
   //}
 
 //if(counter>150){
- array1=analogRead(0);//////ph sensor
- array2=analogRead(0);
- array3=analogRead(0);
+ array1=analogRead(16);////// 0 ph sensor
+ array2=analogRead(16);//0
+ array3=analogRead(16);//0
  array1=array2+array3+array1;
  float volt=(float)array1*5.0/4096/3;
  ph_act = (-5.70 * volt + calibration_value);
