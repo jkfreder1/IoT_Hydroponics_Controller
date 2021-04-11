@@ -20,6 +20,7 @@ var table = new Tabulator("#example-table", {
           
     ]
 });
+                                    // **** SUMMARY TABLES **** //
 
 var tableAirTempSummary = new Tabulator("#airTemp-summary", {
     reactiveData:true, //enable reactive data
@@ -87,10 +88,7 @@ var tableNutrientLvlSummary = new Tabulator("#nutrientLvl-summary", {
           
     ]
 });
-
-
-
-
+                                    // **** DATA TABLES **** //
 
 var tableAirTemp = new Tabulator("#airTempT", {
     reactiveData:true, //enable reactive data
@@ -138,6 +136,217 @@ var tableAirTempMonthly = new Tabulator("#airTempMonthlyT", {
           
     ]
 });
+
+var tableAirHumidity = new Tabulator("#airHumidityT", {
+    reactiveData:true, //enable reactive data
+    data:tableData, //assign data array
+    layout:"fitDataTable",
+    columns:[
+          {title:"Date", field:"time"},
+          {title:"Temperature", field:"dataset"},
+    ]
+});
+
+var tableAirHumidity = new Tabulator("#airHumidityT", {
+    reactiveData:true, //enable reactive data
+    data:tableData, //assign data array
+    layout:"fitDataTable",
+    columns:[
+          {title:"Date", field:"time"},
+          {title:"Temperature", field:"dataset"},
+    ]
+});
+
+var tableAirHumidityDaily = new Tabulator("#airHumidityDailyT", {
+    reactiveData:true, //enable reactive data
+    data:tableData, //assign data array
+    layout:"fitDataTable",
+    columns:[
+          {title:"Date", field:"time"},
+          {title:"Temperature", field:"dataset"},
+    ]
+});
+
+var tableAirHumidityWeekly = new Tabulator("#airHumidityWeeklyT", {
+    reactiveData:true, //enable reactive data
+    data:tableData, //assign data array
+    layout:"fitDataTable",
+    columns:[
+          {title:"Date", field:"time"},
+          {title:"Temperature", field:"dataset"},
+    ]
+});
+
+var tableAirHumidityMonthly = new Tabulator("#airHumidityMonthlyT", {
+    reactiveData:true, //enable reactive data
+    data:tableData, //assign data array
+    layout:"fitDataTable",
+    columns:[
+          {title:"Date", field:"time"},
+          {title:"Temperature", field:"dataset"},
+    ]
+});
+
+var tableWaterTemp = new Tabulator("#waterTempT", {
+    reactiveData:true, //enable reactive data
+    data:tableData, //assign data array
+    layout:"fitDataTable",
+    columns:[
+          {title:"Date", field:"time"},
+          {title:"Temperature", field:"dataset"},
+    ]
+});
+
+var tableWaterTempDaily = new Tabulator("#waterTempDailyT", {
+    reactiveData:true, //enable reactive data
+    data:tableData, //assign data array
+    layout:"fitDataTable",
+    columns:[
+          {title:"Date", field:"time"},
+          {title:"Temperature", field:"dataset"},
+    ]
+});
+
+var tableWaterTempWeekly = new Tabulator("#waterTempWeeklyT", {
+    reactiveData:true, //enable reactive data
+    data:tableData, //assign data array
+    layout:"fitDataTable",
+    columns:[
+          {title:"Date", field:"time"},
+          {title:"Temperature", field:"dataset"},
+    ]
+});
+
+var tableWaterTempMonthly = new Tabulator("#waterTempMonthlyT", {
+    reactiveData:true, //enable reactive data
+    data:tableData, //assign data array
+    layout:"fitDataTable",
+    columns:[
+          {title:"Date", field:"time"},
+          {title:"Temperature", field:"dataset"},
+    ]
+});
+
+var tableWaterLvl = new Tabulator("#waterLvlT", {
+    reactiveData:true, //enable reactive data
+    data:tableData, //assign data array
+    layout:"fitDataTable",
+    columns:[
+          {title:"Date", field:"time"},
+          {title:"Temperature", field:"dataset"},
+    ]
+});
+
+var tableWaterLvlDaily = new Tabulator("#waterLvlDailyT", {
+    reactiveData:true, //enable reactive data
+    data:tableData, //assign data array
+    layout:"fitDataTable",
+    columns:[
+          {title:"Date", field:"time"},
+          {title:"Temperature", field:"dataset"},
+    ]
+});
+
+var tableWaterLvlWeekly = new Tabulator("#waterLvlWeeklyT", {
+    reactiveData:true, //enable reactive data
+    data:tableData, //assign data array
+    layout:"fitDataTable",
+    columns:[
+          {title:"Date", field:"time"},
+          {title:"Temperature", field:"dataset"},
+    ]
+});
+
+var tableWaterLvlMonthly = new Tabulator("#waterLvlMonthlyT", {
+    reactiveData:true, //enable reactive data
+    data:tableData, //assign data array
+    layout:"fitDataTable",
+    columns:[
+          {title:"Date", field:"time"},
+          {title:"Temperature", field:"dataset"},
+    ]
+});
+
+var tablepH = new Tabulator("#pHT", {
+    reactiveData:true, //enable reactive data
+    data:tableData, //assign data array
+    layout:"fitDataTable",
+    columns:[
+          {title:"Date", field:"time"},
+          {title:"Temperature", field:"dataset"},
+    ]
+});
+
+var tablepHDaily = new Tabulator("#pHDailyT", {
+    reactiveData:true, //enable reactive data
+    data:tableData, //assign data array
+    layout:"fitDataTable",
+    columns:[
+          {title:"Date", field:"time"},
+          {title:"Temperature", field:"dataset"},
+    ]
+});
+
+var tablepHWeekly = new Tabulator("#pHWeeklyT", {
+    reactiveData:true, //enable reactive data
+    data:tableData, //assign data array
+    layout:"fitDataTable",
+    columns:[
+          {title:"Date", field:"time"},
+          {title:"Temperature", field:"dataset"},
+    ]
+});
+
+var tablepHMonthly = new Tabulator("#pHMonthlyT", {
+    reactiveData:true, //enable reactive data
+    data:tableData, //assign data array
+    layout:"fitDataTable",
+    columns:[
+          {title:"Date", field:"time"},
+          {title:"Temperature", field:"dataset"},
+    ]
+});
+
+var tableNutrientLvl = new Tabulator("#nutrientLvlT", {
+    reactiveData:true, //enable reactive data
+    data:tableData, //assign data array
+    layout:"fitDataTable",
+    columns:[
+          {title:"Date", field:"time"},
+          {title:"Temperature", field:"dataset"},
+    ]
+});
+
+var tableNutrientLvlDaily = new Tabulator("#nutrientLvlDailyT", {
+    reactiveData:true, //enable reactive data
+    data:tableData, //assign data array
+    layout:"fitDataTable",
+    columns:[
+          {title:"Date", field:"time"},
+          {title:"Temperature", field:"dataset"},
+    ]
+});
+
+var tableNutrientLvlWeekly = new Tabulator("#nutrientLvlWeeklyT", {
+    reactiveData:true, //enable reactive data
+    data:tableData, //assign data array
+    layout:"fitDataTable",
+    columns:[
+          {title:"Date", field:"time"},
+          {title:"Temperature", field:"dataset"},
+    ]
+});
+
+var tableNutrientLvlMonthly = new Tabulator("#nutrientLvlMonthlyT", {
+    reactiveData:true, //enable reactive data
+    data:tableData, //assign data array
+    layout:"fitDataTable",
+    columns:[
+          {title:"Date", field:"time"},
+          {title:"Temperature", field:"dataset"},
+    ]
+});
+
 
 
 function addSummary(table,data,timestamps){

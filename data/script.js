@@ -85,19 +85,25 @@ function showHistoricalGraph(evt,graphID,graphCategory) {
 
 function showHistoricalTable(evt,tableID,tableCategory) {
   let historyTables;
-  console.log(tableID);
-  console.log(tableCategory);
+  //console.log(tableID);
+  //console.log(tableCategory);
   
   // obtain historical table of category and hide all of them
-  historyTables = document.getElementById(graphCategory).getElementsByTagName("div");
-  console.log(historyTables);
+  historyTables = document.getElementById(tableCategory).getElementsByTagName("div");
+  //console.log(historyTables);
   for (i = 0; i < historyTables.length; i++) {
     historyTables[i].style.display = "none";
   }
-
+  tableAirTempDaily.redraw(true); 
+  //$(tableID).tabulator("redraw");
   // show the historical table that was selected
-  document.getElementById(graphID).style.display = "block";
-  console.log(document.getElementById(graphID));
+  document.getElementById(tableID).style.display = "block";
+  //console.log(document.getElementById(tableID));
+  tableAirTempDaily.redraw(true); 
+
+  //$(tableID).tabulator("redraw");
+
+
 
 }
 
@@ -122,7 +128,7 @@ function hideHistoricals(){
   // for each in historical container, hide the div elements (tables) within it 
   for(i=0; i <historyContainer.length; i++){
     historyTables = historyContainer[i].getElementsByTagName("div");
-    for (k = 0; k < historyGraphs.length; k++) {
+    for (k = 0; k < historyTables.length; k++) {
       historyTables[k].style.display = "none";
     }
   }
@@ -155,7 +161,7 @@ function openTab(evt, tabSection, tabName) {
 }
 
 function showActiveTab(){
-  
+
 }
 //forms
 function submitMessage() {

@@ -344,7 +344,7 @@ function JSON_requestTime(jsonData,timeContainer){
     xhttpL.onreadystatechange = function() {
      if (this.readyState == 4 && this.status == 200) {
         timeContainer = JSON.parse(this.responseText);
-      }
+     }
     };
     xhttpL.ontimeout = function (e) {
         console.log('timeout occurred for ${jsonData}');
@@ -355,12 +355,12 @@ function JSON_requestTime(jsonData,timeContainer){
 }
 
 setInterval(function ( ){ 
+    
+    JSON_requestTime("/timeStamp.json",timestampsLive);
+    JSON_requestTime("/dailyTimeStamp.json",timestampsDaily);
+    JSON_requestTime("/weeklyTimeStamp.json",timestampsWeekly);
+    JSON_requestTime("/monthlyTimeStamp.json",timestampsMonthly);
     /*
-    JSON_requestTime("/timeStamp.json",'timestampsLive');
-    JSON_requestTime("/dailyTimeStamp.json",'timestampsDaily');
-    JSON_requestTime("/weeklyTimeStamp.json",'timestampsWeekly');
-    JSON_requestTime("/monthlyTimeStamp.json",'timestampsMonthly');
-
     JSON_request("/data1.json",myChartAirTemp,tableAirTemp,timestampsLive);
     JSON_request("/data2.json",myChartAirHumidity,tableAirHumidity,timestampsLive);
     JSON_request("/data3.json",myChartWaterTemp,tableWaterTemp,timestampsLive);
@@ -416,7 +416,7 @@ setInterval(function ( ){
     JSON_request("/monthly3.json",myChartWaterTempMonthly);
     JSON_request("/monthly4.json",myChartNutrientLvlMonthly);
     JSON_request("/monthly5.json",myChartpHMonthly);
-    JSON_request("/monthly6.json",myChartWaterLvlMonthly);
+    JSON_request("/monthly6.json",myChartWaterLvlMonthly); 
     */
 /*
     
