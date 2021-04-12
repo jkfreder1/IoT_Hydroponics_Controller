@@ -954,9 +954,7 @@ inline const char * const BoolToString(bool b)
   server.on("/airTempError", HTTP_GET, [](AsyncWebServerRequest *request){
   request->send(200, "text/plain", BoolToString(errorAir));
   });
-  server.on("/airHumidError", HTTP_GET, [](AsyncWebServerRequest *request){
-  request->send(200, "text/plain", BoolToString(true));
-  });
+  
   server.on("/waterTempError", HTTP_GET, [](AsyncWebServerRequest *request){
   request->send(200, "text/plain", BoolToString(errorWaterTemp));
   });
@@ -1395,11 +1393,13 @@ void reconnect() {
 }
  int clear2=0; 
  int errorflag=0;
- int errorflag1=0;
- int errorflag2=0;
- int errorflag3=0;
- int errorflag4=0;
- int errorflag5=0;
+
+ 
+ int errorflag1=0; // tds
+ int errorflag2=0; // waterLvl
+ int errorflag3=0; // Air 
+ int errorflag4=0; // waterTemp
+ int errorflag5=0; // pH
 
 void displayWaterTemp(float temperatureF){
   lcd.setCursor(0,0);//water temp display
@@ -1480,7 +1480,7 @@ void displayDHT(float h, float f){
     lcd.print("Critical error");
     lcd.setCursor(0,1);
     lcd.print("Check Sensor");
-    errorAir = 0;
+    errorAir = 1;
   }
   else{
     if(clear3==1){
