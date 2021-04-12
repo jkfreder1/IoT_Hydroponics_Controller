@@ -606,6 +606,12 @@ float monthlypH = 0;
 float monthlyTDS = 0;
 float monthlyWaterLevel = 0;
 
+int errorflag1=0; // tds
+int errorflag2=0; // waterLvl
+int errorflag3=0; // Air 
+int errorflag4=0; // waterTemp
+int errorflag5=0; // pH
+
 int dailyArray = 0;
 int weeklyArray = 0;
 int monthlyArray = 0;
@@ -684,7 +690,7 @@ void printLocalTime(int time, int count, String filename){
     Serial.println("Failed to write to file");
   }
   else
-    Serial.println("something written in file");
+    //Serial.println("something written in file");
   outfile.close();
 }
 
@@ -947,23 +953,21 @@ inline const char * const BoolToString(bool b)
    request->send(SPIFFS, "/logged_out.html", String(), false, processor);
   });
   server.on("/airTempError", HTTP_GET, [](AsyncWebServerRequest *request){
-  request->send(200, "text/plain", BoolToString(errorAir));
+  request->send(200, "text/plain", BoolToString(errorflag3));
   });
-  server.on("/airHumidError", HTTP_GET, [](AsyncWebServerRequest *request){
-  request->send(200, "text/plain", BoolToString(true));
-  });
+  
   server.on("/waterTempError", HTTP_GET, [](AsyncWebServerRequest *request){
-  request->send(200, "text/plain", BoolToString(errorWaterTemp));
+  request->send(200, "text/plain", BoolToString(errorflag4));
   });
 
   server.on("/waterLvlError", HTTP_GET, [](AsyncWebServerRequest *request){
-  request->send(200, "text/plain", BoolToString(errorWaterLevel));
+  request->send(200, "text/plain", BoolToString(errorflag2));
   });
   server.on("/pHError", HTTP_GET, [](AsyncWebServerRequest *request){
-  request->send(200, "text/plain", BoolToString(errorpH));
+  request->send(200, "text/plain", BoolToString(errorflag5));
   });
   server.on("/nutrientLvlError", HTTP_GET, [](AsyncWebServerRequest *request){
-  request->send(200, "text/plain", BoolToString(errorTDS));
+  request->send(200, "text/plain", BoolToString(errorflag1));
   });
  }
  
@@ -1390,11 +1394,6 @@ void reconnect() {
 }
  int clear2=0; 
  int errorflag=0;
- int errorflag1=0;
- int errorflag2=0;
- int errorflag3=0;
- int errorflag4=0;
- int errorflag5=0;
 
 void displayWaterTemp(float temperatureF){
   lcd.setCursor(0,0);//water temp display

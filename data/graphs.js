@@ -102,7 +102,7 @@ var defaultOptions = {
                 display: true,
                 //labelString: 'Time',
                 fontSize: 25,
-                padding: 10,
+                //padding: 10,
             },
                       
         }]
@@ -379,7 +379,7 @@ function JSON_error(jsonData,errorContainer,errorID){
 }
 
 setInterval(function ( ){ 
-    /*
+    
     JSON_requestTime("/timeStamp.json",timestampsLive);
     JSON_requestTime("/dailyTimeStamp.json",timestampsDaily);
     JSON_requestTime("/weeklyTimeStamp.json",timestampsWeekly);
@@ -416,12 +416,11 @@ setInterval(function ( ){
     JSON_request("/monthly6.json",myChartWaterLvlMonthly,tableWaterLvlMonthly,timestampsMonthly);
 
     JSON_error("/airTempError",errorAir,"errorAirTemp");
-    JSON_error("/airHumidError",errorAirHumid,"errorAirHumid");
     JSON_error("/waterTempError",errorWaterTemp,"errorWaterTemp");
     JSON_error("/waterLvlError",errorWaterLevel,"errorWaterLvl");
     JSON_error("/pHError",errorpH,"errorpH");
     JSON_error("/nutrientLvlError",errorTDS,"errorNutrientLvl");
-*/
+
 
 /*
     JSON_request("/data1.json",myChartAirTemp); 
