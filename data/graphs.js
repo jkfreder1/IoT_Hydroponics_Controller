@@ -6,7 +6,8 @@ var timestampsMonthly = [];
 
 var defaultData = {
 
-    labels: [ '12PM' , '1AM', '2AM', '3AM', '4AM', '5AM', '6AM', '7AM', '8AM', '9AM', '10AM', '11AM', '12PM', '1PM', '2PM', '3PM', '4PM', '5PM', '6PM', '7PM', '8PM', '9PM', '10PM', '11PM'  ],
+    //labels: [ '12PM' , '1AM', '2AM', '3AM', '4AM', '5AM', '6AM', '7AM', '8AM', '9AM', '10AM', '11AM', '12PM', '1PM', '2PM', '3PM', '4PM', '5PM', '6PM', '7PM', '8PM', '9PM', '10PM', '11PM'  ],
+    labels: [],
     datasets: [{
         label: 'Submission',
         data: [ ],
@@ -17,7 +18,9 @@ var defaultData = {
 
 var defaultDataDaily = {
 
-    labels: [ 'Apr 1' , 'Apr 2', 'Apr 3', 'Apr 4', 'Apr 5', 'Apr 6', 'Apr 7', 'Apr 8', 'Apr 9', 'Apr 10', 'Apr 11', 'Apr 12', 'Apr 13', 'Apr 14', 'Apr 15', 'Apr 16', 'Apr 17', 'Apr 18', 'Apr 19', 'Apr 20', 'Apr 21', 'Apr 22', 'Apr 23', 'Apr 24'  ],
+    //labels: [ 'Apr 1' , 'Apr 2', 'Apr 3', 'Apr 4', 'Apr 5', 'Apr 6', 'Apr 7', 'Apr 8', 'Apr 9', 'Apr 10', 'Apr 11', 'Apr 12', 'Apr 13', 'Apr 14', 'Apr 15', 'Apr 16', 'Apr 17', 'Apr 18', 'Apr 19', 'Apr 20', 'Apr 21', 'Apr 22', 'Apr 23', 'Apr 24'  ],
+    labels: [],
+
     datasets: [{
         label: 'Submission',
         data: [ ],
@@ -28,7 +31,9 @@ var defaultDataDaily = {
 
 var defaultDataWeekly = {
 
-    labels: [ 'Apr 4 2021' , 'Apr 11 2021', 'Apr 18 2021', 'Apr 25 2021', 'May 2 2021', 'May 9 2021', 'May 16 2021', 'May 23 2021', 'May 30 2021'],
+    //labels: [ 'Apr 4 2021' , 'Apr 11 2021', 'Apr 18 2021', 'Apr 25 2021', 'May 2 2021', 'May 9 2021', 'May 16 2021', 'May 23 2021', 'May 30 2021'],
+    labels: [],
+
     datasets: [{
         label: 'Submission',
         data: [ ],
@@ -38,7 +43,9 @@ var defaultDataWeekly = {
 }
 var defaultDataMonthly = {
 
-    labels: [ 'Apr 2021' , 'May 2021', 'Jun 2021', 'Jul 2021', 'Aug 2021', 'Sep 2021', 'Oct 2021', 'Nov 2021', 'Dec 2021', 'Jan 2022', 'Feb 2022', 'Mar 2022'],
+    //labels: [ 'Apr 2021' , 'May 2021', 'Jun 2021', 'Jul 2021', 'Aug 2021', 'Sep 2021', 'Oct 2021', 'Nov 2021', 'Dec 2021', 'Jan 2022', 'Feb 2022', 'Mar 2022'],
+    labels: [],
+
     datasets: [{
         label: 'Submission',
         data: [ ],
@@ -312,9 +319,8 @@ var myChartNutrientLvlMonthly= new Chart(ctxnutrientLvlMonthly, {
 
 function addGraphData(chart, data, timestamps) {
 
-    chart.data.labels.forEach((labels) =>  {
-        labels = timestamps
-    });
+    chart.data.labels = timestamps[0].dataset;
+
     chart.data.datasets.forEach((dataset) => {
         dataset.data = data.dataset;
     });
@@ -322,14 +328,15 @@ function addGraphData(chart, data, timestamps) {
     chart.update();
 }
 
-function JSON_request(jsonData,chart,table,timestamps){
+function JSON_request(jsonData,chart,table,timestamps,summaryTable){
     let xhttpL = new XMLHttpRequest();
     xhttpL.onreadystatechange = function() {
      if (this.readyState == 4 && this.status == 200) {
         var myArr = JSON.parse(this.responseText);
         addGraphData(chart,myArr,timestamps);
-        //addTableData(table,myArr,timestamps);
-        //addSummary(table,myArr,timestamps);
+        addTableData(table,myArr,timestamps);
+        if(summaryTable)
+            addSummary(summaryTable,myArr,timestamps);
       }
     };
     xhttpL.ontimeout = function (e) {
@@ -343,7 +350,24 @@ function JSON_requestTime(jsonData,timeContainer){
     let xhttpL = new XMLHttpRequest();
     xhttpL.onreadystatechange = function() {
      if (this.readyState == 4 && this.status == 200) {
-        timeContainer = JSON.parse(this.responseText);
+        timeContainer[0] = JSON.parse(this.responseText);
+     }
+    };
+    xhttpL.ontimeout = function (e) {
+        console.log('timeout occurred for ${jsonData}');
+      };
+    xhttpL.open("GET", jsonData, true);
+    xhttpL.timeout = 5000;
+    xhttpL.send();
+}
+
+function JSON_error(jsonData,errorContainer,errorID){
+    let xhttpL = new XMLHttpRequest();
+    xhttpL.onreadystatechange = function() {
+     if (this.readyState == 4 && this.status == 200) {
+        errorContainer[0] = JSON.parse(this.responseText);
+        
+        updateErrors(errorContainer,errorID);
      }
     };
     xhttpL.ontimeout = function (e) {
@@ -355,18 +379,20 @@ function JSON_requestTime(jsonData,timeContainer){
 }
 
 setInterval(function ( ){ 
-    
+    /*
     JSON_requestTime("/timeStamp.json",timestampsLive);
     JSON_requestTime("/dailyTimeStamp.json",timestampsDaily);
     JSON_requestTime("/weeklyTimeStamp.json",timestampsWeekly);
     JSON_requestTime("/monthlyTimeStamp.json",timestampsMonthly);
-    /*
-    JSON_request("/data1.json",myChartAirTemp,tableAirTemp,timestampsLive);
-    JSON_request("/data2.json",myChartAirHumidity,tableAirHumidity,timestampsLive);
-    JSON_request("/data3.json",myChartWaterTemp,tableWaterTemp,timestampsLive);
-    JSON_request("/data4.json",myChartNutrientLvl,tableNutrientLvl,timestampsLive);
-    JSON_request("/data5.json",myChartpH,tablepH,timestampsLive);
-    JSON_request("/data6.json",myChartWaterLvl,tableWaterLvl,timestampsLive);
+    
+    
+    JSON_request("/data1.json",myChartAirTemp,tableAirTemp,timestampsLive,tableAirTempSummary);
+
+    JSON_request("/data2.json",myChartAirHumidity,tableAirHumidity,timestampsLive,tableAirHumidSummary);
+    JSON_request("/data3.json",myChartWaterTemp,tableWaterTemp,timestampsLive,tableWaterTempSummary);
+    JSON_request("/data4.json",myChartNutrientLvl,tableNutrientLvl,timestampsLive,tableNutrientLvlSummary);
+    JSON_request("/data5.json",myChartpH,tablepH,timestampsLive,tablepHSummary);
+    JSON_request("/data6.json",myChartWaterLvl,tableWaterLvl,timestampsLive,tableWaterLvlSummary);
 
     JSON_request("/daily1.json",myChartAirTempDaily,tableAirTempDaily,timestampsDaily);
     JSON_request("/daily2.json",myChartAirHumidityDaily,tableAirHumidityDaily,timestampsDaily);
@@ -376,7 +402,7 @@ setInterval(function ( ){
     JSON_request("/daily6.json",myChartWaterLvlDaily,tableWaterLvlDaily,timestampsDaily);
 
     JSON_request("/weekly1.json",myChartAirTempWeekly,tableAirTempWeekly,timestampsWeekly);
-    JSON_request("/weekly2.json",myChartAirHumidityWeekly,tableAirHumdidityWeekly,timestampsWeekly);
+    JSON_request("/weekly2.json",myChartAirHumidityWeekly,tableAirHumidityWeekly,timestampsWeekly);
     JSON_request("/weekly3.json",myChartWaterTempWeekly,tableWaterTempWeekly,timestampsWeekly);
     JSON_request("/weekly4.json",myChartNutrientLvlWeekly,tableNutrientLvlWeekly,timestampsWeekly);
     JSON_request("/weekly5.json",myChartpHWeekly,tablepHWeekly,timestampsWeekly);
@@ -388,9 +414,18 @@ setInterval(function ( ){
     JSON_request("/monthly4.json",myChartNutrientLvlMonthly,tableNutrientLvlMonthly,timestampsMonthly);
     JSON_request("/monthly5.json",myChartpHMonthly,tablepHMonthly,timestampsMonthly);
     JSON_request("/monthly6.json",myChartWaterLvlMonthly,tableWaterLvlMonthly,timestampsMonthly);
+
+    JSON_error("/airTempError",errorAir,"errorAirTemp");
+    JSON_error("/airHumidError",errorAirHumid,"errorAirHumid");
+    JSON_error("/waterTempError",errorWaterTemp,"errorWaterTemp");
+    JSON_error("/waterLvlError",errorWaterLevel,"errorWaterLvl");
+    JSON_error("/pHError",errorpH,"errorpH");
+    JSON_error("/nutrientLvlError",errorTDS,"errorNutrientLvl");
 */
+
 /*
     JSON_request("/data1.json",myChartAirTemp); 
+
     JSON_request("/data2.json",myChartAirHumidity);
     JSON_request("/data3.json",myChartWaterTemp);
     JSON_request("/data4.json",myChartNutrientLvl);
@@ -418,38 +453,7 @@ setInterval(function ( ){
     JSON_request("/monthly5.json",myChartpHMonthly);
     JSON_request("/monthly6.json",myChartWaterLvlMonthly); 
     */
-/*
-    
-    JSON_request("/data1.json",myChartAirTemp); 
-    
-    JSON_request("/data2.json",myChartAirHumidity);
-    JSON_request("/data3.json",myChartWaterTemp);
-    JSON_request("/data4.json",myChartNutrientLvl);
-    JSON_request("/data5.json",myChartpH);
-    JSON_request("/data6.json",myChartWaterLvl);
-    
-    JSON_request("/daily1.json",myChartAirTempDaily);
-    /*
-    JSON_request("/daily2.json",myChartAirHumidityDaily);
-    JSON_request("/daily3.json",myChartWaterTempDaily);
-    JSON_request("/daily4.json",myChartNutrientLvlDaily);
-    JSON_request("/daily5.json",myChartpHDaily);
-    JSON_request("/daily6.json",myChartWaterLvlDaily); */
-/*
-    JSON_request("/weekly1.json",myChartAirTempWeekly); /*
-    JSON_request("/weekly2.json",myChartAirHumidityWeekly);
-    JSON_request("/weekly3.json",myChartWaterTempWeekly);
-    JSON_request("/weekly4.json",myChartNutrientLvlWeekly);
-    JSON_request("/weekly5.json",myChartpHWeekly);
-    JSON_request("/weekly6.json",myChartWaterLvlWeekly);*/
-/*
-    JSON_request("/monthly1.json",myChartAirTempMonthly);/*
-    JSON_request("/monthly2.json",myChartAirHumidityMonthly);
-    JSON_request("/monthly3.json",myChartWaterTempMonthly);
-    JSON_request("/monthly4.json",myChartNutrientLvlMonthly);
-    JSON_request("/monthly5.json",myChartpHMonthly);
-    JSON_request("/monthly6.json",myChartWaterLvlMonthly); */
-    
+
    }, 10000 ) ; 
 
 window.onload = (event) => {

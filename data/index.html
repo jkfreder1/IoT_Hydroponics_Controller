@@ -38,8 +38,7 @@
   
   </div>
       <section id="section1" class="tabcontent">
-        <h2>Error Messages: </h2>
-        <p id="error">Sensor data for Water Temperature has been flagged for data: _____. Check Water Temperature sensor. </p>
+        
         <h2>Latest Sensor Recordings</h2>
         <section class="summary-container">
           <div>
@@ -69,7 +68,13 @@
 
         </section>
 
-
+        <h2>Error Messages: </h2>
+        <p id="errorAirTemp" class="error" style="display:none">Sensor for Air Temperature has been flagged.</p>
+        <p id="errorAirHumid" class="error" style="display:none">Sensor for Air Humidity has been flagged.</p>
+        <p id="errorWaterTemp" class="error" style="display:none">Sensor for Water Temperature has been flagged.</p>
+        <p id="errorWaterLvl" class="error" style="display:none">Sensor for Water Level has been flagged.</p>
+        <p id="errorpH" class="error" style="display:none">Sensor for pH has been flagged.</p>
+        <p id="errorNutrientLvl" class="error" style="display:none">Sensor for Nutrient Level has been flagged.</p>
 
       </section>
       <section id="section2" class="tabcontent">
@@ -278,7 +283,10 @@
             <div id="airTempT"></div>
           </div>
 
+          
           <div class="tableElement">
+            <h3>Air Temperature Historical Data</h3>
+
             <label for="airTempHistoryT">Choose a Historical Table:</label>
             <select name="airTempHistoryT" id="airTempHistoryDropdownT" onchange="showHistoricalTable(event,this.value,this.name)">
               <option value=""> Please select Table</option>
@@ -295,10 +303,14 @@
           </div>
           
           <div class="tableElement">
+            <h3>Air Humidity Live Data</h3>
+
             <div id="airHumidityT"></div>
           </div>
 
           <div class="tableElement">
+            <h3>Air Humidity Historical Data</h3>
+
           <label for="airHumidityHistoryT">Choose a Historical Table:</label>
           <select name="airHumidityHistoryT" id="airHumidityHistoryDropdownT" onchange="showHistoricalTable(event,this.value,this.name)">
             <option value=""> Please select Table</option>
@@ -315,10 +327,14 @@
           </div>
 
           <div class="tableElement">
+            <h3>Water Temperature Live Data</h3>
+
             <div id="waterTempT"></div>
           </div>
 
           <div class="tableElement">
+          <h3>Water Temperature Historical Data</h3>
+
           <label for="waterTempHistoryT">Choose a Historical Table:</label>
           <select name="waterTempHistoryT" id="waterTempHistoryDropdownT" onchange="showHistoricalTable(event,this.value,this.name)">
             <option value=""> Please select Table</option>
@@ -335,10 +351,14 @@
           </div>
 
           <div class="tableElement">
+            <h3>Water Level Live Data</h3>
+
             <div id="waterLvlT"></div>
           </div>
 
           <div class="tableElement">
+            <h3>Water Level Historical Data</h3>
+
           <label for="waterLvlHistoryT">Choose a Historical Table:</label>
           <select name="waterLvlHistoryT" id="waterLvlHistoryDropdownT" onchange="showHistoricalTable(event,this.value,this.name)">
             <option value=""> Please select Table</option>
@@ -355,10 +375,14 @@
           </div>
 
           <div class="tableElement">
+            <h3>pH Live Data</h3>
+
             <div id="pHT"></div>
           </div>
 
           <div class="tableElement">
+            <h3>pH Historical Data</h3>
+
           <label for="pHHistoryT">Choose a Historical Table:</label>
           <select name="pHHistoryT" id="pHHistoryDropdownT" onchange="showHistoricalTable(event,this.value,this.name)">
             <option value=""> Please select Table</option>
@@ -375,10 +399,14 @@
           </div>
 
           <div class="tableElement">
+            <h3>Nutrient Level Live Data</h3>
+
             <div id="nutrientLvlT"></div>
           </div>
 
           <div class="tableElement">
+            <h3>Nutrient Level Historical  Data</h3>
+
           <label for="nutrientLvlHistoryT">Choose a Historical Table:</label>
           <select name="nutrientLvlHistoryT" id="nutrientLvlHistoryDropdownT" onchange="showHistoricalTable(event,this.value,this.name)">
             <option value=""> Please select Table</option>

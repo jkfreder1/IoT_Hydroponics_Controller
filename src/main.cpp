@@ -414,7 +414,7 @@ StaticJsonDocument<512> doc5;
 String jsonData5 = "/data5.json";
 StaticJsonDocument<512> doc6;
 String jsonData6 = "/data6.json";
-StaticJsonDocument<512> timeStamp;
+StaticJsonDocument<1024> timeStamp;
 String jsonTimeStamp = "/timeStamp.json";
 //daily documents
 StaticJsonDocument<1024> daily1;
@@ -683,6 +683,8 @@ void printLocalTime(int time, int count, String filename){
   if(serializeJsonPretty(hourlyTimeStamp, outfile) == 0){
     Serial.println("Failed to write to file");
   }
+  else
+    Serial.println("something written in file");
   outfile.close();
 }
 
@@ -945,23 +947,23 @@ inline const char * const BoolToString(bool b)
    request->send(SPIFFS, "/logged_out.html", String(), false, processor);
   });
   server.on("/airTempError", HTTP_GET, [](AsyncWebServerRequest *request){
-  request->send(200, "text/plain", BoolToString(false));
+  request->send(200, "text/plain", BoolToString(errorAir));
   });
   server.on("/airHumidError", HTTP_GET, [](AsyncWebServerRequest *request){
-  request->send(200, "text/plain", BoolToString(false));
+  request->send(200, "text/plain", BoolToString(true));
   });
   server.on("/waterTempError", HTTP_GET, [](AsyncWebServerRequest *request){
-  request->send(200, "text/plain", BoolToString(false));
+  request->send(200, "text/plain", BoolToString(errorWaterTemp));
   });
 
   server.on("/waterLvlError", HTTP_GET, [](AsyncWebServerRequest *request){
-  request->send(200, "text/plain", BoolToString(false));
+  request->send(200, "text/plain", BoolToString(errorWaterLevel));
   });
   server.on("/pHError", HTTP_GET, [](AsyncWebServerRequest *request){
-  request->send(200, "text/plain", BoolToString(false));
+  request->send(200, "text/plain", BoolToString(errorpH));
   });
   server.on("/nutrientLvlError", HTTP_GET, [](AsyncWebServerRequest *request){
-  request->send(200, "text/plain", BoolToString(false));
+  request->send(200, "text/plain", BoolToString(errorTDS));
   });
  }
  
@@ -1784,7 +1786,7 @@ if(checkSize(startTime1) && checkSize(endTime1)){
 //printf("routes completed");
   
 
-/*
+
 //counter2=0;
  //}
  
@@ -1886,7 +1888,7 @@ else{
   temperatureF_offset=temperatureF_input-temperatureF;
   tds_offset=tds_value_input-tdsValue;
   }
-*/
+
 /*
 if (!client.connected()) {
     reconnect();
