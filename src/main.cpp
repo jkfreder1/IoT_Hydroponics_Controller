@@ -246,6 +246,68 @@ else if (var=="timeStamp1"){
 else if (var=="runTime1"){
   return readFile(SPIFFS, "/runTime1.txt");
 }
+else if (var=="lowerBound2"){
+  return readFile(SPIFFS, "/lowerBound2.txt");
+}
+else if (var=="upperBound2"){
+  return readFile(SPIFFS, "/upperBound2.txt");
+}
+else if (var=="timeStamp2"){
+  return readFile(SPIFFS, "/timeStamp2.txt");
+}
+else if (var=="runTime2"){
+  return readFile(SPIFFS, "/runTime2.txt");
+}
+else if (var=="lowerBound3"){
+  return readFile(SPIFFS, "/lowerBound3.txt");
+}
+else if (var=="upperBound3"){
+  return readFile(SPIFFS, "/upperBound3.txt");
+}
+else if (var=="timeStamp3"){
+  return readFile(SPIFFS, "/timeStamp3.txt");
+}
+else if (var=="runTime3"){
+  return readFile(SPIFFS, "/runTime3.txt");
+}
+
+else if (var=="lowerBound4"){
+  return readFile(SPIFFS, "/lowerBound4.txt");
+}
+else if (var=="upperBound4"){
+  return readFile(SPIFFS, "/upperBound4.txt");
+}
+else if (var=="timeStamp4"){
+  return readFile(SPIFFS, "/timeStamp4.txt");
+}
+else if (var=="runTime4"){
+  return readFile(SPIFFS, "/runTime4.txt");
+}
+else if (var=="lowerBound5"){
+  return readFile(SPIFFS, "/lowerBound5.txt");
+}
+else if (var=="upperBound5"){
+  return readFile(SPIFFS, "/upperBound5.txt");
+}
+else if (var=="timeStamp5"){
+  return readFile(SPIFFS, "/timeStamp5.txt");
+}
+else if (var=="runTime5"){
+  return readFile(SPIFFS, "/runTime5.txt");
+}
+
+else if (var=="lowerBound6"){
+  return readFile(SPIFFS, "/lowerBound6.txt");
+}
+else if (var=="upperBound6"){
+  return readFile(SPIFFS, "/upperBound6.txt");
+}
+else if (var=="timeStamp6"){
+  return readFile(SPIFFS, "/timeStamp6.txt");
+}
+else if (var=="runTime6"){
+  return readFile(SPIFFS, "/runTime6.txt");
+}
 
   return String();
 }
@@ -311,6 +373,30 @@ const char* PARAM_LOWER = "floatLower";
 const char* TIMESTAMP_1="timeStamp1";
 const char* RUNTIME_1="runTime1";
 
+const char* LOWERBOUND_2="lowerBound2";
+const char* UPPERBOUND_2="upperBound2";
+const char* TIMESTAMP_2="timeStamp2";
+const char* RUNTIME_2="runTime2";
+
+const char* LOWERBOUND_3="lowerBound3";
+const char* UPPERBOUND_3="upperBound3";
+const char* TIMESTAMP_3="timeStamp3";
+const char* RUNTIME_3="runTime3";
+
+const char* LOWERBOUND_4="lowerBound4";
+const char* UPPERBOUND_4="upperBound4";
+const char* TIMESTAMP_4="timeStamp4";
+const char* RUNTIME_4="runTime4";
+
+const char* LOWERBOUND_5="lowerBound5";
+const char* UPPERBOUND_5="upperBound5";
+const char* TIMESTAMP_5="timeStamp5";
+const char* RUNTIME_5="runTime5";
+
+const char* LOWERBOUND_6="lowerBound6";
+const char* UPPERBOUND_6="upperBound6";
+const char* TIMESTAMP_6="timeStamp6";
+const char* RUNTIME_6="runTime6";
 
 
 OneWire oneWire(oneWireBus);
@@ -1041,6 +1127,90 @@ void setup(){
       inputMessage = request->getParam(RUNTIME_1)->value();
       writeFile(SPIFFS, "/runTime1.txt", inputMessage.c_str());
     }
+    else if (request->hasParam(LOWERBOUND_2)) {
+      inputMessage = request->getParam(LOWERBOUND_2)->value();
+      writeFile(SPIFFS, "/lowerBound2.txt", inputMessage.c_str());
+    }
+    else if (request->hasParam(UPPERBOUND_2)) {
+      inputMessage = request->getParam(UPPERBOUND_2)->value();
+      writeFile(SPIFFS, "/upperBound2.txt", inputMessage.c_str());
+    }
+     else if (request->hasParam(TIMESTAMP_2)) {
+      inputMessage = request->getParam(TIMESTAMP_2)->value();
+      writeFile(SPIFFS, "/timeStamp2.txt", inputMessage.c_str());
+    }
+    else if (request->hasParam(RUNTIME_2)) {
+      inputMessage = request->getParam(RUNTIME_2)->value();
+      writeFile(SPIFFS, "/runTime2.txt", inputMessage.c_str());
+    }
+    else if (request->hasParam(LOWERBOUND_3)) {
+      inputMessage = request->getParam(LOWERBOUND_3)->value();
+      writeFile(SPIFFS, "/lowerBound3.txt", inputMessage.c_str());
+    }
+    else if (request->hasParam(UPPERBOUND_3)) {
+      inputMessage = request->getParam(UPPERBOUND_3)->value();
+      writeFile(SPIFFS, "/upperBound3.txt", inputMessage.c_str());
+    }
+     else if (request->hasParam(TIMESTAMP_3)) {
+      inputMessage = request->getParam(TIMESTAMP_3)->value();
+      writeFile(SPIFFS, "/timeStamp3.txt", inputMessage.c_str());
+    }
+    else if (request->hasParam(RUNTIME_3)) {
+      inputMessage = request->getParam(RUNTIME_3)->value();
+      writeFile(SPIFFS, "/runTime3.txt", inputMessage.c_str());
+    }
+
+    //4
+    else if (request->hasParam(LOWERBOUND_4)) {
+      inputMessage = request->getParam(LOWERBOUND_4)->value();
+      writeFile(SPIFFS, "/lowerBound4.txt", inputMessage.c_str());
+    }
+    else if (request->hasParam(UPPERBOUND_4)) {
+      inputMessage = request->getParam(UPPERBOUND_4)->value();
+      writeFile(SPIFFS, "/upperBound4.txt", inputMessage.c_str());
+    }
+     else if (request->hasParam(TIMESTAMP_4)) {
+      inputMessage = request->getParam(TIMESTAMP_4)->value();
+      writeFile(SPIFFS, "/timeStamp4.txt", inputMessage.c_str());
+    }
+    else if (request->hasParam(RUNTIME_4)) {
+      inputMessage = request->getParam(RUNTIME_4)->value();
+      writeFile(SPIFFS, "/runTime4.txt", inputMessage.c_str());
+    }
+
+    else if (request->hasParam(LOWERBOUND_5)) {
+      inputMessage = request->getParam(LOWERBOUND_5)->value();
+      writeFile(SPIFFS, "/lowerBound5.txt", inputMessage.c_str());
+    }
+    else if (request->hasParam(UPPERBOUND_5)) {
+      inputMessage = request->getParam(UPPERBOUND_5)->value();
+      writeFile(SPIFFS, "/upperBound5.txt", inputMessage.c_str());
+    }
+     else if (request->hasParam(TIMESTAMP_5)) {
+      inputMessage = request->getParam(TIMESTAMP_5)->value();
+      writeFile(SPIFFS, "/timeStamp5.txt", inputMessage.c_str());
+    }
+    else if (request->hasParam(RUNTIME_5)) {
+      inputMessage = request->getParam(RUNTIME_5)->value();
+      writeFile(SPIFFS, "/runTime5.txt", inputMessage.c_str());
+    }
+
+    else if (request->hasParam(LOWERBOUND_6)) {
+      inputMessage = request->getParam(LOWERBOUND_6)->value();
+      writeFile(SPIFFS, "/lowerBound6.txt", inputMessage.c_str());
+    }
+    else if (request->hasParam(UPPERBOUND_6)) {
+      inputMessage = request->getParam(UPPERBOUND_6)->value();
+      writeFile(SPIFFS, "/upperBound6.txt", inputMessage.c_str());
+    }
+     else if (request->hasParam(TIMESTAMP_6)) {
+      inputMessage = request->getParam(TIMESTAMP_6)->value();
+      writeFile(SPIFFS, "/timeStamp6.txt", inputMessage.c_str());
+    }
+    else if (request->hasParam(RUNTIME_6)) {
+      inputMessage = request->getParam(RUNTIME_6)->value();
+      writeFile(SPIFFS, "/runTime6.txt", inputMessage.c_str());
+    }
     else if (request->hasParam(MQTT_USERNAME)) {
       inputMessage = request->getParam(MQTT_USERNAME)->value();
       writeFile(SPIFFS, "/mqttUsername.txt", inputMessage.c_str());
@@ -1352,9 +1522,9 @@ else{
   //}
 
 //if(counter>150){
- array1=analogRead(16);////// 0 ph sensor
- array2=analogRead(16);//0
- array3=analogRead(16);//0
+ array1=analogRead(18);////// 0 ph sensor
+ array2=analogRead(18);//0
+ array3=analogRead(18);//0
  array1=array2+array3+array1;
  float volt=(float)array1*5.0/4096/3;
  ph_act = (-5.70 * volt + calibration_value);
