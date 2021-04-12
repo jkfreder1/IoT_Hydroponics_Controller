@@ -1747,7 +1747,7 @@ else{
   tds_offset=tds_value_input-tdsValue;
   }
 */
-/*
+
 if (!client.connected()) {
     reconnect();
   }
@@ -1758,7 +1758,7 @@ if (!client.connected()) {
     lastMsg = now;
     
     // Temperature in Celsius
-    temperatureMQTT = 1.35;   
+    temperatureMQTT = f;   
     // Uncomment the next line to set temperature in Fahrenheit 
     // (and comment the previous temperature line)
     //temperature = 1.8 * bme.readTemperature() + 32; // Temperature in Fahrenheit
@@ -1770,7 +1770,7 @@ if (!client.connected()) {
     Serial.println(tempString);
     client.publish("esp32/temperature", tempString);
 
-    humidityMQTT = 4.96;
+    humidityMQTT = h;
     
     // Convert the value to a char array
     char humString[8];
@@ -1780,7 +1780,7 @@ if (!client.connected()) {
     client.publish("esp32/humidity", humString);
   }
   
-*/
+
   //if(sleeptime>200){
     //esp_deep_sleep_start();/////sleep DONT DELETE
     //sleeptime=0;
