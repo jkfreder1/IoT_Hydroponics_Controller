@@ -29,18 +29,18 @@ int trigPin = 33;    // Trigger
 int echoPin = 32;    // 25 Echo
 long duration, cm, inches;
 
-int waterTempHighParam=90;
-int waterTempLowParam=40;
-int airHumHighParam=60;
-int airHumLowParam=20;
-int airTempHighParam=80;
-int airTempLowParam=50;
-int sonarHighParam=2;
-int sonarLowParam=8;
-int tdshighParam=400;
-int tdslowParam=50;
-int phhighParam=9;
-int phlowParam=2;
+float waterTempHighParam=90;
+float waterTempLowParam=40;
+float airHumHighParam=60;
+float airHumLowParam=20;
+float airTempHighParam=80;
+float airTempLowParam=50;
+float sonarHighParam=2;
+float sonarLowParam=8;
+float tdshighParam=400;
+float tdslowParam=50;
+float phhighParam=9;
+float phlowParam=2;
 
 int counter=0;
 /*
@@ -468,6 +468,40 @@ String jsonMonthly6= "/monthly6.json";
 StaticJsonDocument<1024> monthlyTimeStamp;
 String jsonMonthlyTimeStamp = "/monthlyTimeStamp.json";
 
+//Air Temp
+String upperBound1 = "/floatHigher.txt";
+String lowerBound1 = "/floatLower.txt";
+String startTime1 = "/timeStamp1.txt";
+String endTime1 = "/runTime1.txt";
+
+//Air hum
+String upperBound2 = "/upperbound2.txt";
+String lowerBound2 = "/lowerbound2.txt";
+String startTime2 = "/timeStamp2.txt";
+String endTime2 = "/runTime2.txt";
+
+//Water temp
+String upperBound3 = "/upperbound3.txt";
+String lowerBound3 = "/lowerbound3.txt";
+String startTime3 = "/timeStamp3.txt";
+String endTime3 = "/runTime3.txt";
+
+//tds
+String upperBound4 = "/upperbound4.txt";
+String lowerBound4 = "/lowerbound4.txt";
+String startTime4 = "/timeStamp4.txt";
+String endTime4 = "/runTime4.txt";
+
+//pH
+String upperBound5 = "/upperbound5.txt";
+String lowerBound5 = "/lowerbound5.txt";
+String startTime5 = "/timeStamp5.txt";
+String endTime5 = "/runTime5.txt";
+
+//water level
+String upperBound6= "/upperbound6.txt";
+String lowerBound6 = "/lowerbound6.txt";
+
 JsonObject airTemp = doc1.to<JsonObject>();
 JsonObject airHum = doc2.to<JsonObject>();
 JsonObject waterTemp = doc3.to<JsonObject>();
@@ -686,6 +720,85 @@ void printJSON(){
     Serial.println("Failed to read to file");
   }
   free(pBuffer);
+}
+
+bool checkTime(String currentTime, String startTime, String endTime){
+  if(currentTime > startTime){
+    if(currentTime < endTime){
+      return 1;
+    }
+    else{
+      return 0;
+    }
+  }
+  else{
+    return 0;
+  }
+}
+
+bool checkSize(String filename){
+  File testfile = SPIFFS.open(filename, "r");
+  if(testfile){
+    unsigned int fileSize = testfile.size();
+    if (fileSize){
+      return 1;
+    }
+    else{
+      return 0;
+    }
+  }
+  else{
+    Serial.println("Failed to read to file");
+  }
+  testfile.close();
+  return 0;
+}
+
+String getTime(){
+  struct tm timeinfo;
+  String s = "";
+  if(!getLocalTime(&timeinfo)){
+    Serial.println("Failed to obtain time");
+    return s;
+  }
+  else{
+    Serial.println("Time obtained/n");
+  }
+
+  char timeHourly[10];
+  strftime(timeHourly,10, "%H:%M:%S", &timeinfo);
+  s = timeHourly;
+  return s;
+}
+
+String getTimeStamp(String filename){
+  String timeStamp = "";
+  char c;
+  File testfile = SPIFFS.open(filename, "r");
+  if(testfile){
+    while(testfile.available()){
+      c = testfile.read();
+      timeStamp.concat(c);
+    }
+  }
+  else{
+    Serial.println("Failed to read to file");
+  }
+  testfile.close();
+  return timeStamp;
+}
+
+float getParameter(String filename){
+  float value = 0;
+  File testfile = SPIFFS.open(filename, "r");
+  if(testfile){
+    value = testfile.parseFloat();
+  }
+  else{
+    Serial.println("Failed to read to file");
+  }
+  testfile.close();
+  return value;
 }
 
 void store_data(float val, JsonObject root, JsonArray data, int count, String fileName){
@@ -1290,17 +1403,21 @@ void reconnect() {
 
 void displayWaterTemp(float temperatureF){
   lcd.setCursor(0,0);//water temp display
+  if(checkSize(lowerBound3) && checkSize(upperBound3)){
+    waterTempLowParam = getParameter(lowerBound3);
+    waterTempHighParam = getParameter(upperBound3);
+  }
   if(temperatureF < waterTempLowParam && temperatureF>0){
-  lcd.print("Error!          ");
-  lcd.setCursor(0,1);
-  lcd.print("Water temp low  ");
-  clear2=1;
+    lcd.print("Error!          ");
+    lcd.setCursor(0,1);
+    lcd.print("Water temp low  ");
+    clear2=1;
   }
   else if(temperatureF > waterTempHighParam){
     lcd.print("Water temp      ");
-  lcd.setCursor(0,1);
-  lcd.print("Is too high     ");
-  clear2=1;
+    lcd.setCursor(0,1);
+    lcd.print("Is too high     ");
+    clear2=1;
   }
   else if(temperatureF<0){
     clear2=1;
@@ -1323,9 +1440,13 @@ int clear3=0;
 
 void displayDHT(float h, float f){
   lcd.setCursor(0,0);//humidity display
+  if(checkSize(lowerBound2) && checkSize(upperBound2)){
+    airHumLowParam = getParameter(lowerBound2);
+    airHumHighParam = getParameter(upperBound2);
+  }
   if(h < airHumLowParam && !isnan(h)){
-  lcd.print("Air Humdity LOW ");
-  clear2=1;
+    lcd.print("Air Humdity LOW ");
+    clear2=1;
   }
   else if(h > airHumHighParam && !isnan(h)){
     lcd.print("Air Humdity HIGH");
@@ -1341,9 +1462,13 @@ void displayDHT(float h, float f){
     lcd.print("%    ");
   }
   lcd.setCursor(0,1); //air temp display
+  if(checkSize(lowerBound1) && checkSize(upperBound1)){
+    airTempLowParam = getParameter(lowerBound1);
+    airTempHighParam = getParameter(upperBound1);
+  }
   if(f < airTempLowParam && !isnan(f)){
-  lcd.print("AirTemp is low  ");
-  clear3=1;
+    lcd.print("AirTemp is low  ");
+    clear3=1;
   }
   else if(f > airTempHighParam && !isnan(f)){
     lcd.print("AirTemp is high ");
@@ -1370,17 +1495,21 @@ void displayDHT(float h, float f){
 
 void displaySonar(long inches){
   lcd.setCursor(0,0);//sonar display
+  if(checkSize(lowerBound6) && checkSize(upperBound6)){
+    sonarLowParam = getParameter(lowerBound6);
+    sonarHighParam = getParameter(upperBound6);
+  }
   if(inches > sonarLowParam){
-  lcd.print("Error The water ");
-  lcd.setCursor(0,1);
-  lcd.print("Is too low      ");
-  clear2=1;
+    lcd.print("Error The water ");
+    lcd.setCursor(0,1);
+    lcd.print("Is too low      ");
+    clear2=1;
   }
   else if(inches < sonarHighParam&& inches > 0){
     lcd.print("Error The water ");
-  lcd.setCursor(0,1);
-  lcd.print("Is too high     ");
-  clear2=1;
+    lcd.setCursor(0,1);
+    lcd.print("Is too high     ");
+    clear2=1;
   }
   else if(inches==0){
     lcd.print("Critical error");
@@ -1401,6 +1530,10 @@ void displaySonar(long inches){
 
 void displayTDS(float tdsValue){
   lcd.setCursor(0,0);
+  if(checkSize(lowerBound4) && checkSize(upperBound4)){
+    tdslowParam = getParameter(lowerBound4);
+    tdshighParam = getParameter(upperBound4);
+  }
   if(tdsValue<tdslowParam){
     lcd.print("Error TDS Low   ");
     clear2=1;
@@ -1422,6 +1555,10 @@ void displayTDS(float tdsValue){
 
 void displaypH(float ph_act){
   lcd.setCursor(0,0);
+  if(checkSize(lowerBound5) && checkSize(upperBound5)){
+    phlowParam = getParameter(lowerBound5);
+    phhighParam = getParameter(upperBound5);
+  }
   if(ph_act<phlowParam&&ph_act>0){
     lcd.print("Error pH is Low ");
     clear2=1;
@@ -1641,6 +1778,18 @@ if(runRoutes==true){
   routesLoop();
   runRoutes = false;
   //printf("run routes first");
+}
+
+if(checkSize(startTime1) && checkSize(endTime1)){
+  String curr = getTime();
+  String s1 = getTimeStamp(startTime1);
+  String e1 = getTimeStamp(endTime1);
+  if(checkTime(curr, s1, e1)){
+    Serial.println("Turn on outlet");
+  }
+  else{
+    Serial.println("Turn off outlet");
+  }
 }
 //else
 //printf("routes completed");

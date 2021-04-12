@@ -407,7 +407,7 @@
 
       
       <section id="section8" class="tabcontent">
-        <h2>Section 8</h2>
+        <!--<h2>Section 8</h2>
         <p>
           <form action="/get" target="hidden-form">
             Sensor1 LowerBound (current value %floatHigher%): <input type="number " name="floatHigher">
@@ -522,10 +522,10 @@ Sensor6 Runtime (current value %runTime6%): <input type="number " id="runTime6" 
    
 
           
-          <!--<form action="/get" target="hidden-form">
+          <form action="/get" target="hidden-form">
             twoInput (current value %twoInput%): <input type="number " name="twoInput">
             <input type="submit" value="Submit" onclick="submitMessage()">
-          </form>-->
+          </form>
           <form action="/get" target="hidden-form">
             mqttUsername (current value %mqttUsername%): <input type="text " name="mqttUsername">
             <input type="submit" value="Submit" onclick="submitMessage()">
@@ -543,7 +543,176 @@ Sensor6 Runtime (current value %runTime6%): <input type="number " id="runTime6" 
             <input type="submit" value="Submit" onclick="submitMessage()">
           </form>
           
-          <iframe style="display:none" name="hidden-form"></iframe></p>
+          <iframe style="display:none" name="hidden-form"></iframe></p>-->
+          <section class="formboxContainer">
+            <h2>Configuration Parameters</h2>
+            <div class="topleft">
+            Sensor1
+              <form action="/get" target="hidden-form">
+                <input type="number " name="floatHigher" placeholder="LowerBound">
+                <input type="submit" value="Submit" onclick="submitMessage()">
+              </form>
+              <br>
+              <form action="/get" target="hidden-form">
+                <input type="number " id="floatLower" name="floatLower" placeholder="UpperBound">
+                <input type="submit" value="Submit" onclick="submitMessage()">
+              </form>
+              <br>
+              <form action="/get" target="hidden-form">
+                <input type="text " id="timeStamp1" name="timeStamp1" placeholder="TimeStamp">
+                  <input type="submit" value="Submit" onclick="submitMessage()">
+              </form>
+              <br>
+              <form action="/get" target="hidden-form">
+              <input type="number " id="runTime1" name="runTime1" placeholder="Runtime">
+                <input type="submit" value="Submit" onclick="submitMessage()">
+              </form>
+            </div>
+            <div class="topcenter">
+              Sensor2
+              <br>
+              <form action="/get" target="hidden-form">
+               <input type="number " id="lowerBound2" name="lowerBound2" placeholder="LowerBound">
+                <input type="submit" value="Submit" onclick="submitMessage()">
+              </form>
+               <br>
+               <form action="/get" target="hidden-form">
+               <input type="number " id="upperBound2" name="upperBound2" placeholder="UpperBound ">
+               <input type="submit" value="Submit" onclick="submitMessage()">
+              </form>
+               <br>
+               <form action="/get" target="hidden-form">
+              <input type="text " id="timeStamp2" name="timeStamp2" placeholder="TimeStamp">
+              <input type="submit" value="Submit" onclick="submitMessage()">
+              </form>
+              <br>
+              <form action="/get" target="hidden-form">
+              <input type="number " id="runTime2" name="runTime2" placeholder="Runtime">
+              <input type="submit" value="Submit" onclick="submitMessage()">
+              </form>
+             </div>
+            <div class="topright">
+              Sensor3
+              <br>
+              <form action="/get" target="hidden-form">
+              <input type="number " id="lowerBound3" name="lowerBound3" placeholder="LowerBound">
+              <input type="submit" value="Submit" onclick="submitMessage()">
+              </form>
+              <br>
+              <form action="/get" target="hidden-form">
+              <input type="number " id="upperBound3" name="upperBound3" placeholder="UpperBound">
+              <input type="submit" value="Submit" onclick="submitMessage()">
+              </form>
+              <br>
+              <form action="/get" target="hidden-form">
+              <input type="text " id="timeStamp3" name="timeStamp3" placeholder="TimeStamp">
+              <input type="submit" value="Submit" onclick="submitMessage()">
+              </form>
+              <br>
+              <form action="/get" target="hidden-form">
+              <input type="number " id="runTime3" name="runTime3" placeholder="Runtime">
+              <input type="submit" value="Submit" onclick="submitMessage()">
+              </form>
+             </div>
+             <div class="centerleft">
+              Sensor4
+              <br>
+              <form action="/get" target="hidden-form">
+              <input type="number " id="lowerBound4" name="lowerBound4" placeholder="LowerBound">
+              <input type="submit" value="Submit" onclick="submitMessage()">
+              </form>
+              <br>
+              <form action="/get" target="hidden-form">
+               <input type="number " id="upperBound4" name="upperBound4" placeholder="UpperBound">
+               <input type="submit" value="Submit" onclick="submitMessage()">
+              </form>
+               <br>
+               <form action="/get" target="hidden-form">
+              <input type="text " id="timeStamp4" name="timeStamp4" placeholder="TimeStamp">
+              <input type="submit" value="Submit" onclick="submitMessage()">
+               </form>
+              <br>
+              <form action="/get" target="hidden-form">
+              <input type="number " id="runTime4" name="runTime4" placeholder="Runtime">
+              <input type="submit" value="Submit" onclick="submitMessage()">
+              </form>
+              </div>
+              <div class="centercenter">
+               Sensor5
+                <br>
+                <form action="/get" target="hidden-form">
+               <input type="number " id="lowerBound5" name="lowerBound5" placeholder="LowerBound">
+               <input type="button" value="Submit" onclick="submitMessage()">
+               </form>
+               <br>
+               <form action="/get" target="hidden-form">
+               <input type="number " id="upperBound5" name="upperBound5" placeholder="UpperBound">
+               <input type="submit" value="Submit" onclick="submitMessage()">
+              </form>
+               <br>
+               <form action="/get" target="hidden-form">
+               <input type="text " id="timeStamp5" name="timeStamp5" placeholder="TimeStamp">
+               <input type="submit" value="Submit" onclick="submitMessage()">
+                </form>
+               <br>
+               <form action="/get" target="hidden-form">
+               <input type="number " id="runTime5" name="runTime5" placeholder="Runtime">
+               <input type="submit" value="Submit" onclick="submitMessage()">
+              </form>
+                </div>
+              <div class="centerright">
+               Sensor6
+               <br>
+               <form action="/get" target="hidden-form">
+               <input type="number " id="lowerBound5" name="lowerBound5" placeholder="LowerBound">
+               <input type="submit" value="Submit" onclick="submitMessage()">
+              </form>
+               <br>
+               <form action="/get" target="hidden-form">
+              <input type="number " id="upperBound6" name="upperBound6" placeholder="UpperBound">
+              <input type="submit" value="Submit" onclick="submitMessage()">
+               </form>
+              <br>
+              <form action="/get" target="hidden-form">
+              <input type="text " id="timeStamp6" name="timeStamp6" placeholder="TimeStamp">
+              <input type="submit" value="Submit" onclick="submitMessage()">
+               </form>
+              <br>
+              <form action="/get" target="hidden-form">
+              <input type="number " id="runTime6" name="runTime6" placeholder="Runtime">
+              <input type="submit" value="Submit" onclick="submitMessage()">
+              </form>
+              </div>
+              
+              <!--<form action="/get" target="hidden-form">
+                twoInput (current value %twoInput%): <input type="number " name="twoInput">
+                <input type="submit" value="Submit" onclick="submitMessage()">
+              </form>-->
+               <div class="bottomcenter">
+              MQTT
+              <br>
+              <form action="/get" target="hidden-form">
+              <input type="text " name="mqttUsername" placeholder="mqttUsername ">
+              <input type="submit" value="Submit" onclick="submitMessage()">
+              </form>
+              <br>
+              <form action="/get" target="hidden-form">
+              <input type="text " name="mqttPassword" placeholder="mqttPassword"> 
+              <input type="submit" value="Submit" onclick="submitMessage()">
+              </form>
+              <br>
+              <form action="/get" target="hidden-form">
+              <input type="text " name="mqttServer" placeholder="mqttServer">
+              <input type="submit" value="Submit" onclick="submitMessage()">
+              </form>
+              <br>
+              <form action="/get" target="hidden-form">
+              <input type="number " name="mqttPort" placeholder="mqttPort">
+              <input type="submit" value="Submit" onclick="submitMessage()">
+              </form>
+              </div>
+              <iframe style="display:none" name="hidden-form"></iframe>
+              </section>
       </section>
       
     
