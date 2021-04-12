@@ -105,12 +105,6 @@ int button=0;
 int counter2;
 int clear;
 
-bool errorAir = 0;
-bool errorWaterTemp = 0;
-bool errorpH = 0;
-bool errorTDS = 0;
-bool errorWaterLevel = 0;
-
 int h_offset,f_offset,ph_act_offset,inches_offset,temperatureF_offset,tds_offset;
 int h_input=32,f_input=72,ph_act_input=7,inches_input=5,temperatureF_input=67,tds_value_input=83;
 
@@ -651,7 +645,7 @@ void printLocalTime(int time, int count, String filename){
     return;
   }
   else{
-    Serial.println("Time obtained/n");
+    //Serial.println("Time obtained/n");
   }
 
   String s;
@@ -760,7 +754,7 @@ String getTime(){
     return s;
   }
   else{
-    Serial.println("Time obtained/n");
+    //Serial.println("Time obtained/n");
   }
 
   char timeHourly[10];
@@ -783,6 +777,7 @@ String getTimeStamp(String filename){
     Serial.println("Failed to read to file");
   }
   testfile.close();
+  Serial.println(timeStamp);
   return timeStamp;
 }
 
@@ -1422,7 +1417,6 @@ void displayWaterTemp(float temperatureF){
     lcd.print("Critical error");
     lcd.setCursor(0,1);
     lcd.print("Check Sensor");
-    errorWaterTemp = 1;
   }
   else{
     if(clear2==1){
@@ -1478,7 +1472,6 @@ void displayDHT(float h, float f){
     lcd.print("Critical error");
     lcd.setCursor(0,1);
     lcd.print("Check Sensor");
-    errorAir = 0;
   }
   else{
     if(clear3==1){
@@ -1513,7 +1506,6 @@ void displaySonar(long inches){
     lcd.print("Critical error");
     lcd.setCursor(0,1);
     lcd.print("Check Sensor");
-    errorWaterLevel = 1;
   }
   else{
     if(clear2==1){
@@ -1564,7 +1556,6 @@ void displaypH(float ph_act){
   else if(ph_act>phhighParam){
     lcd.print("Error pH is High");
     clear2=1;
-    errorpH = 1;
   }
   else{
     if(clear2==1){
@@ -1717,7 +1708,7 @@ else{
   totCount1 = 0;
   avgCount = 1;
   //serializeJsonPretty(doc2, Serial);
-  serializeJsonPretty(timeStamp, Serial);
+  //serializeJsonPretty(timeStamp, Serial);
   //printJSON();
   dailyCount++;
  }
