@@ -322,14 +322,14 @@ function addGraphData(chart, data, timestamps) {
     chart.update();
 }
 
-function JSON_request(jsonData,chart,table,timestamps){
+function JSON_request(jsonData,chart,table,timestamps,summaryTable){
     let xhttpL = new XMLHttpRequest();
     xhttpL.onreadystatechange = function() {
      if (this.readyState == 4 && this.status == 200) {
         var myArr = JSON.parse(this.responseText);
         addGraphData(chart,myArr,timestamps);
         addTableData(table,myArr,timestamps);
-        addSummary(table,myArr,timestamps);
+        addSummary(summaryTable,myArr,timestamps);
       }
     };
     xhttpL.ontimeout = function (e) {
@@ -362,7 +362,7 @@ setInterval(function ( ){
     JSON_requestTime("/monthlyTimeStamp.json",timestampsMonthly);
     
     
-    JSON_request("/data1.json",myChartAirTemp,tableAirTemp,timestampsLive);
+    JSON_request("/data1.json",myChartAirTemp,tableAirTemp,timestampsLive,tableAirTempSummary);
     /*
     JSON_request("/data2.json",myChartAirHumidity,tableAirHumidity,timestampsLive);
     JSON_request("/data3.json",myChartWaterTemp,tableWaterTemp,timestampsLive);

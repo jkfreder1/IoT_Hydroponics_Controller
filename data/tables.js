@@ -352,9 +352,9 @@ var tableNutrientLvlMonthly = new Tabulator("#nutrientLvlMonthlyT", {
 function addSummary(table,data,timestamps){
     let newData = [];
     let row = {};
-    let lastTime = timestamps[0].dataset.length - 1;
+    let lastTime = timestamps[0].dataset.length - 1;  // obtain index of last element
     row['time'] = timestamps[0].dataset[lastTime];
-    row['dataset'] = data.dataset[23];
+    row['dataset'] = data.dataset[lastTime];
     newData.push(row);
     table.setData(newData);
     table.redraw();
