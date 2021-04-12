@@ -16,6 +16,54 @@ li{
   list-style-type: none;
 
 }
+
+.topleft {
+  position: absolute;
+  top: 200px;
+  left: 35px;
+}
+.topcenter {
+  position: absolute;
+  top: 200px;
+  left:580px;
+}
+.topright {
+  position: absolute;
+  top: 200px;
+  right: 35px;
+}
+
+.centerleft {
+  position: absolute;
+  top: 400px;
+  left:35px;
+}
+.centercenter {
+  position: absolute;
+  top: 400px;
+  left:580px;
+  
+}
+.centerright {
+  position: absolute;
+  top: 400px;
+  right:35px;
+}
+.bottomcenter {
+  position: absolute;
+  top: 600px;
+  left:580px;
+}
+
+.formboxContainer {
+  height: 700px;
+  width: 100%;
+  background-color:white;
+  text-align: left;
+  justify-content: center;
+  display: flex;
+  align-self: center;
+}
 button {
   background-color: #81e7b8;
   border: 1px solid;
