@@ -352,20 +352,23 @@ var tableNutrientLvlMonthly = new Tabulator("#nutrientLvlMonthlyT", {
 function addSummary(table,data,timestamps){
     let newData = [];
     let row = {};
-    row['time'] = timestamps[23];
+    let lastTime = timestamps[0].dataset.length - 1;
+    row['time'] = timestamps[0].dataset[lastTime];
     row['dataset'] = data.dataset[23];
     newData.push(row);
     table.setData(newData);
+    table.redraw();
 }
 
 function addTableData(table, data,timestamps) {
     let newData = [];
     let row = {};
     for (let i = 0; i < data.dataset.length; i++) {
-        row['time'] = timestamps[i];
+        row['time'] = timestamps[0].dataset[i];
         row['dataset'] = data.dataset[i];
         newData.push(row);
      }
     table.setData(newData);
+    table.redraw
 }
 

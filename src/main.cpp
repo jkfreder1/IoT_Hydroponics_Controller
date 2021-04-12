@@ -334,7 +334,7 @@ StaticJsonDocument<512> doc5;
 String jsonData5 = "/data5.json";
 StaticJsonDocument<512> doc6;
 String jsonData6 = "/data6.json";
-StaticJsonDocument<512> timeStamp;
+StaticJsonDocument<1024> timeStamp;
 String jsonTimeStamp = "/timeStamp.json";
 //daily documents
 StaticJsonDocument<1024> daily1;
@@ -569,6 +569,8 @@ void printLocalTime(int time, int count, String filename){
   if(serializeJsonPretty(hourlyTimeStamp, outfile) == 0){
     Serial.println("Failed to write to file");
   }
+  else
+    Serial.println("something written in file");
   outfile.close();
 }
 
