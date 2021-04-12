@@ -1795,7 +1795,7 @@ if(checkSize(startTime1) && checkSize(endTime1)){
 //printf("routes completed");
   
 
-/*
+
 //counter2=0;
  //}
  
@@ -1897,7 +1897,7 @@ else{
   temperatureF_offset=temperatureF_input-temperatureF;
   tds_offset=tds_value_input-tdsValue;
   }
-*/
+
 /*
 if (!client.connected()) {
     reconnect();
