@@ -1522,9 +1522,9 @@ else{
   //}
 
 //if(counter>150){
- array1=analogRead(18);////// 0 ph sensor
- array2=analogRead(18);//0
- array3=analogRead(18);//0
+ array1=analogRead(36);////// 0 ph sensor
+ array2=analogRead(36);//0
+ array3=analogRead(36);//0
  array1=array2+array3+array1;
  float volt=(float)array1*5.0/4096/3;
  ph_act = (-5.70 * volt + calibration_value);
