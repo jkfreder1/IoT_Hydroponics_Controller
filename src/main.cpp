@@ -652,6 +652,9 @@ void printLocalTime(int time, int count, String filename){
     break;
 
 }
+  if(serializeJsonPretty(hourlyTimeStamp, outfile) == 0){
+    Serial.println("Failed to write to file");
+  }
   outfile.close();
 }
 
@@ -668,7 +671,7 @@ float calcAverage(float avg, float data, int count){
 
 void printJSON(){
   uint8_t* pBuffer = nullptr;
-  File testfile = SPIFFS.open("/data.json", "r");
+  File testfile = SPIFFS.open("/timeStamp.json", "r");
   if(testfile){
     unsigned int fileSize = testfile.size();
     pBuffer = (uint8_t*)malloc(fileSize + 1);
@@ -789,12 +792,10 @@ String readBME280Humidity() {
   return String();
 }
 */
-
 inline const char * const BoolToString(bool b)
 {
   return b ? "true" : "false";
 }
-
  void routes(){
     // Route for root / web page
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
@@ -1086,7 +1087,6 @@ void setup(){
   printLocalTime(2, 0, jsonDailyTimeStamp);
   printLocalTime(3, 0, jsonWeeklyTimeStamp);
   printLocalTime(4, 0, jsonMonthlyTimeStamp);
-
 
 
   // Send web page with input fields to client
@@ -1520,9 +1520,9 @@ else{
   //}
 
 //if(counter>150){
- array1=analogRead(16);////// 0 ph sensor
- array2=analogRead(16);//0
- array3=analogRead(16);//0
+ array1=analogRead(36);////// 0 ph sensor
+ array2=analogRead(36);//0
+ array3=analogRead(36);//0
  array1=array2+array3+array1;
  float volt=(float)array1*5.0/4096/3;
  ph_act = (-5.70 * volt + calibration_value);
