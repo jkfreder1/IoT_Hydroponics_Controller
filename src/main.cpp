@@ -839,23 +839,23 @@ inline const char * const BoolToString(bool b)
    request->send(SPIFFS, "/logged_out.html", String(), false, processor);
   });
   server.on("/airTempError", HTTP_GET, [](AsyncWebServerRequest *request){
-  request->send(200, "text/plain", BoolToString(false));
+  request->send(200, "text/plain", BoolToString(errorAir));
   });
   server.on("/airHumidError", HTTP_GET, [](AsyncWebServerRequest *request){
-  request->send(200, "text/plain", BoolToString(false));
+  request->send(200, "text/plain", BoolToString(true));
   });
   server.on("/waterTempError", HTTP_GET, [](AsyncWebServerRequest *request){
-  request->send(200, "text/plain", BoolToString(false));
+  request->send(200, "text/plain", BoolToString(errorWaterTemp));
   });
 
   server.on("/waterLvlError", HTTP_GET, [](AsyncWebServerRequest *request){
-  request->send(200, "text/plain", BoolToString(false));
+  request->send(200, "text/plain", BoolToString(errorWaterLevel));
   });
   server.on("/pHError", HTTP_GET, [](AsyncWebServerRequest *request){
-  request->send(200, "text/plain", BoolToString(false));
+  request->send(200, "text/plain", BoolToString(errorpH));
   });
   server.on("/nutrientLvlError", HTTP_GET, [](AsyncWebServerRequest *request){
-  request->send(200, "text/plain", BoolToString(false));
+  request->send(200, "text/plain", BoolToString(errorTDS));
   });
  }
  

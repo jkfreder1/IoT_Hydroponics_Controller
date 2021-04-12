@@ -8,18 +8,6 @@ var test = [
     {}
 ]
 
-//create table and assign data
-var table = new Tabulator("#example-table", {
-    reactiveData:true, //enable reactive data
-    data:tableData, //assign data array
-    layout:"fitDataTable",
-
-    columns:[
-          {title:"Date", field:"time"},
-          {title:"Temperature", field:"dataset"},
-          
-    ]
-});
                                     // **** SUMMARY TABLES **** //
 
 var tableAirTempSummary = new Tabulator("#airTemp-summary", {
@@ -28,8 +16,8 @@ var tableAirTempSummary = new Tabulator("#airTemp-summary", {
     layout:"fitDataTable",
 
     columns:[
-          {title:"Date", field:"time"},
-          {title:"Temperature", field:"dataset"},
+          {title:"Time", field:"time"},
+          {title:"Temperature (F)", field:"dataset"},
           
     ]
 });
@@ -40,8 +28,8 @@ var tableAirHumidSummary = new Tabulator("#airHumid-summary", {
     layout:"fitDataTable",
 
     columns:[
-          {title:"Date", field:"time"},
-          {title:"Temperature", field:"dataset"},
+          {title:"Time", field:"time"},
+          {title:"%", field:"dataset"},
           
     ]
 });
@@ -51,8 +39,8 @@ var tableWaterTempSummary = new Tabulator("#waterTemp-summary", {
     data:test, //assign data array
     layout:"fitDataTable",
     columns:[
-          {title:"Date", field:"time"},
-          {title:"Temperature", field:"dataset"},
+          {title:"Time", field:"time"},
+          {title:"Temperature (F)", field:"dataset"},
           
     ]
 });
@@ -62,8 +50,8 @@ var tableWaterLvlSummary = new Tabulator("#waterLvl-summary", {
     data:test, //assign data array
     layout:"fitDataTable",
     columns:[
-          {title:"Date", field:"time"},
-          {title:"Temperature", field:"dataset"},
+          {title:"Time", field:"time"},
+          {title:"Level (inches)", field:"dataset"},
           
     ]
 });
@@ -73,8 +61,8 @@ var tablepHSummary = new Tabulator("#pH-summary", {
     data:test, //assign data array
     layout:"fitDataTable",
     columns:[
-          {title:"Date", field:"time"},
-          {title:"Temperature", field:"dataset"},
+          {title:"Time", field:"time"},
+          {title:"pH", field:"dataset"},
           
     ]
 });
@@ -83,8 +71,8 @@ var tableNutrientLvlSummary = new Tabulator("#nutrientLvl-summary", {
     data:test, //assign data array
     layout:"fitDataTable",
     columns:[
-          {title:"Date", field:"time"},
-          {title:"Temperature", field:"dataset"},
+          {title:"Time", field:"time"},
+          {title:"Part per Millon (ppm)", field:"dataset"},
           
     ]
 });
@@ -96,7 +84,7 @@ var tableAirTemp = new Tabulator("#airTempT", {
     layout:"fitDataTable",
 
     columns:[
-          {title:"Date", field:"time"},
+          {title:"Time", field:"time"},
           {title:"Temperature", field:"dataset"},
           
     ]
@@ -131,29 +119,20 @@ var tableAirTempMonthly = new Tabulator("#airTempMonthlyT", {
     layout:"fitDataTable",
 
     columns:[
-          {title:"Date", field:"time"},
+          {title:"Month", field:"time"},
           {title:"Temperature", field:"dataset"},
           
     ]
 });
 
-var tableAirHumidity = new Tabulator("#airHumidityT", {
-    reactiveData:true, //enable reactive data
-    data:tableData, //assign data array
-    layout:"fitDataTable",
-    columns:[
-          {title:"Date", field:"time"},
-          {title:"Temperature", field:"dataset"},
-    ]
-});
 
 var tableAirHumidity = new Tabulator("#airHumidityT", {
     reactiveData:true, //enable reactive data
     data:tableData, //assign data array
     layout:"fitDataTable",
     columns:[
-          {title:"Date", field:"time"},
-          {title:"Temperature", field:"dataset"},
+          {title:"Time", field:"time"},
+          {title:"%", field:"dataset"},
     ]
 });
 
@@ -182,7 +161,7 @@ var tableAirHumidityMonthly = new Tabulator("#airHumidityMonthlyT", {
     data:tableData, //assign data array
     layout:"fitDataTable",
     columns:[
-          {title:"Date", field:"time"},
+          {title:"Month", field:"time"},
           {title:"Temperature", field:"dataset"},
     ]
 });
@@ -192,7 +171,7 @@ var tableWaterTemp = new Tabulator("#waterTempT", {
     data:tableData, //assign data array
     layout:"fitDataTable",
     columns:[
-          {title:"Date", field:"time"},
+          {title:"Time", field:"time"},
           {title:"Temperature", field:"dataset"},
     ]
 });
@@ -222,7 +201,7 @@ var tableWaterTempMonthly = new Tabulator("#waterTempMonthlyT", {
     data:tableData, //assign data array
     layout:"fitDataTable",
     columns:[
-          {title:"Date", field:"time"},
+          {title:"Month", field:"time"},
           {title:"Temperature", field:"dataset"},
     ]
 });
@@ -232,8 +211,8 @@ var tableWaterLvl = new Tabulator("#waterLvlT", {
     data:tableData, //assign data array
     layout:"fitDataTable",
     columns:[
-          {title:"Date", field:"time"},
-          {title:"Temperature", field:"dataset"},
+          {title:"Time", field:"time"},
+          {title:"Level (inches)", field:"dataset"},
     ]
 });
 
@@ -243,7 +222,7 @@ var tableWaterLvlDaily = new Tabulator("#waterLvlDailyT", {
     layout:"fitDataTable",
     columns:[
           {title:"Date", field:"time"},
-          {title:"Temperature", field:"dataset"},
+          {title:"Level (inches)", field:"dataset"},
     ]
 });
 
@@ -253,7 +232,7 @@ var tableWaterLvlWeekly = new Tabulator("#waterLvlWeeklyT", {
     layout:"fitDataTable",
     columns:[
           {title:"Date", field:"time"},
-          {title:"Temperature", field:"dataset"},
+          {title:"Level (inches)", field:"dataset"},
     ]
 });
 
@@ -262,8 +241,8 @@ var tableWaterLvlMonthly = new Tabulator("#waterLvlMonthlyT", {
     data:tableData, //assign data array
     layout:"fitDataTable",
     columns:[
-          {title:"Date", field:"time"},
-          {title:"Temperature", field:"dataset"},
+          {title:"Month", field:"time"},
+          {title:"Level (inches)", field:"dataset"},
     ]
 });
 
@@ -272,8 +251,8 @@ var tablepH = new Tabulator("#pHT", {
     data:tableData, //assign data array
     layout:"fitDataTable",
     columns:[
-          {title:"Date", field:"time"},
-          {title:"Temperature", field:"dataset"},
+          {title:"Time", field:"time"},
+          {title:"pH", field:"dataset"},
     ]
 });
 
@@ -283,7 +262,7 @@ var tablepHDaily = new Tabulator("#pHDailyT", {
     layout:"fitDataTable",
     columns:[
           {title:"Date", field:"time"},
-          {title:"Temperature", field:"dataset"},
+          {title:"pH", field:"dataset"},
     ]
 });
 
@@ -293,7 +272,7 @@ var tablepHWeekly = new Tabulator("#pHWeeklyT", {
     layout:"fitDataTable",
     columns:[
           {title:"Date", field:"time"},
-          {title:"Temperature", field:"dataset"},
+          {title:"pH", field:"dataset"},
     ]
 });
 
@@ -302,8 +281,8 @@ var tablepHMonthly = new Tabulator("#pHMonthlyT", {
     data:tableData, //assign data array
     layout:"fitDataTable",
     columns:[
-          {title:"Date", field:"time"},
-          {title:"Temperature", field:"dataset"},
+          {title:"Month", field:"time"},
+          {title:"pH", field:"dataset"},
     ]
 });
 
@@ -312,8 +291,8 @@ var tableNutrientLvl = new Tabulator("#nutrientLvlT", {
     data:tableData, //assign data array
     layout:"fitDataTable",
     columns:[
-          {title:"Date", field:"time"},
-          {title:"Temperature", field:"dataset"},
+          {title:"Time", field:"time"},
+          {title:"Part per Millon (ppm)", field:"dataset"},
     ]
 });
 
@@ -323,7 +302,7 @@ var tableNutrientLvlDaily = new Tabulator("#nutrientLvlDailyT", {
     layout:"fitDataTable",
     columns:[
           {title:"Date", field:"time"},
-          {title:"Temperature", field:"dataset"},
+          {title:"Part per Millon (ppm)", field:"dataset"},
     ]
 });
 
@@ -333,7 +312,7 @@ var tableNutrientLvlWeekly = new Tabulator("#nutrientLvlWeeklyT", {
     layout:"fitDataTable",
     columns:[
           {title:"Date", field:"time"},
-          {title:"Temperature", field:"dataset"},
+          {title:"Part per Millon (ppm)", field:"dataset"},
     ]
 });
 
@@ -342,8 +321,8 @@ var tableNutrientLvlMonthly = new Tabulator("#nutrientLvlMonthlyT", {
     data:tableData, //assign data array
     layout:"fitDataTable",
     columns:[
-          {title:"Date", field:"time"},
-          {title:"Temperature", field:"dataset"},
+          {title:"Month", field:"time"},
+          {title:"Part per Millon (ppm)", field:"dataset"},
     ]
 });
 
@@ -362,8 +341,8 @@ function addSummary(table,data,timestamps){
 
 function addTableData(table, data,timestamps) {
     let newData = [];
-    let row = {};
     for (let i = 0; i < data.dataset.length; i++) {
+        let row = {};
         row['time'] = timestamps[0].dataset[i];
         row['dataset'] = data.dataset[i];
         newData.push(row);
