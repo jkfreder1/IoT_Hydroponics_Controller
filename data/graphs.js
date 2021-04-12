@@ -106,9 +106,15 @@ var defaultOptions = {
             },
                       
         }]
-
-        
-    }
+    },
+    tooltips: {
+        mode: 'index',
+        intersect: false
+     },
+     hover: {
+        mode: 'index',
+        intersect: false
+     }
 }
 function secondaryInit(chart,title,yAxis,ymin,ymax, ystep,xAxis) {
     chart.options.title.text = title;
