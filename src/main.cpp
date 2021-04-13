@@ -1696,11 +1696,11 @@ else{
     airTempCount = 0;
   }
   
-  float fakeAirTemp = 65 + rand() % (( 85 + 1 ) -65);
-  float fakeAirHumid = 30 + rand() % (( 80 + 1 ) -30);
-  float fakeWaterTemp = 65 + rand() % (( 85 + 1 ) -65);
+  float fakeAirTemp = 68 + rand() % (( 77 + 1 ) -68);
+  float fakeAirHumid = 60 + rand() % (( 70 + 1 ) -60);
+  float fakeWaterTemp = 65 + rand() % (( 74 + 1 ) -65);
   float fakeTDS = 500 + rand() % (( 500 + 1 ) - 200);
-  float fakepH = 0 + rand() % (( 14 + 1 ) - 0);
+  float fakepH = 6 + rand() % (( 9 + 1 ) - 6);
   float fakeWaterLevel = 0 + rand() % (( 10 + 1 ) - 0);
 
   store_data(fakeAirTemp, airTemp, data1, airTempCount, jsonData1);
