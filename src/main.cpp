@@ -116,6 +116,11 @@ uint8_t LED2pin = 27;
 bool LED2status = LOW;
 
 bool runRoutes = true;
+
+
+
+
+bool formsFlag = false;
 String readFile(fs::FS &fs, const char * path){
   //Serial.printf("Reading file: %s\r\n", path);
   File file = fs.open(path, "r");
@@ -1208,13 +1213,14 @@ void setup(){
   printLocalTime(4, 0, jsonMonthlyTimeStamp);
 
 
-  // Send web page with input fields to client
-  /*server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send_P(200, "text/html", "/index.html", processor);
-  });*/
 
   // Send a GET request to <ESP_IP>/get?inputString=<inputMessage>
   server.on("/get", HTTP_GET, [] (AsyncWebServerRequest *request) {
+    delay(1);
+
+    formsFlag = true;
+
+    
     String inputMessage;
     // GET inputString value on <ESP_IP>/get?inputString=<inputMessage>
     /*if (request->hasParam(PARAM_STRING)) {
