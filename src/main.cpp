@@ -1717,7 +1717,7 @@ else{
   totCount1 = 0;
   avgCount = 1;
   //serializeJsonPretty(doc2, Serial);
-  serializeJsonPretty(timeStamp, Serial);
+  //serializeJsonPretty(timeStamp, Serial);
   //printJSON();
   dailyCount++;
  }
