@@ -76,7 +76,11 @@ const char* http_password = "admin";
 
 #define COLUMS           16
 #define ROWS             2
+<<<<<<< HEAD
 #define DHTPIN 18
+=======
+#define DHTPIN          18
+>>>>>>> 2f3708d5b5156a3ee6370bce28c4d35acf907109
 #define DHTTYPE DHT11
 #define LCD_SPACE_SYMBOL 0x20  //space symbol from the LCD ROM, see p.9 of GDM2004D datasheet
 const int oneWireBus = 23;
@@ -1140,8 +1144,116 @@ inline const char * const BoolToString(bool b)
   });
 
  }
+<<<<<<< HEAD
  void get_param(){
       server.on("/get", HTTP_GET, [] (AsyncWebServerRequest *request) {
+=======
+
+
+
+void setup(){
+  Serial.begin (115200);
+  Serial.print("it is starting");
+  /*
+  client.setServer(mqttServer, mqttPort);
+  client.setCallback(callback);
+  */
+ //setup_wifi();
+
+
+
+
+  pinMode(trigPin, OUTPUT);///sonar
+  pinMode(echoPin, INPUT);
+
+  pinMode(36, INPUT);
+  pinMode(34, INPUT);
+  pinMode(23, INPUT);
+  pinMode(18, INPUT);
+
+  pinMode(12, OUTPUT);
+  pinMode(14, OUTPUT);
+  pinMode(26, OUTPUT);
+  pinMode(27, OUTPUT);
+
+
+  lcd.begin();/////display
+  lcd.backlight();
+
+  dht.begin();///temp humid
+
+  sensors.begin();///water temp
+  pinMode(TdsSensorPin,INPUT);
+
+  pinMode(TdsSensorPin,INPUT);//tds sensor
+
+  timer = timerBegin(0, 8, true);//////////// timer
+  timerAttachInterrupt(timer, &incrCounter, true);
+  timerAlarmWrite(timer, 1000000, true);
+  timerAlarmEnable(timer);
+
+  pinMode(5,INPUT);
+  pinMode(15,INPUT);////15
+  pinMode(19,INPUT);
+  //attachInterrupt(digitalPinToInterrupt(5), button3ISR,RISING);
+  //attachInterrupt(digitalPinToInterrupt(15), buttonISR, RISING);////15
+  //attachInterrupt(digitalPinToInterrupt(19), button2ISR, RISING);
+
+  /*
+  esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP * uS_TO_S_FACTOR);/////sleep DONT DELETE
+  esp_sleep_enable_ext0_wakeup(GPIO_NUM_15,1);
+  */
+  
+  AsyncWiFiManager wifiManager(&server,&dns);
+  wifiManager.autoConnect("AutoConnectAP");
+    Serial.println("connected...yeey :)");
+    
+
+
+  
+
+  configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
+
+  if(!SPIFFS.begin(true)){
+    Serial.println("An Error has occurred while mounting SPIFFS");
+    return;
+  }
+
+  store_data(0, dailyAirTempAvg, dailyAirTempData, 0, jsonDaily1);
+  store_data(0, dailyAirHumAvg, dailyAirHumData, 0, jsonDaily2);
+  store_data(0, dailyWaterTempAvg, dailyWaterTempData, 0, jsonDaily3);
+  store_data(0, dailyTdsAvg, dailyTdsData, 0, jsonDaily4);
+  store_data(0, dailypHAvg, dailypHData, 0, jsonDaily5);
+  store_data(0, dailyWaterLevelAvg, dailyWaterLevelData, 0, jsonDaily6);
+
+  store_data(0, weeklyAirTempAvg, weeklyAirTempData, 0, jsonWeekly1);
+  store_data(0, weeklyAirHumAvg, weeklyAirHumData, 0, jsonWeekly2);
+  store_data(0, weeklyWaterTempAvg, weeklyWaterTempData, 0, jsonWeekly3);
+  store_data(0, weeklyTdsAvg, weeklyTdsData, 0, jsonWeekly4);
+  store_data(0, weeklypHAvg, weeklypHData, 0, jsonWeekly5);
+  store_data(0, weeklyWaterLevelAvg, weeklyWaterLevelData, 0, jsonWeekly6);
+
+  store_data(0, monthlyAirTempAvg, monthlyAirTempData, 0, jsonMonthly1);
+  store_data(0, monthlyAirHumAvg, monthlyAirHumData, 0, jsonMonthly2);
+  store_data(0, monthlyWaterTempAvg, monthlyWaterTempData, 0, jsonMonthly3);
+  store_data(0, monthlyTdsAvg, monthlyTdsData, 0, jsonMonthly4);
+  store_data(0, monthlypHAvg, monthlypHData, 0, jsonMonthly5);
+  store_data(0, monthlyWaterLevelAvg, monthlyWaterLevelData, 0, jsonMonthly6);
+
+  printLocalTime(1, 0, jsonTimeStamp);
+  printLocalTime(2, 0, jsonDailyTimeStamp);
+  printLocalTime(3, 0, jsonWeeklyTimeStamp);
+  printLocalTime(4, 0, jsonMonthlyTimeStamp);
+
+
+  // Send web page with input fields to client
+  /*server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send_P(200, "text/html", "/index.html", processor);
+  });*/
+
+  // Send a GET request to <ESP_IP>/get?inputString=<inputMessage>
+  server.on("/get", HTTP_GET, [] (AsyncWebServerRequest *request) {
+>>>>>>> 2f3708d5b5156a3ee6370bce28c4d35acf907109
     String inputMessage;
     if (request->hasParam(PARAM_HIGHER)) {
       inputMessage = request->getParam(PARAM_HIGHER)->value();
@@ -1499,7 +1611,7 @@ void displayDHT(float h, float f){
     lcd.print("%    ");
   }
   lcd.setCursor(0,1); //air temp display
-  if(checkSize(lowerBound1) && checkSize(upperBound1)){
+ if(checkSize(lowerBound1) && checkSize(upperBound1)){
     airTempLowParam = getParameter(lowerBound1);
     airTempHighParam = getParameter(upperBound1);
   }
@@ -1617,7 +1729,15 @@ void displaypH(float ph_act){
 
 void loop(){
 
- 
+ //timer test code
+if(digitalRead(15)){
+  button++;
+  clear=1;
+}
+
+
+//end timer test code
+
 
  //if(counter>30&&counter<40){
  static unsigned long analogSampleTimepoint = millis();//Tds sensor
@@ -1733,7 +1853,7 @@ else{
 
   //store live and historical data
  if(totCount1 > 2){
-  if(airTempCount == 24){
+  if(airTempCount == 8){
     airTempCount = 0;
   }
   
@@ -1766,16 +1886,16 @@ else{
   dailyCount++;
  }
 
- if(dailyCount == 24){
-   if(dailyArray == 24){
+ if(dailyCount == 8){
+   if(dailyArray == 3){
      dailyArray = 0;
    }
-   store_daily(data1, dailyAirTempData, dailyAirTempAvg, jsonDaily1, 24, dailyArray);
-   store_daily(data2, dailyAirHumData, dailyAirHumAvg, jsonDaily2, 24, dailyArray);
-   store_daily(data3, dailyWaterTempData, dailyWaterTempAvg, jsonDaily3, 24, dailyArray);
-   store_daily(data4, dailyTdsData, dailyTdsAvg, jsonDaily4, 24, dailyArray);
-   store_daily(data5, dailypHData, dailypHAvg, jsonDaily5, 24, dailyArray);
-   store_daily(data6, dailyWaterLevelData, dailyWaterLevelAvg, jsonDaily6, 24, dailyArray);
+   store_daily(data1, dailyAirTempData, dailyAirTempAvg, jsonDaily1, 8, dailyArray);
+   store_daily(data2, dailyAirHumData, dailyAirHumAvg, jsonDaily2, 8, dailyArray);
+   store_daily(data3, dailyWaterTempData, dailyWaterTempAvg, jsonDaily3, 8, dailyArray);
+   store_daily(data4, dailyTdsData, dailyTdsAvg, jsonDaily4, 8, dailyArray);
+   store_daily(data5, dailypHData, dailypHAvg, jsonDaily5, 8, dailyArray);
+   store_daily(data6, dailyWaterLevelData, dailyWaterLevelAvg, jsonDaily6, 8, dailyArray);
    printLocalTime(2, dailyArray, jsonDailyTimeStamp);
    dailyArray++;
    //serializeJsonPretty(daily1, Serial);
@@ -1784,32 +1904,32 @@ else{
    weeklyCount++;
  }
 
- if(weeklyCount == 7){
-   if(weeklyArray == 7){
+ if(weeklyCount == 2){
+   if(weeklyArray == 2){
      weeklyArray = 0;
    }
-   store_daily(dailyAirTempData, weeklyAirTempData, weeklyAirTempAvg, jsonWeekly1, 7, weeklyArray);
-   store_daily(dailyAirHumData, weeklyAirHumData, weeklyAirHumAvg, jsonWeekly2, 7, weeklyArray);
-   store_daily(dailyWaterTempData, weeklyWaterTempData, weeklyWaterTempAvg, jsonWeekly3, 7, weeklyArray);
-   store_daily(dailyTdsData, weeklyTdsData, weeklyTdsAvg, jsonWeekly4, 7, weeklyArray);
-   store_daily(dailypHData, weeklypHData, weeklypHAvg, jsonWeekly5, 7, weeklyArray);
-   store_daily(dailyWaterLevelData, weeklyWaterLevelData, weeklyWaterLevelAvg, jsonWeekly6, 7, weeklyArray);
+   store_daily(dailyAirTempData, weeklyAirTempData, weeklyAirTempAvg, jsonWeekly1, 3, weeklyArray);
+   store_daily(dailyAirHumData, weeklyAirHumData, weeklyAirHumAvg, jsonWeekly2, 3, weeklyArray);
+   store_daily(dailyWaterTempData, weeklyWaterTempData, weeklyWaterTempAvg, jsonWeekly3, 3, weeklyArray);
+   store_daily(dailyTdsData, weeklyTdsData, weeklyTdsAvg, jsonWeekly4, 3, weeklyArray);
+   store_daily(dailypHData, weeklypHData, weeklypHAvg, jsonWeekly5, 3, weeklyArray);
+   store_daily(dailyWaterLevelData, weeklyWaterLevelData, weeklyWaterLevelAvg, jsonWeekly6, 3, weeklyArray);
    printLocalTime(3, weeklyArray, jsonWeeklyTimeStamp);
    weeklyArray++;
    weeklyCount = 0;
    monthlyCount++;
  }
 
- if(monthlyCount == 4){
+ if(monthlyCount == 2){
    if(monthlyArray == 12){
      monthlyArray = 0;
    }
-   store_daily(weeklyAirTempData, monthlyAirTempData, monthlyAirTempAvg, jsonMonthly1, 4, monthlyArray);
-   store_daily(weeklyAirHumData, monthlyAirHumData, monthlyAirHumAvg, jsonMonthly2, 4, monthlyArray);
-   store_daily(weeklyWaterTempData, monthlyWaterTempData, monthlyWaterTempAvg, jsonMonthly3, 4, monthlyArray);
-   store_daily(weeklyTdsData, monthlyTdsData, monthlyTdsAvg, jsonMonthly4, 4, monthlyArray);
-   store_daily(weeklypHData, monthlypHData, monthlypHAvg, jsonMonthly5, 4, monthlyArray);
-   store_daily(weeklyWaterLevelData, monthlyWaterLevelData, monthlyWaterLevelAvg, jsonMonthly6, 4, monthlyArray);
+   store_daily(weeklyAirTempData, monthlyAirTempData, monthlyAirTempAvg, jsonMonthly1, 2, monthlyArray);
+   store_daily(weeklyAirHumData, monthlyAirHumData, monthlyAirHumAvg, jsonMonthly2, 2, monthlyArray);
+   store_daily(weeklyWaterTempData, monthlyWaterTempData, monthlyWaterTempAvg, jsonMonthly3, 2, monthlyArray);
+   store_daily(weeklyTdsData, monthlyTdsData, monthlyTdsAvg, jsonMonthly4, 2, monthlyArray);
+   store_daily(weeklypHData, monthlypHData, monthlypHAvg, jsonMonthly5, 2, monthlyArray);
+   store_daily(weeklyWaterLevelData, monthlyWaterLevelData, monthlyWaterLevelAvg, jsonMonthly6, 2, monthlyArray);
    printLocalTime(4, monthlyArray, jsonMonthlyTimeStamp);
    monthlyArray++;
    monthlyCount = 0;
