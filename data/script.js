@@ -1,3 +1,11 @@
+var errorAir = [];
+var errorAirHumid = [];
+var errorWaterTemp = [];
+var errorpH = [];
+var errorTDS = [];
+var errorWaterLevel = [];
+
+
 function logoutButton() {
   var xhr = new XMLHttpRequest();
   xhr.open("GET", "/logout", true);
@@ -89,17 +97,18 @@ function showHistoricalTable(evt,tableID,tableCategory) {
   //console.log(tableCategory);
   
   // obtain historical table of category and hide all of them
-  historyTables = document.getElementById(tableCategory).getElementsByTagName("div");
+  historyTables = document.getElementById(tableCategory).querySelectorAll(".tabulator");
+
   //console.log(historyTables);
   for (i = 0; i < historyTables.length; i++) {
     historyTables[i].style.display = "none";
   }
-  tableAirTempDaily.redraw(true); 
+  //tableAirTempDaily.redraw(true); 
   //$(tableID).tabulator("redraw");
   // show the historical table that was selected
-  document.getElementById(tableID).style.display = "block";
+  document.getElementById(tableID).style.display = "inline-block";
   //console.log(document.getElementById(tableID));
-  tableAirTempDaily.redraw(true); 
+  //tableAirTempDaily.redraw(true); 
 
   //$(tableID).tabulator("redraw");
 
@@ -127,11 +136,12 @@ function hideHistoricals(){
 
   // for each in historical container, hide the div elements (tables) within it 
   for(i=0; i <historyContainer.length; i++){
-    historyTables = historyContainer[i].getElementsByTagName("div");
-    for (k = 0; k < historyTables.length; k++) {
+    historyTables = historyContainer[i].querySelectorAll(".tabulator");
+    for (k = 1; k < historyTables.length; k++) {
       historyTables[k].style.display = "none";
     }
   }
+  
   
 }
 
@@ -167,6 +177,18 @@ function showActiveTab(){
 function submitMessage() {
   //alert("Saved value to ESP SPIFFS");
   //setTimeout(function(){ document.location.reload(false); },0 );   
+}
+
+function updateErrors(errorBool,errorID) {
+  // obtain error message
+  let message = document.getElementById(errorID);
+
+  // show message if error is flagged true
+  if(errorBool[0])
+  message.style.display = "block";
+  else
+  message.style.display = "none";
+
 }
 
 

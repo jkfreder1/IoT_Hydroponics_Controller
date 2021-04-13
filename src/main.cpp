@@ -105,12 +105,6 @@ int button=0;
 int counter2;
 int clear;
 
-bool errorAir = 0;
-bool errorWaterTemp = 0;
-bool errorpH = 0;
-bool errorTDS = 0;
-bool errorWaterLevel = 0;
-
 int h_offset,f_offset,ph_act_offset,inches_offset,temperatureF_offset,tds_offset;
 int h_input=32,f_input=72,ph_act_input=7,inches_input=5,temperatureF_input=67,tds_value_input=83;
 
@@ -308,6 +302,18 @@ else if (var=="timeStamp6"){
 else if (var=="runTime6"){
   return readFile(SPIFFS, "/runTime6.txt");
 }
+else if (var=="outLet1"){
+  return readFile(SPIFFS, "/outLet1.txt");
+}
+else if (var=="outLet2"){
+  return readFile(SPIFFS, "/outLet2.txt");
+}
+else if (var=="outLet3"){
+  return readFile(SPIFFS, "/outLet3.txt");
+}
+else if (var=="outLet4"){
+  return readFile(SPIFFS, "/outLet4.txt");
+}
 
   return String();
 }
@@ -398,6 +404,10 @@ const char* UPPERBOUND_6="upperBound6";
 const char* TIMESTAMP_6="timeStamp6";
 const char* RUNTIME_6="runTime6";
 
+const char* OUTLET_1="outLet1";
+const char* OUTLET_2="outLet2";
+const char* OUTLET_3="outLet3";
+const char* OUTLET_4="outLet4";
 
 OneWire oneWire(oneWireBus);
 DallasTemperature sensors(&oneWire);
@@ -420,7 +430,7 @@ StaticJsonDocument<512> doc5;
 String jsonData5 = "/data5.json";
 StaticJsonDocument<512> doc6;
 String jsonData6 = "/data6.json";
-StaticJsonDocument<512> timeStamp;
+StaticJsonDocument<1024> timeStamp;
 String jsonTimeStamp = "/timeStamp.json";
 //daily documents
 StaticJsonDocument<1024> daily1;
@@ -612,9 +622,20 @@ float monthlypH = 0;
 float monthlyTDS = 0;
 float monthlyWaterLevel = 0;
 
+int errorflag1=0; // tds
+int errorflag2=0; // waterLvl
+int errorflag3=0; // Air 
+int errorflag4=0; // waterTemp
+int errorflag5=0; // pH
+
 int dailyArray = 0;
 int weeklyArray = 0;
 int monthlyArray = 0;
+
+int outlet1 = 12;
+int outlet2 = 14;
+int outlet3 = 27;
+int outlet4 = 26;
 
 const char* ntpServer = "pool.ntp.org";
 const char* connect_mqtt(){
@@ -651,7 +672,7 @@ void printLocalTime(int time, int count, String filename){
     return;
   }
   else{
-    Serial.println("Time obtained/n");
+    //Serial.println("Time obtained/n");
   }
 
   String s;
@@ -689,6 +710,8 @@ void printLocalTime(int time, int count, String filename){
   if(serializeJsonPretty(hourlyTimeStamp, outfile) == 0){
     Serial.println("Failed to write to file");
   }
+  else
+    //Serial.println("something written in file");
   outfile.close();
 }
 
@@ -760,7 +783,7 @@ String getTime(){
     return s;
   }
   else{
-    Serial.println("Time obtained/n");
+    //Serial.println("Time obtained/n");
   }
 
   char timeHourly[10];
@@ -783,6 +806,7 @@ String getTimeStamp(String filename){
     Serial.println("Failed to read to file");
   }
   testfile.close();
+  //Serial.println(timeStamp);
   return timeStamp;
 }
 
@@ -950,23 +974,21 @@ inline const char * const BoolToString(bool b)
    request->send(SPIFFS, "/logged_out.html", String(), false, processor);
   });
   server.on("/airTempError", HTTP_GET, [](AsyncWebServerRequest *request){
-  request->send(200, "text/plain", BoolToString(false));
+  request->send(200, "text/plain", BoolToString(errorflag3));
   });
-  server.on("/airHumidError", HTTP_GET, [](AsyncWebServerRequest *request){
-  request->send(200, "text/plain", BoolToString(false));
-  });
+  
   server.on("/waterTempError", HTTP_GET, [](AsyncWebServerRequest *request){
-  request->send(200, "text/plain", BoolToString(false));
+  request->send(200, "text/plain", BoolToString(errorflag4));
   });
 
   server.on("/waterLvlError", HTTP_GET, [](AsyncWebServerRequest *request){
-  request->send(200, "text/plain", BoolToString(false));
+  request->send(200, "text/plain", BoolToString(errorflag2));
   });
   server.on("/pHError", HTTP_GET, [](AsyncWebServerRequest *request){
-  request->send(200, "text/plain", BoolToString(false));
+  request->send(200, "text/plain", BoolToString(errorflag5));
   });
   server.on("/nutrientLvlError", HTTP_GET, [](AsyncWebServerRequest *request){
-  request->send(200, "text/plain", BoolToString(false));
+  request->send(200, "text/plain", BoolToString(errorflag1));
   });
  }
  
@@ -1322,6 +1344,23 @@ void setup(){
       inputMessage = request->getParam(RUNTIME_6)->value();
       writeFile(SPIFFS, "/runTime6.txt", inputMessage.c_str());
     }
+
+    else if (request->hasParam(OUTLET_1)) {
+      inputMessage = request->getParam(OUTLET_1)->value();
+      writeFile(SPIFFS, "/outLet1.txt", inputMessage.c_str());
+    }
+    else if (request->hasParam(OUTLET_2)) {
+      inputMessage = request->getParam(OUTLET_2)->value();
+      writeFile(SPIFFS, "/outLet2.txt", inputMessage.c_str());
+    }
+     else if (request->hasParam(OUTLET_3)) {
+      inputMessage = request->getParam(OUTLET_3)->value();
+      writeFile(SPIFFS, "/outLet3.txt", inputMessage.c_str());
+    }
+    else if (request->hasParam(OUTLET_4)) {
+      inputMessage = request->getParam(OUTLET_4)->value();
+      writeFile(SPIFFS, "/outLet4.txt", inputMessage.c_str());
+    }
     else if (request->hasParam(MQTT_USERNAME)) {
       inputMessage = request->getParam(MQTT_USERNAME)->value();
       writeFile(SPIFFS, "/mqttUsername.txt", inputMessage.c_str());
@@ -1393,11 +1432,6 @@ void reconnect() {
 }
  int clear2=0; 
  int errorflag=0;
- int errorflag1=0;
- int errorflag2=0;
- int errorflag3=0;
- int errorflag4=0;
- int errorflag5=0;
 
 void displayWaterTemp(float temperatureF){
   lcd.setCursor(0,0);//water temp display
@@ -1422,7 +1456,6 @@ void displayWaterTemp(float temperatureF){
     lcd.print("Critical error");
     lcd.setCursor(0,1);
     lcd.print("Check Sensor");
-    errorWaterTemp = 1;
   }
   else{
     if(clear2==1){
@@ -1478,7 +1511,6 @@ void displayDHT(float h, float f){
     lcd.print("Critical error");
     lcd.setCursor(0,1);
     lcd.print("Check Sensor");
-    errorAir = 0;
   }
   else{
     if(clear3==1){
@@ -1513,7 +1545,6 @@ void displaySonar(long inches){
     lcd.print("Critical error");
     lcd.setCursor(0,1);
     lcd.print("Check Sensor");
-    errorWaterLevel = 1;
   }
   else{
     if(clear2==1){
@@ -1564,7 +1595,6 @@ void displaypH(float ph_act){
   else if(ph_act>phhighParam){
     lcd.print("Error pH is High");
     clear2=1;
-    errorpH = 1;
   }
   else{
     if(clear2==1){
@@ -1783,17 +1813,59 @@ if(checkSize(startTime1) && checkSize(endTime1)){
   String s1 = getTimeStamp(startTime1);
   String e1 = getTimeStamp(endTime1);
   if(checkTime(curr, s1, e1)){
-    Serial.println("Turn on outlet");
+    digitalWrite(outlet1, 1);
+    //Serial.println("Turn on outlet");
   }
   else{
-    Serial.println("Turn off outlet");
+    digitalWrite(outlet1, 0);
+    //Serial.println("Turn off outlet");
+  }
+}
+
+if(checkSize(startTime3) && checkSize(endTime3)){
+  String curr2 = getTime();
+  String s2 = getTimeStamp(startTime3);
+  String e2 = getTimeStamp(endTime3);
+  if(checkTime(curr2, s2, e2)){
+    digitalWrite(outlet2, 1);
+    //Serial.println("Turn on outlet");
+  }
+  else{
+    digitalWrite(outlet2, 0);
+    //Serial.println("Turn off outlet");
+  }
+}
+
+if(checkSize(startTime4) && checkSize(endTime4)){
+  String curr3 = getTime();
+  String s3 = getTimeStamp(startTime4);
+  String e3 = getTimeStamp(endTime4);
+  if(checkTime(curr3, s3, e3)){
+    digitalWrite(outlet3, 1);
+    //Serial.println("Turn on outlet");
+  }
+  else{
+    digitalWrite(outlet3, 0);
+    //Serial.println("Turn off outlet");
+  }
+}
+
+if(checkSize(startTime5) && checkSize(endTime5)){
+  String curr4 = getTime();
+  String s4 = getTimeStamp(startTime5);
+  String e4 = getTimeStamp(endTime5);
+  if(checkTime(curr4, s4, e4)){
+    digitalWrite(outlet4, 1);
+  }
+  else{
+    digitalWrite(outlet4, 0);
   }
 }
 //else
 //printf("routes completed");
   
 
-/*
+
 //counter2=0;
  //}
  
@@ -1895,8 +1967,8 @@ else{
   temperatureF_offset=temperatureF_input-temperatureF;
   tds_offset=tds_value_input-tdsValue;
   }
-*/
 
+/*
 if (!client.connected()) {
     reconnect();
   }
@@ -1928,7 +2000,7 @@ if (!client.connected()) {
     Serial.println(humString);
     client.publish("esp32/humidity", humString);
   }
-  
+  */
 
   //if(sleeptime>200){
     //esp_deep_sleep_start();/////sleep DONT DELETE
