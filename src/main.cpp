@@ -616,6 +616,11 @@ int dailyArray = 0;
 int weeklyArray = 0;
 int monthlyArray = 0;
 
+int outlet1 = 12;
+int outlet2 = 14;
+int outlet3 = 27;
+int outlet4 = 26;
+
 const char* ntpServer = "pool.ntp.org";
 const char* connect_mqtt(){
     String work;
@@ -785,7 +790,7 @@ String getTimeStamp(String filename){
     Serial.println("Failed to read to file");
   }
   testfile.close();
-  Serial.println(timeStamp);
+  //Serial.println(timeStamp);
   return timeStamp;
 }
 
@@ -1775,10 +1780,52 @@ if(checkSize(startTime1) && checkSize(endTime1)){
   String s1 = getTimeStamp(startTime1);
   String e1 = getTimeStamp(endTime1);
   if(checkTime(curr, s1, e1)){
-    Serial.println("Turn on outlet");
+    digitalWrite(outlet1, 1);
+    //Serial.println("Turn on outlet");
   }
   else{
-    Serial.println("Turn off outlet");
+    digitalWrite(outlet1, 0);
+    //Serial.println("Turn off outlet");
+  }
+}
+
+if(checkSize(startTime3) && checkSize(endTime3)){
+  String curr2 = getTime();
+  String s2 = getTimeStamp(startTime3);
+  String e2 = getTimeStamp(endTime3);
+  if(checkTime(curr2, s2, e2)){
+    digitalWrite(outlet2, 1);
+    //Serial.println("Turn on outlet");
+  }
+  else{
+    digitalWrite(outlet2, 0);
+    //Serial.println("Turn off outlet");
+  }
+}
+
+if(checkSize(startTime4) && checkSize(endTime4)){
+  String curr3 = getTime();
+  String s3 = getTimeStamp(startTime4);
+  String e3 = getTimeStamp(endTime4);
+  if(checkTime(curr3, s3, e3)){
+    digitalWrite(outlet3, 1);
+    //Serial.println("Turn on outlet");
+  }
+  else{
+    digitalWrite(outlet3, 0);
+    //Serial.println("Turn off outlet");
+  }
+}
+
+if(checkSize(startTime5) && checkSize(endTime5)){
+  String curr4 = getTime();
+  String s4 = getTimeStamp(startTime5);
+  String e4 = getTimeStamp(endTime5);
+  if(checkTime(curr4, s4, e4)){
+    digitalWrite(outlet4, 1);
+  }
+  else{
+    digitalWrite(outlet4, 0);
   }
 }
 //else
