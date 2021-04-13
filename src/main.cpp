@@ -76,7 +76,7 @@ const char* http_password = "admin";
 
 #define COLUMS           16
 #define ROWS             2
-#define DHTPIN 4
+#define DHTPIN 39
 #define DHTTYPE DHT11
 #define LCD_SPACE_SYMBOL 0x20  //space symbol from the LCD ROM, see p.9 of GDM2004D datasheet
 const int oneWireBus = 23;
