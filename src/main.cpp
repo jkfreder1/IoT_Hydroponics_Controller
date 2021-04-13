@@ -76,7 +76,7 @@ const char* http_password = "admin";
 
 #define COLUMS           16
 #define ROWS             2
-#define DHTPIN 4
+#define DHTPIN 39
 #define DHTTYPE DHT11
 #define LCD_SPACE_SYMBOL 0x20  //space symbol from the LCD ROM, see p.9 of GDM2004D datasheet
 const int oneWireBus = 23;
@@ -1171,10 +1171,10 @@ void setup(){
   timerAlarmEnable(timer);
 
   pinMode(5,INPUT);
-  pinMode(17,INPUT);////15
+  pinMode(15,INPUT);////15
   pinMode(19,INPUT);
   attachInterrupt(digitalPinToInterrupt(5), button3ISR,RISING);
-  attachInterrupt(digitalPinToInterrupt(17), buttonISR, RISING);////15
+  attachInterrupt(digitalPinToInterrupt(15), buttonISR, RISING);////15
   attachInterrupt(digitalPinToInterrupt(19), button2ISR, RISING);
 
   /*
@@ -1719,9 +1719,11 @@ else{
  totCount1++;
  }
 
+/*
  if(totCount1 > 5){
    totCount2++;
  }
+ */
 
   //store live and historical data
  if(totCount1 > 2){
@@ -1737,11 +1739,17 @@ else{
   float fakeWaterLevel = 0 + rand() % (( 10 + 1 ) - 0);
 
   store_data(fakeAirTemp, airTemp, data1, airTempCount, jsonData1);
+  //store_data(avgAirTemp, airTemp, data1, airTempCount, jsonData1);
   store_data(fakeAirHumid, airHum, data2, airTempCount, jsonData2);
+  //store_data(avgAirHum, airHum, data2, airTempCount, jsonData2);
   store_data(fakeWaterTemp, waterTemp, data3, airTempCount, jsonData3);
+  //store_data(avgWaterTemp, waterTemp, data3, airTempCount, jsonData3);
   store_data(fakeTDS, tds, data4, airTempCount, jsonData4);
+  //store_data(avgTDS, tds, data4, airTempCount, jsonData4);
   store_data(fakepH, pH, data5, airTempCount, jsonData5);
+  //store_data(avgpH, pH, data5, airTempCount, jsonData5);
   store_data(fakeWaterLevel, waterLevel, data6, airTempCount, jsonData6);
+  //store_data(avgWaterLevel, waterLevel, data6, airTempCount, jsonData6);
   printLocalTime(1, airTempCount, jsonTimeStamp);
   airTempCount++;
   totCount1 = 0;
