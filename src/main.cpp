@@ -105,12 +105,6 @@ int button=0;
 int counter2;
 int clear;
 
-bool errorAir = 0;
-bool errorWaterTemp = 0;
-bool errorpH = 0;
-bool errorTDS = 0;
-bool errorWaterLevel = 0;
-
 int h_offset,f_offset,ph_act_offset,inches_offset,temperatureF_offset,tds_offset;
 int h_input=32,f_input=72,ph_act_input=7,inches_input=5,temperatureF_input=67,tds_value_input=83;
 
@@ -612,9 +606,20 @@ float monthlypH = 0;
 float monthlyTDS = 0;
 float monthlyWaterLevel = 0;
 
+int errorflag1=0; // tds
+int errorflag2=0; // waterLvl
+int errorflag3=0; // Air 
+int errorflag4=0; // waterTemp
+int errorflag5=0; // pH
+
 int dailyArray = 0;
 int weeklyArray = 0;
 int monthlyArray = 0;
+
+int outlet1 = 12;
+int outlet2 = 14;
+int outlet3 = 27;
+int outlet4 = 26;
 
 const char* ntpServer = "pool.ntp.org";
 const char* connect_mqtt(){
@@ -651,7 +656,7 @@ void printLocalTime(int time, int count, String filename){
     return;
   }
   else{
-    Serial.println("Time obtained/n");
+    //Serial.println("Time obtained/n");
   }
 
   String s;
@@ -690,7 +695,7 @@ void printLocalTime(int time, int count, String filename){
     Serial.println("Failed to write to file");
   }
   else
-    Serial.println("something written in file");
+    //Serial.println("something written in file");
   outfile.close();
 }
 
@@ -762,7 +767,7 @@ String getTime(){
     return s;
   }
   else{
-    Serial.println("Time obtained/n");
+    //Serial.println("Time obtained/n");
   }
 
   char timeHourly[10];
@@ -785,6 +790,7 @@ String getTimeStamp(String filename){
     Serial.println("Failed to read to file");
   }
   testfile.close();
+  //Serial.println(timeStamp);
   return timeStamp;
 }
 
@@ -952,23 +958,21 @@ inline const char * const BoolToString(bool b)
    request->send(SPIFFS, "/logged_out.html", String(), false, processor);
   });
   server.on("/airTempError", HTTP_GET, [](AsyncWebServerRequest *request){
-  request->send(200, "text/plain", BoolToString(errorAir));
+  request->send(200, "text/plain", BoolToString(errorflag3));
   });
-  server.on("/airHumidError", HTTP_GET, [](AsyncWebServerRequest *request){
-  request->send(200, "text/plain", BoolToString(true));
-  });
+  
   server.on("/waterTempError", HTTP_GET, [](AsyncWebServerRequest *request){
-  request->send(200, "text/plain", BoolToString(errorWaterTemp));
+  request->send(200, "text/plain", BoolToString(errorflag4));
   });
 
   server.on("/waterLvlError", HTTP_GET, [](AsyncWebServerRequest *request){
-  request->send(200, "text/plain", BoolToString(errorWaterLevel));
+  request->send(200, "text/plain", BoolToString(errorflag2));
   });
   server.on("/pHError", HTTP_GET, [](AsyncWebServerRequest *request){
-  request->send(200, "text/plain", BoolToString(errorpH));
+  request->send(200, "text/plain", BoolToString(errorflag5));
   });
   server.on("/nutrientLvlError", HTTP_GET, [](AsyncWebServerRequest *request){
-  request->send(200, "text/plain", BoolToString(errorTDS));
+  request->send(200, "text/plain", BoolToString(errorflag1));
   });
  }
  
@@ -1395,11 +1399,6 @@ void reconnect() {
 }
  int clear2=0; 
  int errorflag=0;
- int errorflag1=0;
- int errorflag2=0;
- int errorflag3=0;
- int errorflag4=0;
- int errorflag5=0;
 
 void displayWaterTemp(float temperatureF){
   lcd.setCursor(0,0);//water temp display
@@ -1424,7 +1423,6 @@ void displayWaterTemp(float temperatureF){
     lcd.print("Critical error");
     lcd.setCursor(0,1);
     lcd.print("Check Sensor");
-    errorWaterTemp = 1;
   }
   else{
     if(clear2==1){
@@ -1480,7 +1478,6 @@ void displayDHT(float h, float f){
     lcd.print("Critical error");
     lcd.setCursor(0,1);
     lcd.print("Check Sensor");
-    errorAir = 0;
   }
   else{
     if(clear3==1){
@@ -1515,7 +1512,6 @@ void displaySonar(long inches){
     lcd.print("Critical error");
     lcd.setCursor(0,1);
     lcd.print("Check Sensor");
-    errorWaterLevel = 1;
   }
   else{
     if(clear2==1){
@@ -1566,7 +1562,6 @@ void displaypH(float ph_act){
   else if(ph_act>phhighParam){
     lcd.print("Error pH is High");
     clear2=1;
-    errorpH = 1;
   }
   else{
     if(clear2==1){
@@ -1720,7 +1715,7 @@ else{
   avgCount = 1;
   //serializeJsonPretty(doc2, Serial);
   //serializeJsonPretty(timeStamp, Serial);
-  printJSON();
+  //printJSON();
   dailyCount++;
  }
 
@@ -1785,10 +1780,52 @@ if(checkSize(startTime1) && checkSize(endTime1)){
   String s1 = getTimeStamp(startTime1);
   String e1 = getTimeStamp(endTime1);
   if(checkTime(curr, s1, e1)){
-    Serial.println("Turn on outlet");
+    digitalWrite(outlet1, 1);
+    //Serial.println("Turn on outlet");
   }
   else{
-    Serial.println("Turn off outlet");
+    digitalWrite(outlet1, 0);
+    //Serial.println("Turn off outlet");
+  }
+}
+
+if(checkSize(startTime3) && checkSize(endTime3)){
+  String curr2 = getTime();
+  String s2 = getTimeStamp(startTime3);
+  String e2 = getTimeStamp(endTime3);
+  if(checkTime(curr2, s2, e2)){
+    digitalWrite(outlet2, 1);
+    //Serial.println("Turn on outlet");
+  }
+  else{
+    digitalWrite(outlet2, 0);
+    //Serial.println("Turn off outlet");
+  }
+}
+
+if(checkSize(startTime4) && checkSize(endTime4)){
+  String curr3 = getTime();
+  String s3 = getTimeStamp(startTime4);
+  String e3 = getTimeStamp(endTime4);
+  if(checkTime(curr3, s3, e3)){
+    digitalWrite(outlet3, 1);
+    //Serial.println("Turn on outlet");
+  }
+  else{
+    digitalWrite(outlet3, 0);
+    //Serial.println("Turn off outlet");
+  }
+}
+
+if(checkSize(startTime5) && checkSize(endTime5)){
+  String curr4 = getTime();
+  String s4 = getTimeStamp(startTime5);
+  String e4 = getTimeStamp(endTime5);
+  if(checkTime(curr4, s4, e4)){
+    digitalWrite(outlet4, 1);
+  }
+  else{
+    digitalWrite(outlet4, 0);
   }
 }
 //else
