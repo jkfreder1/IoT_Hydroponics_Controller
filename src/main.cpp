@@ -29,7 +29,6 @@ int trigPin = 33;    // Trigger
 int echoPin = 32;    // 25 Echo
 long duration, cm, inches;
 
-
 float waterTempHighParam=90;
 float waterTempLowParam=40;
 float airHumHighParam=60;
@@ -77,11 +76,7 @@ const char* http_password = "admin";
 
 #define COLUMS           16
 #define ROWS             2
-<<<<<<< HEAD
-#define DHTPIN 18
-=======
 #define DHTPIN          18
->>>>>>> 2f3708d5b5156a3ee6370bce28c4d35acf907109
 #define DHTTYPE DHT11
 #define LCD_SPACE_SYMBOL 0x20  //space symbol from the LCD ROM, see p.9 of GDM2004D datasheet
 const int oneWireBus = 23;
@@ -637,10 +632,10 @@ int dailyArray = 0;
 int weeklyArray = 0;
 int monthlyArray = 0;
 
-int outlet1 = 26; //or 12?
-int outlet2 = 12;
+int outlet1 = 12;
+int outlet2 = 14;
 int outlet3 = 27;
-int outlet4 = 14; // or 26? or 12?
+int outlet4 = 26;
 
 const char* ntpServer = "pool.ntp.org";
 const char* connect_mqtt(){
@@ -1145,123 +1140,8 @@ inline const char * const BoolToString(bool b)
   });
 
  }
-<<<<<<< HEAD
  void get_param(){
       server.on("/get", HTTP_GET, [] (AsyncWebServerRequest *request) {
-=======
-
-
-
-void setup(){
-  Serial.begin (115200);
-  Serial.print("it is starting");
-  /*
-  client.setServer(mqttServer, mqttPort);
-  client.setCallback(callback);
-  */
- //setup_wifi();
-
-
- 
-
-
-  pinMode(trigPin, OUTPUT);///sonar
-  pinMode(echoPin, INPUT);
-
-  pinMode(36, INPUT);
-  pinMode(34, INPUT);
-  pinMode(23, INPUT);
-  pinMode(18, INPUT);
-
-  pinMode(12, OUTPUT);
-  pinMode(14, OUTPUT);
-  pinMode(26, OUTPUT);
-  pinMode(27, OUTPUT);
-
- 
-
-
-  lcd.begin();/////display
-  lcd.backlight();
-
-  dht.begin();///temp humid
-
-  sensors.begin();///water temp
-  pinMode(TdsSensorPin,INPUT);
-
-  pinMode(TdsSensorPin,INPUT);//tds sensor
-
-  timer = timerBegin(0, 8, true);//////////// timer
-  timerAttachInterrupt(timer, &incrCounter, true);
-  timerAlarmWrite(timer, 1000000, true);
-  timerAlarmEnable(timer);
-
-  pinMode(5,INPUT);
-  pinMode(15,INPUT);////15
-  pinMode(19,INPUT);
-  //attachInterrupt(digitalPinToInterrupt(5), button3ISR,RISING);
-  //attachInterrupt(digitalPinToInterrupt(15), buttonISR, RISING);////15
-  //attachInterrupt(digitalPinToInterrupt(19), button2ISR, RISING);
-
-  /*
-  esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP * uS_TO_S_FACTOR);/////sleep DONT DELETE
-  esp_sleep_enable_ext0_wakeup(GPIO_NUM_15,1);
-  */
-  
-  AsyncWiFiManager wifiManager(&server,&dns);
-  wifiManager.autoConnect("AutoConnectAP");
-    Serial.println("connected...yeey :)");
-    
-
-
-  
-
-  configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
-
-  if(!SPIFFS.begin(true)){
-    Serial.println("An Error has occurred while mounting SPIFFS");
-    return;
-  }
-
-  store_data(0, dailyAirTempAvg, dailyAirTempData, 0, jsonDaily1);
-  store_data(0, dailyAirHumAvg, dailyAirHumData, 0, jsonDaily2);
-  store_data(0, dailyWaterTempAvg, dailyWaterTempData, 0, jsonDaily3);
-  store_data(0, dailyTdsAvg, dailyTdsData, 0, jsonDaily4);
-  store_data(0, dailypHAvg, dailypHData, 0, jsonDaily5);
-  store_data(0, dailyWaterLevelAvg, dailyWaterLevelData, 0, jsonDaily6);
-
-  store_data(0, weeklyAirTempAvg, weeklyAirTempData, 0, jsonWeekly1);
-  store_data(0, weeklyAirHumAvg, weeklyAirHumData, 0, jsonWeekly2);
-  store_data(0, weeklyWaterTempAvg, weeklyWaterTempData, 0, jsonWeekly3);
-  store_data(0, weeklyTdsAvg, weeklyTdsData, 0, jsonWeekly4);
-  store_data(0, weeklypHAvg, weeklypHData, 0, jsonWeekly5);
-  store_data(0, weeklyWaterLevelAvg, weeklyWaterLevelData, 0, jsonWeekly6);
-
-  store_data(0, monthlyAirTempAvg, monthlyAirTempData, 0, jsonMonthly1);
-  store_data(0, monthlyAirHumAvg, monthlyAirHumData, 0, jsonMonthly2);
-  store_data(0, monthlyWaterTempAvg, monthlyWaterTempData, 0, jsonMonthly3);
-  store_data(0, monthlyTdsAvg, monthlyTdsData, 0, jsonMonthly4);
-  store_data(0, monthlypHAvg, monthlypHData, 0, jsonMonthly5);
-  store_data(0, monthlyWaterLevelAvg, monthlyWaterLevelData, 0, jsonMonthly6);
-
-  printLocalTime(1, 0, jsonTimeStamp);
-  printLocalTime(2, 0, jsonDailyTimeStamp);
-  printLocalTime(3, 0, jsonWeeklyTimeStamp);
-  printLocalTime(4, 0, jsonMonthlyTimeStamp);
-
-
-  // Send web page with input fields to client
-  /*server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send_P(200, "text/html", "/index.html", processor);
-  });*/
-
-  // Send a GET request to <ESP_IP>/get?inputString=<inputMessage>
-  server.on("/get", HTTP_GET, [] (AsyncWebServerRequest *request) {
-<<<<<<< HEAD
->>>>>>> 2f3708d5b5156a3ee6370bce28c4d35acf907109
-=======
-    delay(1);
->>>>>>> ae44f601dcfb69878643bc30ff48f6f42f269b32
     String inputMessage;
     if (request->hasParam(PARAM_HIGHER)) {
       inputMessage = request->getParam(PARAM_HIGHER)->value();
@@ -1279,7 +1159,7 @@ void setup(){
       inputMessage = request->getParam(RUNTIME_1)->value();
       writeFile(SPIFFS, "/runTime1.txt", inputMessage.c_str());
     }
-    else if (request->hasParam(LOWERBOUND_2)) {
+    /*else if (request->hasParam(LOWERBOUND_2)) {
       inputMessage = request->getParam(LOWERBOUND_2)->value();
       writeFile(SPIFFS, "/lowerBound2.txt", inputMessage.c_str());
     }
@@ -1395,7 +1275,7 @@ void setup(){
     else if (request->hasParam(MQTT_PORT)) {
       inputMessage = request->getParam(MQTT_PORT)->value();
       writeFile(SPIFFS, "/mqttPort.txt", inputMessage.c_str());
-    }
+    }*/
     
     else {
       inputMessage = "No message sent";
@@ -1872,18 +1752,18 @@ else{
   float fakepH = 0 + rand() % (( 14 + 1 ) - 0);
   float fakeWaterLevel = 0 + rand() % (( 10 + 1 ) - 0);
 
-  //store_data(fakeAirTemp, airTemp, data1, airTempCount, jsonData1);
-  store_data(avgAirTemp, airTemp, data1, airTempCount, jsonData1);
-  //store_data(fakeAirHumid, airHum, data2, airTempCount, jsonData2);
-  store_data(avgAirHum, airHum, data2, airTempCount, jsonData2);
-  //store_data(fakeWaterTemp, waterTemp, data3, airTempCount, jsonData3);
-  store_data(avgWaterTemp, waterTemp, data3, airTempCount, jsonData3);
-  //store_data(fakeTDS, tds, data4, airTempCount, jsonData4);
-  store_data(avgTDS, tds, data4, airTempCount, jsonData4);
-  //store_data(fakepH, pH, data5, airTempCount, jsonData5);
-  store_data(avgpH, pH, data5, airTempCount, jsonData5);
-  //store_data(fakeWaterLevel, waterLevel, data6, airTempCount, jsonData6);
-  store_data(avgWaterLevel, waterLevel, data6, airTempCount, jsonData6);
+  store_data(fakeAirTemp, airTemp, data1, airTempCount, jsonData1);
+  //store_data(avgAirTemp, airTemp, data1, airTempCount, jsonData1);
+  store_data(fakeAirHumid, airHum, data2, airTempCount, jsonData2);
+  //store_data(avgAirHum, airHum, data2, airTempCount, jsonData2);
+  store_data(fakeWaterTemp, waterTemp, data3, airTempCount, jsonData3);
+  //store_data(avgWaterTemp, waterTemp, data3, airTempCount, jsonData3);
+  store_data(fakeTDS, tds, data4, airTempCount, jsonData4);
+  //store_data(avgTDS, tds, data4, airTempCount, jsonData4);
+  store_data(fakepH, pH, data5, airTempCount, jsonData5);
+  //store_data(avgpH, pH, data5, airTempCount, jsonData5);
+  store_data(fakeWaterLevel, waterLevel, data6, airTempCount, jsonData6);
+  //store_data(avgWaterLevel, waterLevel, data6, airTempCount, jsonData6);
   printLocalTime(1, airTempCount, jsonTimeStamp);
   airTempCount++;
   totCount1 = 0;
@@ -1963,7 +1843,7 @@ if(checkSize(startTime1) && checkSize(endTime1)){
     //Serial.println("Turn off outlet");
   }
 }
-
+/*
 if(checkSize(startTime3) && checkSize(endTime3)){
   String curr2 = getTime();
   String s2 = getTimeStamp(startTime3);
@@ -2002,7 +1882,7 @@ if(checkSize(startTime5) && checkSize(endTime5)){
   else{
     digitalWrite(outlet4, 0);
   }
-}
+}*/
 //else
 //printf("routes completed");
   
@@ -2111,7 +1991,7 @@ else{
   }
 
 
-if (!client.connected()) {
+/*if (!client.connected()) {
     reconnect();
   }
   client.loop();
@@ -2143,7 +2023,7 @@ if (!client.connected()) {
     client.publish("esp32/humidity", humString);
 
     
-  }
+  }*/
   
 
   //if(sleeptime>200){
