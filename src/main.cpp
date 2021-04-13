@@ -29,6 +29,7 @@ int trigPin = 33;    // Trigger
 int echoPin = 32;    // 25 Echo
 long duration, cm, inches;
 
+
 float waterTempHighParam=90;
 float waterTempLowParam=40;
 float airHumHighParam=60;
@@ -632,10 +633,10 @@ int dailyArray = 0;
 int weeklyArray = 0;
 int monthlyArray = 0;
 
-int outlet1 = 12;
-int outlet2 = 14;
+int outlet1 = 26; //or 12?
+int outlet2 = 12;
 int outlet3 = 27;
-int outlet4 = 26;
+int outlet4 = 14; // or 26? or 12?
 
 const char* ntpServer = "pool.ntp.org";
 const char* connect_mqtt(){
@@ -1153,6 +1154,7 @@ void setup(){
  //setup_wifi();
 
 
+ 
 
 
   pinMode(trigPin, OUTPUT);///sonar
@@ -1167,6 +1169,8 @@ void setup(){
   pinMode(14, OUTPUT);
   pinMode(26, OUTPUT);
   pinMode(27, OUTPUT);
+
+ 
 
 
   lcd.begin();/////display
@@ -1245,6 +1249,7 @@ void setup(){
 
   // Send a GET request to <ESP_IP>/get?inputString=<inputMessage>
   server.on("/get", HTTP_GET, [] (AsyncWebServerRequest *request) {
+    delay(1);
     String inputMessage;
     // GET inputString value on <ESP_IP>/get?inputString=<inputMessage>
     /*if (request->hasParam(PARAM_STRING)) {
@@ -1760,18 +1765,18 @@ else{
   float fakepH = 0 + rand() % (( 14 + 1 ) - 0);
   float fakeWaterLevel = 0 + rand() % (( 10 + 1 ) - 0);
 
-  store_data(fakeAirTemp, airTemp, data1, airTempCount, jsonData1);
-  //store_data(avgAirTemp, airTemp, data1, airTempCount, jsonData1);
-  store_data(fakeAirHumid, airHum, data2, airTempCount, jsonData2);
-  //store_data(avgAirHum, airHum, data2, airTempCount, jsonData2);
-  store_data(fakeWaterTemp, waterTemp, data3, airTempCount, jsonData3);
-  //store_data(avgWaterTemp, waterTemp, data3, airTempCount, jsonData3);
-  store_data(fakeTDS, tds, data4, airTempCount, jsonData4);
-  //store_data(avgTDS, tds, data4, airTempCount, jsonData4);
-  store_data(fakepH, pH, data5, airTempCount, jsonData5);
-  //store_data(avgpH, pH, data5, airTempCount, jsonData5);
-  store_data(fakeWaterLevel, waterLevel, data6, airTempCount, jsonData6);
-  //store_data(avgWaterLevel, waterLevel, data6, airTempCount, jsonData6);
+  //store_data(fakeAirTemp, airTemp, data1, airTempCount, jsonData1);
+  store_data(avgAirTemp, airTemp, data1, airTempCount, jsonData1);
+  //store_data(fakeAirHumid, airHum, data2, airTempCount, jsonData2);
+  store_data(avgAirHum, airHum, data2, airTempCount, jsonData2);
+  //store_data(fakeWaterTemp, waterTemp, data3, airTempCount, jsonData3);
+  store_data(avgWaterTemp, waterTemp, data3, airTempCount, jsonData3);
+  //store_data(fakeTDS, tds, data4, airTempCount, jsonData4);
+  store_data(avgTDS, tds, data4, airTempCount, jsonData4);
+  //store_data(fakepH, pH, data5, airTempCount, jsonData5);
+  store_data(avgpH, pH, data5, airTempCount, jsonData5);
+  //store_data(fakeWaterLevel, waterLevel, data6, airTempCount, jsonData6);
+  store_data(avgWaterLevel, waterLevel, data6, airTempCount, jsonData6);
   printLocalTime(1, airTempCount, jsonTimeStamp);
   airTempCount++;
   totCount1 = 0;
