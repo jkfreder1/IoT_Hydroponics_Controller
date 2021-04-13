@@ -1151,10 +1151,10 @@ void setup(){
   timerAlarmEnable(timer);
 
   pinMode(5,INPUT);
-  pinMode(17,INPUT);////15
+  pinMode(15,INPUT);////15
   pinMode(19,INPUT);
   attachInterrupt(digitalPinToInterrupt(5), button3ISR,RISING);
-  attachInterrupt(digitalPinToInterrupt(17), buttonISR, RISING);////15
+  attachInterrupt(digitalPinToInterrupt(15), buttonISR, RISING);////15
   attachInterrupt(digitalPinToInterrupt(19), button2ISR, RISING);
 
   /*
