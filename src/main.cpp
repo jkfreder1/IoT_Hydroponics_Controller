@@ -76,7 +76,7 @@ const char* http_password = "admin";
 
 #define COLUMS           16
 #define ROWS             2
-#define DHTPIN 4
+#define DHTPIN          18
 #define DHTTYPE DHT11
 #define LCD_SPACE_SYMBOL 0x20  //space symbol from the LCD ROM, see p.9 of GDM2004D datasheet
 const int oneWireBus = 23;
@@ -307,6 +307,18 @@ else if (var=="timeStamp6"){
 else if (var=="runTime6"){
   return readFile(SPIFFS, "/runTime6.txt");
 }
+else if (var=="outLet1"){
+  return readFile(SPIFFS, "/outLet1.txt");
+}
+else if (var=="outLet2"){
+  return readFile(SPIFFS, "/outLet2.txt");
+}
+else if (var=="outLet3"){
+  return readFile(SPIFFS, "/outLet3.txt");
+}
+else if (var=="outLet4"){
+  return readFile(SPIFFS, "/outLet4.txt");
+}
 
   return String();
 }
@@ -397,6 +409,10 @@ const char* UPPERBOUND_6="upperBound6";
 const char* TIMESTAMP_6="timeStamp6";
 const char* RUNTIME_6="runTime6";
 
+const char* OUTLET_1="outLet1";
+const char* OUTLET_2="outLet2";
+const char* OUTLET_3="outLet3";
+const char* OUTLET_4="outLet4";
 
 OneWire oneWire(oneWireBus);
 DallasTemperature sensors(&oneWire);
@@ -1141,8 +1157,22 @@ void setup(){
   */
  //setup_wifi();
 
+
+
+
   pinMode(trigPin, OUTPUT);///sonar
   pinMode(echoPin, INPUT);
+
+  pinMode(36, INPUT);
+  pinMode(34, INPUT);
+  pinMode(23, INPUT);
+  pinMode(18, INPUT);
+
+  pinMode(12, OUTPUT);
+  pinMode(14, OUTPUT);
+  pinMode(26, OUTPUT);
+  pinMode(27, OUTPUT);
+
 
   lcd.begin();/////display
   lcd.backlight();
@@ -1162,9 +1192,9 @@ void setup(){
   pinMode(5,INPUT);
   pinMode(15,INPUT);////15
   pinMode(19,INPUT);
-  attachInterrupt(digitalPinToInterrupt(5), button3ISR,RISING);
-  attachInterrupt(digitalPinToInterrupt(15), buttonISR, RISING);////15
-  attachInterrupt(digitalPinToInterrupt(19), button2ISR, RISING);
+  //attachInterrupt(digitalPinToInterrupt(5), button3ISR,RISING);
+  //attachInterrupt(digitalPinToInterrupt(15), buttonISR, RISING);////15
+  //attachInterrupt(digitalPinToInterrupt(19), button2ISR, RISING);
 
   /*
   esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP * uS_TO_S_FACTOR);/////sleep DONT DELETE
@@ -1334,6 +1364,23 @@ void setup(){
       inputMessage = request->getParam(RUNTIME_6)->value();
       writeFile(SPIFFS, "/runTime6.txt", inputMessage.c_str());
     }
+
+    else if (request->hasParam(OUTLET_1)) {
+      inputMessage = request->getParam(OUTLET_1)->value();
+      writeFile(SPIFFS, "/outLet1.txt", inputMessage.c_str());
+    }
+    else if (request->hasParam(OUTLET_2)) {
+      inputMessage = request->getParam(OUTLET_2)->value();
+      writeFile(SPIFFS, "/outLet2.txt", inputMessage.c_str());
+    }
+     else if (request->hasParam(OUTLET_3)) {
+      inputMessage = request->getParam(OUTLET_3)->value();
+      writeFile(SPIFFS, "/outLet3.txt", inputMessage.c_str());
+    }
+    else if (request->hasParam(OUTLET_4)) {
+      inputMessage = request->getParam(OUTLET_4)->value();
+      writeFile(SPIFFS, "/outLet4.txt", inputMessage.c_str());
+    }
     else if (request->hasParam(MQTT_USERNAME)) {
       inputMessage = request->getParam(MQTT_USERNAME)->value();
       writeFile(SPIFFS, "/mqttUsername.txt", inputMessage.c_str());
@@ -1466,7 +1513,7 @@ void displayDHT(float h, float f){
     lcd.print("%    ");
   }
   lcd.setCursor(0,1); //air temp display
-  if(checkSize(lowerBound1) && checkSize(upperBound1)){
+ if(checkSize(lowerBound1) && checkSize(upperBound1)){
     airTempLowParam = getParameter(lowerBound1);
     airTempHighParam = getParameter(upperBound1);
   }
@@ -1584,7 +1631,15 @@ void displaypH(float ph_act){
 
 void loop(){
 
- 
+ //timer test code
+if(digitalRead(15)){
+  button++;
+  clear=1;
+}
+
+
+//end timer test code
+
 
  //if(counter>30&&counter<40){
  static unsigned long analogSampleTimepoint = millis();//Tds sensor
@@ -1692,13 +1747,15 @@ else{
  totCount1++;
  }
 
+/*
  if(totCount1 > 5){
    totCount2++;
  }
+ */
 
   //store live and historical data
  if(totCount1 > 2){
-  if(airTempCount == 24){
+  if(airTempCount == 8){
     airTempCount = 0;
   }
   
@@ -1710,11 +1767,17 @@ else{
   float fakeWaterLevel = 0 + rand() % (( 10 + 1 ) - 0);
 
   store_data(fakeAirTemp, airTemp, data1, airTempCount, jsonData1);
+  //store_data(avgAirTemp, airTemp, data1, airTempCount, jsonData1);
   store_data(fakeAirHumid, airHum, data2, airTempCount, jsonData2);
+  //store_data(avgAirHum, airHum, data2, airTempCount, jsonData2);
   store_data(fakeWaterTemp, waterTemp, data3, airTempCount, jsonData3);
+  //store_data(avgWaterTemp, waterTemp, data3, airTempCount, jsonData3);
   store_data(fakeTDS, tds, data4, airTempCount, jsonData4);
+  //store_data(avgTDS, tds, data4, airTempCount, jsonData4);
   store_data(fakepH, pH, data5, airTempCount, jsonData5);
+  //store_data(avgpH, pH, data5, airTempCount, jsonData5);
   store_data(fakeWaterLevel, waterLevel, data6, airTempCount, jsonData6);
+  //store_data(avgWaterLevel, waterLevel, data6, airTempCount, jsonData6);
   printLocalTime(1, airTempCount, jsonTimeStamp);
   airTempCount++;
   totCount1 = 0;
@@ -1725,16 +1788,16 @@ else{
   dailyCount++;
  }
 
- if(dailyCount == 24){
-   if(dailyArray == 24){
+ if(dailyCount == 8){
+   if(dailyArray == 3){
      dailyArray = 0;
    }
-   store_daily(data1, dailyAirTempData, dailyAirTempAvg, jsonDaily1, 24, dailyArray);
-   store_daily(data2, dailyAirHumData, dailyAirHumAvg, jsonDaily2, 24, dailyArray);
-   store_daily(data3, dailyWaterTempData, dailyWaterTempAvg, jsonDaily3, 24, dailyArray);
-   store_daily(data4, dailyTdsData, dailyTdsAvg, jsonDaily4, 24, dailyArray);
-   store_daily(data5, dailypHData, dailypHAvg, jsonDaily5, 24, dailyArray);
-   store_daily(data6, dailyWaterLevelData, dailyWaterLevelAvg, jsonDaily6, 24, dailyArray);
+   store_daily(data1, dailyAirTempData, dailyAirTempAvg, jsonDaily1, 8, dailyArray);
+   store_daily(data2, dailyAirHumData, dailyAirHumAvg, jsonDaily2, 8, dailyArray);
+   store_daily(data3, dailyWaterTempData, dailyWaterTempAvg, jsonDaily3, 8, dailyArray);
+   store_daily(data4, dailyTdsData, dailyTdsAvg, jsonDaily4, 8, dailyArray);
+   store_daily(data5, dailypHData, dailypHAvg, jsonDaily5, 8, dailyArray);
+   store_daily(data6, dailyWaterLevelData, dailyWaterLevelAvg, jsonDaily6, 8, dailyArray);
    printLocalTime(2, dailyArray, jsonDailyTimeStamp);
    dailyArray++;
    //serializeJsonPretty(daily1, Serial);
@@ -1743,32 +1806,32 @@ else{
    weeklyCount++;
  }
 
- if(weeklyCount == 7){
-   if(weeklyArray == 7){
+ if(weeklyCount == 2){
+   if(weeklyArray == 2){
      weeklyArray = 0;
    }
-   store_daily(dailyAirTempData, weeklyAirTempData, weeklyAirTempAvg, jsonWeekly1, 7, weeklyArray);
-   store_daily(dailyAirHumData, weeklyAirHumData, weeklyAirHumAvg, jsonWeekly2, 7, weeklyArray);
-   store_daily(dailyWaterTempData, weeklyWaterTempData, weeklyWaterTempAvg, jsonWeekly3, 7, weeklyArray);
-   store_daily(dailyTdsData, weeklyTdsData, weeklyTdsAvg, jsonWeekly4, 7, weeklyArray);
-   store_daily(dailypHData, weeklypHData, weeklypHAvg, jsonWeekly5, 7, weeklyArray);
-   store_daily(dailyWaterLevelData, weeklyWaterLevelData, weeklyWaterLevelAvg, jsonWeekly6, 7, weeklyArray);
+   store_daily(dailyAirTempData, weeklyAirTempData, weeklyAirTempAvg, jsonWeekly1, 3, weeklyArray);
+   store_daily(dailyAirHumData, weeklyAirHumData, weeklyAirHumAvg, jsonWeekly2, 3, weeklyArray);
+   store_daily(dailyWaterTempData, weeklyWaterTempData, weeklyWaterTempAvg, jsonWeekly3, 3, weeklyArray);
+   store_daily(dailyTdsData, weeklyTdsData, weeklyTdsAvg, jsonWeekly4, 3, weeklyArray);
+   store_daily(dailypHData, weeklypHData, weeklypHAvg, jsonWeekly5, 3, weeklyArray);
+   store_daily(dailyWaterLevelData, weeklyWaterLevelData, weeklyWaterLevelAvg, jsonWeekly6, 3, weeklyArray);
    printLocalTime(3, weeklyArray, jsonWeeklyTimeStamp);
    weeklyArray++;
    weeklyCount = 0;
    monthlyCount++;
  }
 
- if(monthlyCount == 4){
+ if(monthlyCount == 2){
    if(monthlyArray == 12){
      monthlyArray = 0;
    }
-   store_daily(weeklyAirTempData, monthlyAirTempData, monthlyAirTempAvg, jsonMonthly1, 4, monthlyArray);
-   store_daily(weeklyAirHumData, monthlyAirHumData, monthlyAirHumAvg, jsonMonthly2, 4, monthlyArray);
-   store_daily(weeklyWaterTempData, monthlyWaterTempData, monthlyWaterTempAvg, jsonMonthly3, 4, monthlyArray);
-   store_daily(weeklyTdsData, monthlyTdsData, monthlyTdsAvg, jsonMonthly4, 4, monthlyArray);
-   store_daily(weeklypHData, monthlypHData, monthlypHAvg, jsonMonthly5, 4, monthlyArray);
-   store_daily(weeklyWaterLevelData, monthlyWaterLevelData, monthlyWaterLevelAvg, jsonMonthly6, 4, monthlyArray);
+   store_daily(weeklyAirTempData, monthlyAirTempData, monthlyAirTempAvg, jsonMonthly1, 2, monthlyArray);
+   store_daily(weeklyAirHumData, monthlyAirHumData, monthlyAirHumAvg, jsonMonthly2, 2, monthlyArray);
+   store_daily(weeklyWaterTempData, monthlyWaterTempData, monthlyWaterTempAvg, jsonMonthly3, 2, monthlyArray);
+   store_daily(weeklyTdsData, monthlyTdsData, monthlyTdsAvg, jsonMonthly4, 2, monthlyArray);
+   store_daily(weeklypHData, monthlypHData, monthlypHAvg, jsonMonthly5, 2, monthlyArray);
+   store_daily(weeklyWaterLevelData, monthlyWaterLevelData, monthlyWaterLevelAvg, jsonMonthly6, 2, monthlyArray);
    printLocalTime(4, monthlyArray, jsonMonthlyTimeStamp);
    monthlyArray++;
    monthlyCount = 0;
@@ -1861,69 +1924,69 @@ else{
 
  switch (button){
     case 0:
-      if(errorflag==1){
+      if(errorflag){
         lcd.setCursor(0,0);
         lcd.print("Critical Error  ");
         lcd.setCursor(0,1);
         lcd.print("Check Sensors   ");
       }
-      if(errorflag==0){
+      else{
         lcd.setCursor(0,0);
         lcd.print("Hydroponics     ");
       }
       break;
     case 1:
-      if(errorflag==1){
+      if(errorflag3){
         lcd.setCursor(0,0);
         lcd.print("Critical Error  ");
         lcd.setCursor(0,1);
-        lcd.print("Check Sensors   ");
+        lcd.print("Check Air   ");
       }
-      if(errorflag==0){
+      else{
         displayDHT(h+h_offset,f+f_offset);
       }
       break;
     case 2:
-      if(errorflag==1){
+      if(errorflag4){
         lcd.setCursor(0,0);
         lcd.print("Critical Error  ");
         lcd.setCursor(0,1);
-        lcd.print("Check Sensors   ");
+        lcd.print("Check WaterT   ");
       }
-      if(errorflag==0){
+      else{
         displayWaterTemp(temperatureF+temperatureF_offset);
       }
       break;
     case 3:
-      if(errorflag==1){
+      if(errorflag1){
         lcd.setCursor(0,0);
         lcd.print("Critical Error  ");
         lcd.setCursor(0,1);
-        lcd.print("Check Sensors   ");
+        lcd.print("Check TDS   ");
       }
-      if(errorflag==0){
+      else{
         displayTDS(tdsValue+tds_offset);
       }
       break;
     case 4:
-      if(errorflag==1){
+      if(errorflag2){
         lcd.setCursor(0,0);
         lcd.print("Critical Error  ");
         lcd.setCursor(0,1);
-        lcd.print("Check Sensors   ");
+        lcd.print("Check WaterL   ");
       }
-      if(errorflag==0){
+      else{
         displaySonar(inches+inches_offset);
       }
       break;
     case 5:
-      if(errorflag==1){
+      if(errorflag5){
         lcd.setCursor(0,0);
         lcd.print("Critical Error  ");
         lcd.setCursor(0,1);
-        lcd.print("Check Sensors   ");
+        lcd.print("Check pH   ");
       }
-      if(errorflag==0){
+      else{
         displaypH(ph_act+ph_act_offset);
       }
       break;
@@ -1952,7 +2015,7 @@ if (!client.connected()) {
     lastMsg = now;
     
     // Temperature in Celsius
-    temperatureMQTT = 1.35;   
+    temperatureMQTT = f;   
     // Uncomment the next line to set temperature in Fahrenheit 
     // (and comment the previous temperature line)
     //temperature = 1.8 * bme.readTemperature() + 32; // Temperature in Fahrenheit
@@ -1964,7 +2027,7 @@ if (!client.connected()) {
     Serial.println(tempString);
     client.publish("esp32/temperature", tempString);
 
-    humidityMQTT = 4.96;
+    humidityMQTT = h;
     
     // Convert the value to a char array
     char humString[8];
@@ -1973,8 +2036,8 @@ if (!client.connected()) {
     Serial.println(humString);
     client.publish("esp32/humidity", humString);
   }
-  
-*/
+  */
+
   //if(sleeptime>200){
     //esp_deep_sleep_start();/////sleep DONT DELETE
     //sleeptime=0;
