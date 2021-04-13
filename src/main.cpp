@@ -1896,69 +1896,69 @@ else{
 
  switch (button){
     case 0:
-      if(errorflag==1){
+      if(errorflag){
         lcd.setCursor(0,0);
         lcd.print("Critical Error  ");
         lcd.setCursor(0,1);
         lcd.print("Check Sensors   ");
       }
-      if(errorflag==0){
+      else{
         lcd.setCursor(0,0);
         lcd.print("Hydroponics     ");
       }
       break;
     case 1:
-      if(errorflag==1){
+      if(errorflag3){
         lcd.setCursor(0,0);
         lcd.print("Critical Error  ");
         lcd.setCursor(0,1);
-        lcd.print("Check Sensors   ");
+        lcd.print("Check Air   ");
       }
-      if(errorflag==0){
+      else{
         displayDHT(h+h_offset,f+f_offset);
       }
       break;
     case 2:
-      if(errorflag==1){
+      if(errorflag4){
         lcd.setCursor(0,0);
         lcd.print("Critical Error  ");
         lcd.setCursor(0,1);
-        lcd.print("Check Sensors   ");
+        lcd.print("Check WaterT   ");
       }
-      if(errorflag==0){
+      else{
         displayWaterTemp(temperatureF+temperatureF_offset);
       }
       break;
     case 3:
-      if(errorflag==1){
+      if(errorflag1){
         lcd.setCursor(0,0);
         lcd.print("Critical Error  ");
         lcd.setCursor(0,1);
-        lcd.print("Check Sensors   ");
+        lcd.print("Check TDS   ");
       }
-      if(errorflag==0){
+      else{
         displayTDS(tdsValue+tds_offset);
       }
       break;
     case 4:
-      if(errorflag==1){
+      if(errorflag2){
         lcd.setCursor(0,0);
         lcd.print("Critical Error  ");
         lcd.setCursor(0,1);
-        lcd.print("Check Sensors   ");
+        lcd.print("Check WaterL   ");
       }
-      if(errorflag==0){
+      else{
         displaySonar(inches+inches_offset);
       }
       break;
     case 5:
-      if(errorflag==1){
+      if(errorflag5){
         lcd.setCursor(0,0);
         lcd.print("Critical Error  ");
         lcd.setCursor(0,1);
-        lcd.print("Check Sensors   ");
+        lcd.print("Check pH   ");
       }
-      if(errorflag==0){
+      else{
         displaypH(ph_act+ph_act_offset);
       }
       break;
