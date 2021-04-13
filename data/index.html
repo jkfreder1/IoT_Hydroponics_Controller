@@ -705,11 +705,35 @@ Sensor6 Runtime (current value %runTime6%): <input type="number " id="runTime6" 
               <input type="submit" value="Submit" onclick="submitMessage()">
               </form>
               </div>
+
               
               <!--<form action="/get" target="hidden-form">
                 twoInput (current value %twoInput%): <input type="number " name="twoInput">
                 <input type="submit" value="Submit" onclick="submitMessage()">
               </form>-->
+              <div class="bottomleft">
+                Outlets
+                <br>
+                <form action="/get" target="hidden-form">
+                <input type="number " id="outLet1" name="outLet1" placeholder="Outlet1">
+                <input type="submit" value="Submit" onclick="submitMessage()">
+               </form>
+                <br>
+                <form action="/get" target="hidden-form">
+               <input type="number " id="outLet2" name="outLet2" placeholder="Outlet2">
+               <input type="submit" value="Submit" onclick="submitMessage()">
+                </form>
+               <br>
+               <form action="/get" target="hidden-form">
+               <input type="text " id="outLet3" name="outLet3" placeholder="Outlet3">
+               <input type="submit" value="Submit" onclick="submitMessage()">
+                </form>
+               <br>
+               <form action="/get" target="hidden-form">
+               <input type="number " id="outLet4" name="outLet4" placeholder="Outlet4">
+               <input type="submit" value="Submit" onclick="submitMessage()">
+               </form>
+               </div>
                <div class="bottomcenter">
               MQTT
               <br>

@@ -49,6 +49,11 @@ li{
   top: 400px;
   right:35px;
 }
+.bottomleft {
+  position: absolute;
+  top: 600px;
+  left:35px;
+}
 .bottomcenter {
   position: absolute;
   top: 600px;

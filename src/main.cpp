@@ -302,6 +302,18 @@ else if (var=="timeStamp6"){
 else if (var=="runTime6"){
   return readFile(SPIFFS, "/runTime6.txt");
 }
+else if (var=="outLet1"){
+  return readFile(SPIFFS, "/outLet1.txt");
+}
+else if (var=="outLet2"){
+  return readFile(SPIFFS, "/outLet2.txt");
+}
+else if (var=="outLet3"){
+  return readFile(SPIFFS, "/outLet3.txt");
+}
+else if (var=="outLet4"){
+  return readFile(SPIFFS, "/outLet4.txt");
+}
 
   return String();
 }
@@ -392,6 +404,10 @@ const char* UPPERBOUND_6="upperBound6";
 const char* TIMESTAMP_6="timeStamp6";
 const char* RUNTIME_6="runTime6";
 
+const char* OUTLET_1="outLet1";
+const char* OUTLET_2="outLet2";
+const char* OUTLET_3="outLet3";
+const char* OUTLET_4="outLet4";
 
 OneWire oneWire(oneWireBus);
 DallasTemperature sensors(&oneWire);
@@ -1331,6 +1347,23 @@ void setup(){
       inputMessage = request->getParam(RUNTIME_6)->value();
       writeFile(SPIFFS, "/runTime6.txt", inputMessage.c_str());
     }
+
+    else if (request->hasParam(OUTLET_1)) {
+      inputMessage = request->getParam(OUTLET_1)->value();
+      writeFile(SPIFFS, "/outLet1.txt", inputMessage.c_str());
+    }
+    else if (request->hasParam(OUTLET_2)) {
+      inputMessage = request->getParam(OUTLET_2)->value();
+      writeFile(SPIFFS, "/outLet2.txt", inputMessage.c_str());
+    }
+     else if (request->hasParam(OUTLET_3)) {
+      inputMessage = request->getParam(OUTLET_3)->value();
+      writeFile(SPIFFS, "/outLet3.txt", inputMessage.c_str());
+    }
+    else if (request->hasParam(OUTLET_4)) {
+      inputMessage = request->getParam(OUTLET_4)->value();
+      writeFile(SPIFFS, "/outLet4.txt", inputMessage.c_str());
+    }
     else if (request->hasParam(MQTT_USERNAME)) {
       inputMessage = request->getParam(MQTT_USERNAME)->value();
       writeFile(SPIFFS, "/mqttUsername.txt", inputMessage.c_str());
@@ -1965,7 +1998,7 @@ if (!client.connected()) {
     lastMsg = now;
     
     // Temperature in Celsius
-    temperatureMQTT = 1.35;   
+    temperatureMQTT = f;   
     // Uncomment the next line to set temperature in Fahrenheit 
     // (and comment the previous temperature line)
     //temperature = 1.8 * bme.readTemperature() + 32; // Temperature in Fahrenheit
@@ -1977,7 +2010,7 @@ if (!client.connected()) {
     Serial.println(tempString);
     client.publish("esp32/temperature", tempString);
 
-    humidityMQTT = 4.96;
+    humidityMQTT = h;
     
     // Convert the value to a char array
     char humString[8];
@@ -1986,8 +2019,8 @@ if (!client.connected()) {
     Serial.println(humString);
     client.publish("esp32/humidity", humString);
   }
-  
-*/
+  */
+
   //if(sleeptime>200){
     //esp_deep_sleep_start();/////sleep DONT DELETE
     //sleeptime=0;
