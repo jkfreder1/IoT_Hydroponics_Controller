@@ -1617,6 +1617,9 @@ void displaypH(float ph_act){
 
 void loop(){
 
+//Serial.println("restart loop here");
+yield();
+
  //timer test code
 if(digitalRead(15)){
   button++;
