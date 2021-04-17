@@ -387,39 +387,12 @@ function JSON_error(jsonData,errorContainer,errorID){
 setInterval(function ( ){ 
     
     JSON_requestTime("/timeStamp.json",timestampsLive);
-    JSON_requestTime("/dailyTimeStamp.json",timestampsDaily);
-    JSON_requestTime("/weeklyTimeStamp.json",timestampsWeekly);
-    JSON_requestTime("/monthlyTimeStamp.json",timestampsMonthly);
-    
-    
     JSON_request("/data1.json",myChartAirTemp,tableAirTemp,timestampsLive,tableAirTempSummary);
-
     JSON_request("/data2.json",myChartAirHumidity,tableAirHumidity,timestampsLive,tableAirHumidSummary);
     JSON_request("/data3.json",myChartWaterTemp,tableWaterTemp,timestampsLive,tableWaterTempSummary);
     JSON_request("/data4.json",myChartNutrientLvl,tableNutrientLvl,timestampsLive,tableNutrientLvlSummary);
     JSON_request("/data5.json",myChartpH,tablepH,timestampsLive,tablepHSummary);
     JSON_request("/data6.json",myChartWaterLvl,tableWaterLvl,timestampsLive,tableWaterLvlSummary);
-
-    JSON_request("/daily1.json",myChartAirTempDaily,tableAirTempDaily,timestampsDaily);
-    JSON_request("/daily2.json",myChartAirHumidityDaily,tableAirHumidityDaily,timestampsDaily);
-    JSON_request("/daily3.json",myChartWaterTempDaily,tableWaterTempDaily,timestampsDaily);
-    JSON_request("/daily4.json",myChartNutrientLvlDaily,tableNutrientLvlDaily,timestampsDaily);
-    JSON_request("/daily5.json",myChartpHDaily,tablepHDaily,timestampsDaily);
-    JSON_request("/daily6.json",myChartWaterLvlDaily,tableWaterLvlDaily,timestampsDaily);
-
-    JSON_request("/weekly1.json",myChartAirTempWeekly,tableAirTempWeekly,timestampsWeekly);
-    JSON_request("/weekly2.json",myChartAirHumidityWeekly,tableAirHumidityWeekly,timestampsWeekly);
-    JSON_request("/weekly3.json",myChartWaterTempWeekly,tableWaterTempWeekly,timestampsWeekly);
-    JSON_request("/weekly4.json",myChartNutrientLvlWeekly,tableNutrientLvlWeekly,timestampsWeekly);
-    JSON_request("/weekly5.json",myChartpHWeekly,tablepHWeekly,timestampsWeekly);
-    JSON_request("/weekly6.json",myChartWaterLvlWeekly,tableWaterLvlWeekly,timestampsWeekly);
-
-    JSON_request("/monthly1.json",myChartAirTempMonthly,tableAirTempMonthly,timestampsMonthly);
-    JSON_request("/monthly2.json",myChartAirHumidityMonthly,tableAirHumidityMonthly,timestampsMonthly);
-    JSON_request("/monthly3.json",myChartWaterTempMonthly,tableWaterTempMonthly,timestampsMonthly);
-    JSON_request("/monthly4.json",myChartNutrientLvlMonthly,tableNutrientLvlMonthly,timestampsMonthly);
-    JSON_request("/monthly5.json",myChartpHMonthly,tablepHMonthly,timestampsMonthly);
-    JSON_request("/monthly6.json",myChartWaterLvlMonthly,tableWaterLvlMonthly,timestampsMonthly);
 
     JSON_error("/airTempError",errorAir,"errorAirTemp");
     JSON_error("/waterTempError",errorWaterTemp,"errorWaterTemp");
@@ -427,39 +400,40 @@ setInterval(function ( ){
     JSON_error("/pHError",errorpH,"errorpH");
     JSON_error("/nutrientLvlError",errorTDS,"errorNutrientLvl");
 
-
-/*
-    JSON_request("/data1.json",myChartAirTemp); 
-
-    JSON_request("/data2.json",myChartAirHumidity);
-    JSON_request("/data3.json",myChartWaterTemp);
-    JSON_request("/data4.json",myChartNutrientLvl);
-    JSON_request("/data5.json",myChartpH);
-    JSON_request("/data6.json",myChartWaterLvl);
-    
-    JSON_request("/daily1.json",myChartAirTempDaily);
-    JSON_request("/daily2.json",myChartAirHumidityDaily);
-    JSON_request("/daily3.json",myChartWaterTempDaily);
-    JSON_request("/daily4.json",myChartNutrientLvlDaily);
-    JSON_request("/daily5.json",myChartpHDaily);
-    JSON_request("/daily6.json",myChartWaterLvlDaily);
-
-    JSON_request("/weekly1.json",myChartAirTempWeekly);
-    JSON_request("/weekly2.json",myChartAirHumidityWeekly);
-    JSON_request("/weekly3.json",myChartWaterTempWeekly);
-    JSON_request("/weekly4.json",myChartNutrientLvlWeekly);
-    JSON_request("/weekly5.json",myChartpHWeekly);
-    JSON_request("/weekly6.json",myChartWaterLvlWeekly);
-
-    JSON_request("/monthly1.json",myChartAirTempMonthly);
-    JSON_request("/monthly2.json",myChartAirHumidityMonthly);
-    JSON_request("/monthly3.json",myChartWaterTempMonthly);
-    JSON_request("/monthly4.json",myChartNutrientLvlMonthly);
-    JSON_request("/monthly5.json",myChartpHMonthly);
-    JSON_request("/monthly6.json",myChartWaterLvlMonthly); 
-    */
-
    }, 10000 ) ; 
+
+   setInterval(function ( ){
+    JSON_requestTime("/dailyTimeStamp.json",timestampsDaily);
+    JSON_request("/daily1.json",myChartAirTempDaily,tableAirTempDaily,timestampsDaily);
+    JSON_request("/daily2.json",myChartAirHumidityDaily,tableAirHumidityDaily,timestampsDaily);
+    JSON_request("/daily3.json",myChartWaterTempDaily,tableWaterTempDaily,timestampsDaily);
+    JSON_request("/daily4.json",myChartNutrientLvlDaily,tableNutrientLvlDaily,timestampsDaily);
+    JSON_request("/daily5.json",myChartpHDaily,tablepHDaily,timestampsDaily);
+    JSON_request("/daily6.json",myChartWaterLvlDaily,tableWaterLvlDaily,timestampsDaily);
+    
+
+    }, 105000 ) ;
+
+    setInterval(function ( ){
+        JSON_requestTime("/weeklyTimeStamp.json",timestampsWeekly);
+        JSON_request("/weekly1.json",myChartAirTempWeekly,tableAirTempWeekly,timestampsWeekly);
+        JSON_request("/weekly2.json",myChartAirHumidityWeekly,tableAirHumidityWeekly,timestampsWeekly);
+        JSON_request("/weekly3.json",myChartWaterTempWeekly,tableWaterTempWeekly,timestampsWeekly);
+        JSON_request("/weekly4.json",myChartNutrientLvlWeekly,tableNutrientLvlWeekly,timestampsWeekly);
+        JSON_request("/weekly5.json",myChartpHWeekly,tablepHWeekly,timestampsWeekly);
+        JSON_request("/weekly6.json",myChartWaterLvlWeekly,tableWaterLvlWeekly,timestampsWeekly);
+    }, 350000 ) ;
+
+    setInterval(function ( ){
+        JSON_requestTime("/monthlyTimeStamp.json",timestampsMonthly);
+        JSON_request("/monthly1.json",myChartAirTempMonthly,tableAirTempMonthly,timestampsMonthly);
+        JSON_request("/monthly2.json",myChartAirHumidityMonthly,tableAirHumidityMonthly,timestampsMonthly);
+        JSON_request("/monthly3.json",myChartWaterTempMonthly,tableWaterTempMonthly,timestampsMonthly);
+        JSON_request("/monthly4.json",myChartNutrientLvlMonthly,tableNutrientLvlMonthly,timestampsMonthly);
+        JSON_request("/monthly5.json",myChartpHMonthly,tablepHMonthly,timestampsMonthly);
+        JSON_request("/monthly6.json",myChartWaterLvlMonthly,tableWaterLvlMonthly,timestampsMonthly);
+    }, 1000000 ) ;
+
 
 window.onload = (event) => {
     secondaryInit(myChartAirTemp,'Air Temperature Live Data', 'Temperature (F)', 60, 100,5);

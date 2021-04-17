@@ -17,6 +17,9 @@
 #include <PubSubClient.h>
 #include "time.h"
 #include <AsyncTCP.h>
+
+#include <esp_task_wdt.h>
+
 using namespace std;
 deque<int> intd;
 deque<int> inta;
@@ -934,6 +937,7 @@ inline const char * const BoolToString(bool b)
   return b ? "true" : "false";
 }
  void routes(){
+
     // Route for root / web page
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
     if(!request->authenticate(http_username, http_password))
@@ -966,6 +970,8 @@ inline const char * const BoolToString(bool b)
       return request->requestAuthentication();
     request->send(SPIFFS, "/tables.js", "text/javascript");
   });
+
+  yield();
 
   server.on("/logout", HTTP_GET, [](AsyncWebServerRequest *request){
   request->send(401);
@@ -1069,6 +1075,8 @@ inline const char * const BoolToString(bool b)
     request->send(SPIFFS, "/weekly3.json", "application/json");
   });
 
+  yield();
+
   // Route to load weekly4.json file 
   server.on("/weekly4.json", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(SPIFFS, "/weekly4.json", "application/json");
@@ -1141,6 +1149,9 @@ inline const char * const BoolToString(bool b)
 
  }
  void get_param(){
+
+   yield();
+
       server.on("/get", HTTP_GET, [] (AsyncWebServerRequest *request) {
     String inputMessage;
     if (request->hasParam(PARAM_HIGHER)) {
@@ -1159,7 +1170,7 @@ inline const char * const BoolToString(bool b)
       inputMessage = request->getParam(RUNTIME_1)->value();
       writeFile(SPIFFS, "/runTime1.txt", inputMessage.c_str());
     }
-    /*else if (request->hasParam(LOWERBOUND_2)) {
+    else if (request->hasParam(LOWERBOUND_2)) {
       inputMessage = request->getParam(LOWERBOUND_2)->value();
       writeFile(SPIFFS, "/lowerBound2.txt", inputMessage.c_str());
     }
@@ -1175,6 +1186,7 @@ inline const char * const BoolToString(bool b)
       inputMessage = request->getParam(RUNTIME_2)->value();
       writeFile(SPIFFS, "/runTime2.txt", inputMessage.c_str());
     }
+    
     else if (request->hasParam(LOWERBOUND_3)) {
       inputMessage = request->getParam(LOWERBOUND_3)->value();
       writeFile(SPIFFS, "/lowerBound3.txt", inputMessage.c_str());
@@ -1243,7 +1255,6 @@ inline const char * const BoolToString(bool b)
       inputMessage = request->getParam(RUNTIME_6)->value();
       writeFile(SPIFFS, "/runTime6.txt", inputMessage.c_str());
     }
-
     else if (request->hasParam(OUTLET_1)) {
       inputMessage = request->getParam(OUTLET_1)->value();
       writeFile(SPIFFS, "/outLet1.txt", inputMessage.c_str());
@@ -1275,7 +1286,7 @@ inline const char * const BoolToString(bool b)
     else if (request->hasParam(MQTT_PORT)) {
       inputMessage = request->getParam(MQTT_PORT)->value();
       writeFile(SPIFFS, "/mqttPort.txt", inputMessage.c_str());
-    }*/
+    }
     
     else {
       inputMessage = "No message sent";
@@ -1295,6 +1306,8 @@ void setup(){
   client.setCallback(callback);
   */
  //setup_wifi();
+
+ 
 
   pinMode(trigPin, OUTPUT);///sonar
   pinMode(echoPin, INPUT);
@@ -1777,6 +1790,8 @@ else{
   dailyCount++;
  }
 
+ yield();
+
  if(dailyCount == 8){
    if(dailyArray == 3){
      dailyArray = 0;
@@ -1826,6 +1841,7 @@ else{
    monthlyCount = 0;
  }
 
+ yield();
 
 if(runRoutes==true){
   routesLoop();
@@ -1846,7 +1862,7 @@ if(checkSize(startTime1) && checkSize(endTime1)){
     //Serial.println("Turn off outlet");
   }
 }
-/*
+
 if(checkSize(startTime3) && checkSize(endTime3)){
   String curr2 = getTime();
   String s2 = getTimeStamp(startTime3);
@@ -1885,7 +1901,7 @@ if(checkSize(startTime5) && checkSize(endTime5)){
   else{
     digitalWrite(outlet4, 0);
   }
-}*/
+}
 //else
 //printf("routes completed");
   
