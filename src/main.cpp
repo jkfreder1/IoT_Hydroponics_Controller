@@ -1301,10 +1301,10 @@ inline const char * const BoolToString(bool b)
 void setup(){
   Serial.begin (115200);
   Serial.print("it is starting");
-  /*
+  
   client.setServer(mqttServer, mqttPort);
   client.setCallback(callback);
-  */
+  
  //setup_wifi();
 
  
@@ -2010,7 +2010,10 @@ else{
   }
 
 
-/*if (!client.connected()) {
+if (!client.connected()) {
+
+  yield();
+
     reconnect();
   }
   client.loop();
@@ -2020,7 +2023,7 @@ else{
     lastMsg = now;
     
     // Temperature in Celsius
-    temperatureMQTT = f;   
+    temperatureMQTT = 17;   
     // Uncomment the next line to set temperature in Fahrenheit 
     // (and comment the previous temperature line)
     //temperature = 1.8 * bme.readTemperature() + 32; // Temperature in Fahrenheit
@@ -2030,19 +2033,25 @@ else{
     dtostrf(temperatureMQTT, 1, 2, tempString);
     Serial.print("Temperature: ");
     Serial.println(tempString);
+
+    yield();
+
     client.publish("esp32/temperature", tempString);
 
-    humidityMQTT = h;
+    humidityMQTT = 54.66;
     
     // Convert the value to a char array
     char humString[8];
     dtostrf(humidityMQTT, 1, 2, humString);
     Serial.print("Humidity: ");
     Serial.println(humString);
+
+    yield();
+
     client.publish("esp32/humidity", humString);
 
     
-  }*/
+  }
   
 
   //if(sleeptime>200){
