@@ -943,6 +943,7 @@ inline const char * const BoolToString(bool b)
   return b ? "true" : "false";
 }
  void routes(){
+
     // Route for root / web page
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
     yield();
@@ -977,6 +978,8 @@ inline const char * const BoolToString(bool b)
       return request->requestAuthentication();
     request->send(SPIFFS, "/tables.js", "text/javascript");
   });
+
+  yield();
 
   server.on("/logout", HTTP_GET, [](AsyncWebServerRequest *request){
   request->send(401);
@@ -1081,6 +1084,8 @@ inline const char * const BoolToString(bool b)
     request->send(SPIFFS, "/weekly3.json", "application/json");
   });
 
+  yield();
+
   // Route to load weekly4.json file 
   server.on("/weekly4.json", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(SPIFFS, "/weekly4.json", "application/json");
@@ -1152,129 +1157,12 @@ inline const char * const BoolToString(bool b)
   });
 
  }
+ void get_param(){
 
+   yield();
 
-
-void setup(){
-  Serial.begin (115200);
-  Serial.print("it is starting");
-
-  // increase watchdog timeout to 30 and set false to prevent reset
-  esp_task_wdt_init(30, true);
-  /*
-  client.setServer(mqttServer, mqttPort);
-  client.setCallback(callback);
-  */
- //setup_wifi();
-
-
-
-
-  pinMode(trigPin, OUTPUT);///sonar
-  pinMode(echoPin, INPUT);
-
-  pinMode(36, INPUT);
-  pinMode(34, INPUT);
-  pinMode(23, INPUT);
-  pinMode(18, INPUT);
-
-  pinMode(12, OUTPUT);
-  pinMode(14, OUTPUT);
-  pinMode(26, OUTPUT);
-  pinMode(27, OUTPUT);
-
-
-  lcd.begin();/////display
-  lcd.backlight();
-
-  dht.begin();///temp humid
-
-  sensors.begin();///water temp
-  pinMode(TdsSensorPin,INPUT);
-
-  pinMode(TdsSensorPin,INPUT);//tds sensor
-
-  timer = timerBegin(0, 8, true);//////////// timer
-  timerAttachInterrupt(timer, &incrCounter, true);
-  timerAlarmWrite(timer, 1000000, true);
-  timerAlarmEnable(timer);
-
-  pinMode(5,INPUT);
-  pinMode(15,INPUT);////15
-  pinMode(19,INPUT);
-  //attachInterrupt(digitalPinToInterrupt(5), button3ISR,RISING);
-  //attachInterrupt(digitalPinToInterrupt(15), buttonISR, RISING);////15
-  //attachInterrupt(digitalPinToInterrupt(19), button2ISR, RISING);
-
-  /*
-  esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP * uS_TO_S_FACTOR);/////sleep DONT DELETE
-  esp_sleep_enable_ext0_wakeup(GPIO_NUM_15,1);
-  */
-  
-  AsyncWiFiManager wifiManager(&server,&dns);
-  wifiManager.autoConnect("AutoConnectAP");
-    Serial.println("connected...yeey :)");
-    
-
-
-  
-
-  configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
-
-  if(!SPIFFS.begin(true)){
-    Serial.println("An Error has occurred while mounting SPIFFS");
-    return;
-  }
-
-  store_data(0, dailyAirTempAvg, dailyAirTempData, 0, jsonDaily1);
-  store_data(0, dailyAirHumAvg, dailyAirHumData, 0, jsonDaily2);
-  store_data(0, dailyWaterTempAvg, dailyWaterTempData, 0, jsonDaily3);
-  store_data(0, dailyTdsAvg, dailyTdsData, 0, jsonDaily4);
-  store_data(0, dailypHAvg, dailypHData, 0, jsonDaily5);
-  store_data(0, dailyWaterLevelAvg, dailyWaterLevelData, 0, jsonDaily6);
-
-  store_data(0, weeklyAirTempAvg, weeklyAirTempData, 0, jsonWeekly1);
-  store_data(0, weeklyAirHumAvg, weeklyAirHumData, 0, jsonWeekly2);
-  store_data(0, weeklyWaterTempAvg, weeklyWaterTempData, 0, jsonWeekly3);
-  store_data(0, weeklyTdsAvg, weeklyTdsData, 0, jsonWeekly4);
-  store_data(0, weeklypHAvg, weeklypHData, 0, jsonWeekly5);
-  store_data(0, weeklyWaterLevelAvg, weeklyWaterLevelData, 0, jsonWeekly6);
-
-  store_data(0, monthlyAirTempAvg, monthlyAirTempData, 0, jsonMonthly1);
-  store_data(0, monthlyAirHumAvg, monthlyAirHumData, 0, jsonMonthly2);
-  store_data(0, monthlyWaterTempAvg, monthlyWaterTempData, 0, jsonMonthly3);
-  store_data(0, monthlyTdsAvg, monthlyTdsData, 0, jsonMonthly4);
-  store_data(0, monthlypHAvg, monthlypHData, 0, jsonMonthly5);
-  store_data(0, monthlyWaterLevelAvg, monthlyWaterLevelData, 0, jsonMonthly6);
-
-  printLocalTime(1, 0, jsonTimeStamp);
-  printLocalTime(2, 0, jsonDailyTimeStamp);
-  printLocalTime(3, 0, jsonWeeklyTimeStamp);
-  printLocalTime(4, 0, jsonMonthlyTimeStamp);
-
-
-
-  // Send a GET request to <ESP_IP>/get?inputString=<inputMessage>
-  server.on("/get", HTTP_GET, [] (AsyncWebServerRequest *request) {
-    delay(1);
-
-    formsFlag = true;
-
-    
+      server.on("/get", HTTP_GET, [] (AsyncWebServerRequest *request) {
     String inputMessage;
-    // GET inputString value on <ESP_IP>/get?inputString=<inputMessage>
-    /*if (request->hasParam(PARAM_STRING)) {
-      inputMessage = request->getParam(PARAM_STRING)->value();
-      writeFile(SPIFFS, "/inputString.txt", inputMessage.c_str());
-    }
-    // GET inputInt value on <ESP_IP>/get?inputInt=<inputMessage>
-    else if (request->hasParam(PARAM_INT)) {
-      inputMessage = request->getParam(PARAM_INT)->value();
-      writeFile(SPIFFS, "/inputInt.txt", inputMessage.c_str());
-      Serial.println(inputMessage);
-    }*/
-    // GET inputFloat value on <ESP_IP>/get?inputFloat=<inputMessage>
-    yield();
     if (request->hasParam(PARAM_HIGHER)) {
       inputMessage = request->getParam(PARAM_HIGHER)->value();
       writeFile(SPIFFS, "/floatHigher.txt", inputMessage.c_str());
@@ -1307,6 +1195,7 @@ void setup(){
       inputMessage = request->getParam(RUNTIME_2)->value();
       writeFile(SPIFFS, "/runTime2.txt", inputMessage.c_str());
     }
+    
     else if (request->hasParam(LOWERBOUND_3)) {
       inputMessage = request->getParam(LOWERBOUND_3)->value();
       writeFile(SPIFFS, "/lowerBound3.txt", inputMessage.c_str());
@@ -1375,7 +1264,6 @@ void setup(){
       inputMessage = request->getParam(RUNTIME_6)->value();
       writeFile(SPIFFS, "/runTime6.txt", inputMessage.c_str());
     }
-
     else if (request->hasParam(OUTLET_1)) {
       inputMessage = request->getParam(OUTLET_1)->value();
       writeFile(SPIFFS, "/outLet1.txt", inputMessage.c_str());
@@ -1415,6 +1303,115 @@ void setup(){
     Serial.println(inputMessage);
     request->send(200, "text/text", inputMessage);
   });
+    }
+
+
+
+void setup(){
+  Serial.begin (115200);
+  Serial.print("it is starting");
+  
+  client.setServer(mqttServer, mqttPort);
+  client.setCallback(callback);
+  
+ //setup_wifi();
+
+ 
+
+  pinMode(trigPin, OUTPUT);///sonar
+  pinMode(echoPin, INPUT);
+
+  lcd.begin();/////display
+  lcd.backlight();
+
+  dht.begin();///temp humid
+
+  sensors.begin();///water temp
+  pinMode(TdsSensorPin,INPUT);
+
+  pinMode(TdsSensorPin,INPUT);//tds sensor
+
+  timer = timerBegin(0, 8, true);//////////// timer
+  timerAttachInterrupt(timer, &incrCounter, true);
+  timerAlarmWrite(timer, 1000000, true);
+  timerAlarmEnable(timer);
+
+  pinMode(5,INPUT);
+  pinMode(15,INPUT);////15
+  pinMode(19,INPUT);
+  attachInterrupt(digitalPinToInterrupt(5), button3ISR,RISING);
+  attachInterrupt(digitalPinToInterrupt(15), buttonISR, RISING);////15
+  attachInterrupt(digitalPinToInterrupt(19), button2ISR, RISING);
+
+  /*
+  esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP * uS_TO_S_FACTOR);/////sleep DONT DELETE
+  esp_sleep_enable_ext0_wakeup(GPIO_NUM_15,1);
+  */
+  
+  AsyncWiFiManager wifiManager(&server,&dns);
+  wifiManager.autoConnect("AutoConnectAP");
+    Serial.println("connected...yeey :)");
+    
+
+
+  
+
+  configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
+
+  if(!SPIFFS.begin(true)){
+    Serial.println("An Error has occurred while mounting SPIFFS");
+    return;
+  }
+
+  store_data(0, dailyAirTempAvg, dailyAirTempData, 0, jsonDaily1);
+  store_data(0, dailyAirHumAvg, dailyAirHumData, 0, jsonDaily2);
+  store_data(0, dailyWaterTempAvg, dailyWaterTempData, 0, jsonDaily3);
+  store_data(0, dailyTdsAvg, dailyTdsData, 0, jsonDaily4);
+  store_data(0, dailypHAvg, dailypHData, 0, jsonDaily5);
+  store_data(0, dailyWaterLevelAvg, dailyWaterLevelData, 0, jsonDaily6);
+
+  store_data(0, weeklyAirTempAvg, weeklyAirTempData, 0, jsonWeekly1);
+  store_data(0, weeklyAirHumAvg, weeklyAirHumData, 0, jsonWeekly2);
+  store_data(0, weeklyWaterTempAvg, weeklyWaterTempData, 0, jsonWeekly3);
+  store_data(0, weeklyTdsAvg, weeklyTdsData, 0, jsonWeekly4);
+  store_data(0, weeklypHAvg, weeklypHData, 0, jsonWeekly5);
+  store_data(0, weeklyWaterLevelAvg, weeklyWaterLevelData, 0, jsonWeekly6);
+
+  store_data(0, monthlyAirTempAvg, monthlyAirTempData, 0, jsonMonthly1);
+  store_data(0, monthlyAirHumAvg, monthlyAirHumData, 0, jsonMonthly2);
+  store_data(0, monthlyWaterTempAvg, monthlyWaterTempData, 0, jsonMonthly3);
+  store_data(0, monthlyTdsAvg, monthlyTdsData, 0, jsonMonthly4);
+  store_data(0, monthlypHAvg, monthlypHData, 0, jsonMonthly5);
+  store_data(0, monthlyWaterLevelAvg, monthlyWaterLevelData, 0, jsonMonthly6);
+
+  printLocalTime(1, 0, jsonTimeStamp);
+  printLocalTime(2, 0, jsonDailyTimeStamp);
+  printLocalTime(3, 0, jsonWeeklyTimeStamp);
+  printLocalTime(4, 0, jsonMonthlyTimeStamp);
+
+
+  // Send web page with input fields to client
+  /*server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send_P(200, "text/html", "/index.html", processor);
+  });*/
+
+  // Send a GET request to <ESP_IP>/get?inputString=<inputMessage>
+  
+    // GET inputString value on <ESP_IP>/get?inputString=<inputMessage>
+    /*if (request->hasParam(PARAM_STRING)) {
+      inputMessage = request->getParam(PARAM_STRING)->value();
+      writeFile(SPIFFS, "/inputString.txt", inputMessage.c_str());
+    }
+    // GET inputInt value on <ESP_IP>/get?inputInt=<inputMessage>
+    else if (request->hasParam(PARAM_INT)) {
+      inputMessage = request->getParam(PARAM_INT)->value();
+      writeFile(SPIFFS, "/inputInt.txt", inputMessage.c_str());
+      Serial.println(inputMessage);
+    }*/
+    // GET inputFloat value on <ESP_IP>/get?inputFloat=<inputMessage>
+    get_param();
+    
+    
   server.onNotFound(notFound);
   getip_address(SPIFFS,"/mqttServer.txt");
   //int a=192;
@@ -1429,7 +1426,7 @@ void setup(){
  
   
   
-  //client.setCallback(callback);
+  client.setCallback(callback);
 
   Serial.println(WiFi.localIP());
   routes();
@@ -1642,8 +1639,9 @@ void displaypH(float ph_act){
 
 void loop(){
 
-
+//Serial.println("restart loop here");
 yield();
+
  //timer test code
 if(digitalRead(15)){
   button++;
@@ -1852,6 +1850,7 @@ else{
    monthlyCount = 0;
  }
 
+ yield();
 
 if(runRoutes==true){
   routesLoop();
@@ -2019,8 +2018,11 @@ else{
   tds_offset=tds_value_input-tdsValue;
   }
 
-/*
+
 if (!client.connected()) {
+
+  yield();
+
     reconnect();
   }
   client.loop();
@@ -2030,7 +2032,7 @@ if (!client.connected()) {
     lastMsg = now;
     
     // Temperature in Celsius
-    temperatureMQTT = f;   
+    temperatureMQTT = 17;   
     // Uncomment the next line to set temperature in Fahrenheit 
     // (and comment the previous temperature line)
     //temperature = 1.8 * bme.readTemperature() + 32; // Temperature in Fahrenheit
@@ -2040,18 +2042,26 @@ if (!client.connected()) {
     dtostrf(temperatureMQTT, 1, 2, tempString);
     Serial.print("Temperature: ");
     Serial.println(tempString);
+
+    yield();
+
     client.publish("esp32/temperature", tempString);
 
-    humidityMQTT = h;
+    humidityMQTT = 54.66;
     
     // Convert the value to a char array
     char humString[8];
     dtostrf(humidityMQTT, 1, 2, humString);
     Serial.print("Humidity: ");
     Serial.println(humString);
+
+    yield();
+
     client.publish("esp32/humidity", humString);
+
+    
   }
-  */
+  
 
   //if(sleeptime>200){
     //esp_deep_sleep_start();/////sleep DONT DELETE
