@@ -641,10 +641,10 @@ int dailyArray = 0;
 int weeklyArray = 0;
 int monthlyArray = 0;
 
-int outlet1 = 12;
-int outlet2 = 14;
+int outlet1 = 26; //or 12?
+int outlet2 = 12; // or 14?
 int outlet3 = 27;
-int outlet4 = 26;
+int outlet4 = 14; // or 26?
 
 const char* ntpServer = "pool.ntp.org";
 const char* connect_mqtt(){
@@ -1308,6 +1308,13 @@ inline const char * const BoolToString(bool b)
 
 
 void setup(){
+
+  pinMode(12, OUTPUT);
+  pinMode(14, OUTPUT);
+  pinMode(26, OUTPUT);
+  pinMode(27, OUTPUT);
+
+
   Serial.begin (115200);
   Serial.print("it is starting");
   
