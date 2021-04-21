@@ -986,11 +986,13 @@ int getMedianNum(int bArray[], int iFilterLen) //////////tds sensor
 }
 
 int sleeptime;
+int lcdcount;
 void IRAM_ATTR incrCounter()
 {
   counter++;
   counter2++;
   sleeptime++;
+  lcdcount++;
 }
 
 void buttonISR()
@@ -1826,10 +1828,15 @@ void loop()
     clear = 1;
   }
 
+  if(lcdcount>50){//////////////////////////////////////////////////////////////////////
+    button++;
+    lcdcount=0;
+  }
+
   if (reset == 1)
   {
     reset = 0;
-    WiFi.disconnect(true);
+    WiFi.disconnect(false, true);
     ESP.restart();
   }
 
@@ -2182,7 +2189,8 @@ else{
     else
     {
       lcd.setCursor(0, 0);
-      lcd.print("Hydroponics     ");
+      lcd.print(WiFi.localIP());
+      //lcd.print("Hydroponics     ");
     }
     break;
   case 1:
