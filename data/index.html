@@ -556,7 +556,7 @@ Sensor6 Runtime (current value %runTime6%): <input type="number " id="runTime6" 
           <section class="formboxContainer">
             <div style="font-size: 20px;padding: 20px;color: #0F3376;">Configuration Parameters</div>
             <div class="topleft">
-            Sensor1
+            Air Temperature
               <form action="/get" target="hidden-form">
                 <input type="number " name="floatHigher" placeholder="LowerBound">
                 <input type="submit" value="Submit" onclick="submitMessage()">
@@ -566,20 +566,12 @@ Sensor6 Runtime (current value %runTime6%): <input type="number " id="runTime6" 
                 <input type="number " id="floatLower" name="floatLower" placeholder="UpperBound">
                 <input type="submit" value="Submit" onclick="submitMessage()">
               </form>
-              <br>
-              <form action="/get" target="hidden-form">
-                <input type="text " id="timeStamp1" name="timeStamp1" placeholder="TimeStamp">
-                  <input type="submit" value="Submit" onclick="submitMessage()">
-              </form>
-              <br>
-              <form action="/get" target="hidden-form">
-              <input type="number " id="runTime1" name="runTime1" placeholder="Runtime">
-                <input type="submit" value="Submit" onclick="submitMessage()">
-              </form>
+            
+              
             </div>
            
             <div class="topcenter">
-              Sensor2
+              Air Humidity
               <br>
               <form action="/get" target="hidden-form">
                <input type="number " id="lowerBound2" name="lowerBound2" placeholder="LowerBound">
@@ -590,20 +582,11 @@ Sensor6 Runtime (current value %runTime6%): <input type="number " id="runTime6" 
                <input type="number " id="upperBound2" name="upperBound2" placeholder="UpperBound ">
                <input type="submit" value="Submit" onclick="submitMessage()">
               </form>
-               <br>
-               <form action="/get" target="hidden-form">
-              <input type="text " id="timeStamp2" name="timeStamp2" placeholder="TimeStamp">
-              <input type="submit" value="Submit" onclick="submitMessage()">
-              </form>
-              <br>
-              <form action="/get" target="hidden-form">
-              <input type="number " id="runTime2" name="runTime2" placeholder="Runtime">
-              <input type="submit" value="Submit" onclick="submitMessage()">
-              </form>
+               
              </div>
              
             <div class="topright">
-              Sensor3
+              Water Temperature
               <br>
               <form action="/get" target="hidden-form">
               <input type="number " id="lowerBound3" name="lowerBound3" placeholder="LowerBound">
@@ -615,18 +598,10 @@ Sensor6 Runtime (current value %runTime6%): <input type="number " id="runTime6" 
               <input type="submit" value="Submit" onclick="submitMessage()">
               </form>
               <br>
-              <form action="/get" target="hidden-form">
-              <input type="text " id="timeStamp3" name="timeStamp3" placeholder="TimeStamp">
-              <input type="submit" value="Submit" onclick="submitMessage()">
-              </form>
-              <br>
-              <form action="/get" target="hidden-form">
-              <input type="number " id="runTime3" name="runTime3" placeholder="Runtime">
-              <input type="submit" value="Submit" onclick="submitMessage()">
-              </form>
+              
              </div>
              <div class="centerleft">
-              Sensor4
+              TDS Level
               <br>
               <form action="/get" target="hidden-form">
               <input type="number " id="lowerBound4" name="lowerBound4" placeholder="LowerBound">
@@ -638,18 +613,10 @@ Sensor6 Runtime (current value %runTime6%): <input type="number " id="runTime6" 
                <input type="submit" value="Submit" onclick="submitMessage()">
               </form>
                <br>
-               <form action="/get" target="hidden-form">
-              <input type="text " id="timeStamp4" name="timeStamp4" placeholder="TimeStamp">
-              <input type="submit" value="Submit" onclick="submitMessage()">
-               </form>
-              <br>
-              <form action="/get" target="hidden-form">
-              <input type="number " id="runTime4" name="runTime4" placeholder="Runtime">
-              <input type="submit" value="Submit" onclick="submitMessage()">
-              </form>
+               
               </div>
               <div class="centercenter">
-               Sensor5
+               pH Level
                 <br>
                 <form action="/get" target="hidden-form">
                <input type="number " id="lowerBound5" name="lowerBound5" placeholder="LowerBound">
@@ -661,18 +628,10 @@ Sensor6 Runtime (current value %runTime6%): <input type="number " id="runTime6" 
                <input type="submit" value="Submit" onclick="submitMessage()">
               </form>
                <br>
-               <form action="/get" target="hidden-form">
-               <input type="text " id="timeStamp5" name="timeStamp5" placeholder="TimeStamp">
-               <input type="submit" value="Submit" onclick="submitMessage()">
-                </form>
-               <br>
-               <form action="/get" target="hidden-form">
-               <input type="number " id="runTime5" name="runTime5" placeholder="Runtime">
-               <input type="submit" value="Submit" onclick="submitMessage()">
-              </form>
+               
                 </div>
               <div class="centerright">
-               Sensor6
+               Water Level
                <br>
                <form action="/get" target="hidden-form">
                <input type="number " id="lowerBound5" name="lowerBound5" placeholder="LowerBound">
@@ -684,40 +643,105 @@ Sensor6 Runtime (current value %runTime6%): <input type="number " id="runTime6" 
               <input type="submit" value="Submit" onclick="submitMessage()">
                </form>
               <br>
-              <form action="/get" target="hidden-form">
-              <input type="text " id="timeStamp6" name="timeStamp6" placeholder="TimeStamp">
-              <input type="submit" value="Submit" onclick="submitMessage()">
-               </form>
-              <br>
-              <form action="/get" target="hidden-form">
-              <input type="number " id="runTime6" name="runTime6" placeholder="Runtime">
-              <input type="submit" value="Submit" onclick="submitMessage()">
-              </form>
+              
               </div>
               
               
               <div class="bottomleft">
-                Outlets
+                Outlet1
                 <br>
                 <form action="/get" target="hidden-form">
-                <input type="number " id="outLet1" name="outLet1" placeholder="Outlet1">
+                <input type="number " id="outLet1" name="outLet1" placeholder="Start Time">
                 <input type="submit" value="Submit" onclick="submitMessage()">
                </form>
                 <br>
                 <form action="/get" target="hidden-form">
-               <input type="number " id="outLet2" name="outLet2" placeholder="Outlet2">
+               <input type="number " id="outLet1_end" name="outLet1_end" placeholder="End Time">
                <input type="submit" value="Submit" onclick="submitMessage()">
                 </form>
                <br>
-               <form action="/get" target="hidden-form">
-               <input type="text " id="outLet3" name="outLet3" placeholder="Outlet3">
-               <input type="submit" value="Submit" onclick="submitMessage()">
-                </form>
-               <br>
-               <form action="/get" target="hidden-form">
-               <input type="number " id="outLet4" name="outLet4" placeholder="Outlet4">
-               <input type="submit" value="Submit" onclick="submitMessage()">
+               <form action="/outLet1on" target="hidden-form">
+                <input type="submit" value="ON" onclick="submitMessage()">
+                
+              </form>
+              <form action="/outLet1off" target="hidden-form">
+                <input type="submit" value="OFF" id="outLet1off" onclick="submitMessage()">
+              </form>
+              
+              
+              
+              </p>
+               </div>
+               <div class="outLet2">
+                Outlet2
+                <br>
+                <form action="/get" target="hidden-form">
+                <input type="number " id="outLet2" name="outLet2" placeholder="Start Time">
+                <input type="submit" value="Submit" onclick="submitMessage()">
                </form>
+                <br>
+                <form action="/get" target="hidden-form">
+               <input type="number " id="outLet2_end" name="outLet2_end" placeholder="End Time">
+               <input type="submit" value="Submit" onclick="submitMessage()">
+                </form>
+               <br>
+               <form action="/outLet2on" target="hidden-form">
+                <input type="submit" value="ON" onclick="submitMessage()">
+                
+              </form>
+              <form action="/outLet2off" target="hidden-form">
+                <input type="submit" value="OFF" id="outLet2off" onclick="submitMessage()">
+              </form>
+              
+              </p>
+               </div>
+
+               <div class="outLet3">
+                Outlet3
+                <br>
+                <form action="/get" target="hidden-form">
+                <input type="number " id="outLet3" name="outLet3" placeholder="Start Time">
+                <input type="submit" value="Submit" onclick="submitMessage()">
+               </form>
+                <br>
+                <form action="/get" target="hidden-form">
+               <input type="number " id="outLet3_end" name="outLet3_end" placeholder="End Time">
+               <input type="submit" value="Submit" onclick="submitMessage()">
+                </form>
+               <br>
+               <form action="/outLet3on" target="hidden-form">
+                <input type="submit" value="ON" onclick="submitMessage()">
+                
+              </form>
+              <form action="/outLet3off" target="hidden-form">
+                <input type="submit" value="OFF" id="outLet3off" onclick="submitMessage()">
+              </form>
+              
+              </p>
+               </div>
+
+               <div class="outLet4">
+                Outlet4
+                <br>
+                <form action="/get" target="hidden-form">
+                <input type="number " id="outLet4" name="outLet4" placeholder="Start Time">
+                <input type="submit" value="Submit" onclick="submitMessage()">
+               </form>
+                <br>
+                <form action="/get" target="hidden-form">
+               <input type="number " id="outLet4_end" name="outLet4_end" placeholder="End Time">
+               <input type="submit" value="Submit" onclick="submitMessage()">
+                </form>
+               <br>
+               <form action="/outLet4on" target="hidden-form">
+                <input type="submit" value="ON" onclick="submitMessage()">
+                
+              </form>
+              <form action="/outLet4off" target="hidden-form">
+                <input type="submit" value="OFF" id="outLet4off" onclick="submitMessage()">
+              </form>
+              
+              </p>
                </div>
                <div class="bottomcenter">
               MQTT

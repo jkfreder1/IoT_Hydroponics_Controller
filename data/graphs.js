@@ -414,7 +414,7 @@ setInterval(function ( ){
     
     
 
-    }, 105000 ) ;
+    }, 55500 ) ;
 
     setInterval(function ( ){
         JSON_requestTime("/weeklyTimeStamp.json",timestampsWeekly);
