@@ -896,11 +896,10 @@ void buttonISR(){
   counter2=0;
   }
 }
+
+int reset=0;
 void button2ISR(){
-  if(counter2>10){
-    counter2=0;
-    ESP.restart();
-  }
+  reset=1;
 }
 int cal=0;
 void button3ISR(){
@@ -1655,7 +1654,10 @@ if(digitalRead(15)){
   clear=1;
 }
 
-
+if(reset==1){
+  reset=0;
+  ESP.restart();
+}
 
 
 //end timer test code
