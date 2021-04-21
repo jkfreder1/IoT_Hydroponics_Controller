@@ -417,46 +417,78 @@ void callback(char *topic, byte *message, unsigned int length)
 //const char* mqttPassword="password";
 //new
 
-const char *MQTT_USERNAME = "mqttUsername";
-const char *MQTT_PASSWORD = "mqttPassword";
-const char *MQTT_SERVER = "mqttServer";
-const char *MQTT_PORT = "mqttPort";
+String MQTT_USERNAME = "mqttUsername";
+const char* mqttUsernamePath = "/mqttUsername.txt";
+String MQTT_PASSWORD = "mqttPassword";
+const char* mqttPasswordPath = "/mqttPassword.txt";
+String MQTT_SERVER = "mqttServer";
+const char* mqttServerPath = "/mqttServer.txt";
+String MQTT_PORT = "mqttPort";
+const char* mqttPortPath = "/mqttPort.txt";
 
 //const char* PARAM_INT = "inputInt";
-const char *PARAM_HIGHER = "floatHigher";
-const char *PARAM_LOWER = "floatLower";
-const char *TIMESTAMP_1 = "timeStamp1";
-const char *RUNTIME_1 = "runTime1";
+String PARAM_HIGHER = "floatHigher";
+const char* paramHigherPath = "/floatHigher.txt";
+String PARAM_LOWER = "floatLower";
+const char* paramLowerPath = "/floatLower.txt";
+String TIMESTAMP_1 = "timeStamp1";
+const char* startTime1Path = "/timeStamp1.txt";
+String RUNTIME_1 = "runTime1";
+const char* endTime1Path = "/runTime1.txt";
 
-const char *LOWERBOUND_2 = "lowerBound2";
-const char *UPPERBOUND_2 = "upperBound2";
-const char *TIMESTAMP_2 = "timeStamp2";
-const char *RUNTIME_2 = "runTime2";
+String LOWERBOUND_2 = "lowerBound2";
+const char* lowerBound2Path = "/lowerBound2.txt";
+String UPPERBOUND_2 = "upperBound2";
+const char* upperBound2Path = "/upperBound2.txt";
+String TIMESTAMP_2 = "timeStamp2";
+const char* startTime2Path = "/timeStamp2.txt";
+String RUNTIME_2 = "runTime2";
+const char* endTime2Path = "/runTime2.txt";
 
-const char *LOWERBOUND_3 = "lowerBound3";
-const char *UPPERBOUND_3 = "upperBound3";
-const char *TIMESTAMP_3 = "timeStamp3";
-const char *RUNTIME_3 = "runTime3";
+String LOWERBOUND_3 = "lowerBound3";
+const char* lowerBound3Path = "/lowerBound3.txt";
+String UPPERBOUND_3 = "upperBound3";
+const char* upperBound3Path = "/upperBound3.txt";
+String TIMESTAMP_3 = "timeStamp3";
+const char* startTime3Path = "/timeStamp3.txt";
+String RUNTIME_3 = "runTime3";
+const char* endTime3Path = "/runTime3.txt";
 
-const char *LOWERBOUND_4 = "lowerBound4";
-const char *UPPERBOUND_4 = "upperBound4";
-const char *TIMESTAMP_4 = "timeStamp4";
-const char *RUNTIME_4 = "runTime4";
+String LOWERBOUND_4 = "lowerBound4";
+const char* lowerBound4Path = "/lowerBound4.txt";
+String UPPERBOUND_4 = "upperBound4";
+const char* upperBound4Path = "/upperBound4.txt";
+String TIMESTAMP_4 = "timeStamp4";
+const char* startTime4Path = "/timeStamp4.txt";
+String RUNTIME_4 = "runTime4";
+const char* endTime4Path = "/runTime4.txt";
 
-const char *LOWERBOUND_5 = "lowerBound5";
-const char *UPPERBOUND_5 = "upperBound5";
-const char *TIMESTAMP_5 = "timeStamp5";
-const char *RUNTIME_5 = "runTime5";
+String LOWERBOUND_5 = "lowerBound5";
+const char* lowerBound5Path = "/lowerBound5.txt";
+String UPPERBOUND_5 = "upperBound5";
+const char* upperBound5Path = "/upperBound5.txt";
+String TIMESTAMP_5 = "timeStamp5";
+const char* startTime5Path = "/timeStamp5.txt";
+String RUNTIME_5 = "runTime5";
+const char* endTime5Path = "/runTime5.txt";
 
-const char *LOWERBOUND_6 = "lowerBound6";
-const char *UPPERBOUND_6 = "upperBound6";
-const char *TIMESTAMP_6 = "timeStamp6";
-const char *RUNTIME_6 = "runTime6";
+String LOWERBOUND_6 = "lowerBound6";
+const char* lowerBound6Path = "/lowerBound6.txt";
+String UPPERBOUND_6 = "upperBound6";
+const char* upperBound6Path = "/upperBound6.txt";
+String TIMESTAMP_6 = "timeStamp6";
+const char* startTime6Path = "/timeStamp6.txt";
+String RUNTIME_6 = "runTime6";
+const char* endTime6Path = "/runTime6.txt";
 
-const char *OUTLET_1 = "outLet1";
-const char *OUTLET_2 = "outLet2";
-const char *OUTLET_3 = "outLet3";
-const char *OUTLET_4 = "outLet4";
+String OUTLET_1 = "outLet1";
+const char* outlet1Path = "/outLet1.txt";
+String OUTLET_2 = "outLet2";
+const char* outlet2Path = "/outLet2.txt";
+String OUTLET_3 = "outLet3";
+const char* outlet3Path = "/outLet3.txt";
+String OUTLET_4 = "outLet4";
+const char* outlet4Path = "/outLet4.txt";
 
 OneWire oneWire(oneWireBus);
 DallasTemperature sensors(&oneWire);
@@ -478,7 +510,7 @@ StaticJsonDocument<512> doc5;
 String jsonData5 = "/data5.json";
 StaticJsonDocument<512> doc6;
 String jsonData6 = "/data6.json";
-StaticJsonDocument<512> timeStamp;
+StaticJsonDocument<1024> timeStamp;
 String jsonTimeStamp = "/timeStamp.json";
 //daily documents
 StaticJsonDocument<1024> daily1;
@@ -749,7 +781,7 @@ void printLocalTime(int time, int count, String filename, JsonObject object){
     break;
   case 4:
     char timeMonthly[10];
-    strftime(timeMonthly, 10, "%A %Y", &timeinfo);
+    strftime(timeMonthly, 10, "%B, %Y", &timeinfo);
     s = timeMonthly;
     monthlyTimeStampArray[count] = s;
     break;
@@ -1231,9 +1263,7 @@ void routesLoop()
     request->send(SPIFFS, "/monthlyTimeStamp.json", "application/json");
   });
 }
-void get_param()
-{
-
+void get_param(){
   yield();
 
   server.on("/get", HTTP_GET, [](AsyncWebServerRequest *request) {
@@ -1247,6 +1277,7 @@ void get_param()
     {
       inputMessage = request->getParam(PARAM_LOWER)->value();
       writeFile(SPIFFS, "/floatLower.txt", inputMessage.c_str());
+      yield();
     }
     else if (request->hasParam(TIMESTAMP_1))
     {
@@ -1272,6 +1303,7 @@ void get_param()
     {
       inputMessage = request->getParam(TIMESTAMP_2)->value();
       writeFile(SPIFFS, "/timeStamp2.txt", inputMessage.c_str());
+      yield();
     }
     else if (request->hasParam(RUNTIME_2))
     {
@@ -1372,6 +1404,7 @@ void get_param()
     {
       inputMessage = request->getParam(OUTLET_2)->value();
       writeFile(SPIFFS, "/outLet2.txt", inputMessage.c_str());
+      yield();
     }
     else if (request->hasParam(OUTLET_3))
     {
@@ -1397,6 +1430,7 @@ void get_param()
     {
       inputMessage = request->getParam(MQTT_SERVER)->value();
       writeFile(SPIFFS, "/mqttServer.txt", inputMessage.c_str());
+      yield();
     }
     else if (request->hasParam(MQTT_PORT))
     {
@@ -1408,6 +1442,7 @@ void get_param()
     {
       inputMessage = "No message sent";
     }
+    yield();
     Serial.println(inputMessage);
     request->send(200, "text/text", inputMessage);
   });
@@ -1424,8 +1459,8 @@ void setup()
   Serial.begin(115200);
   Serial.print("it is starting");
 
-  client.setServer(mqttServer, mqttPort);
-  client.setCallback(callback);
+  //client.setServer(mqttServer, mqttPort);
+  //client.setCallback(callback);
 
   //setup_wifi();
 
@@ -1497,6 +1532,8 @@ void setup()
   printLocalTime(3, 0, jsonWeeklyTimeStamp, weeklyTime);
   printLocalTime(4, 0, jsonMonthlyTimeStamp, monthlyTime);
 
+  get_param();
+
   // Send web page with input fields to client
   /*server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send_P(200, "text/html", "/index.html", processor);
@@ -1517,7 +1554,6 @@ void setup()
       Serial.println(inputMessage);
     }*/
   // GET inputFloat value on <ESP_IP>/get?inputFloat=<inputMessage>
-  get_param();
 
   server.onNotFound(notFound);
   getip_address(SPIFFS, "/mqttServer.txt");
@@ -2025,7 +2061,7 @@ else{
     runRoutes = false;
     //printf("run routes first");
   }
-
+if(!getParameter("/outLet1.txt")){
   if (checkSize(startTime1) && checkSize(endTime1))
   {
     String curr = getTime();
@@ -2042,7 +2078,11 @@ else{
       //Serial.println("Turn off outlet");
     }
   }
-
+}
+else{
+  digitalWrite(outlet1, 1);
+}
+if(getParameter("/outLet2.txt")){
   if (checkSize(startTime3) && checkSize(endTime3))
   {
     String curr2 = getTime();
@@ -2059,7 +2099,11 @@ else{
       //Serial.println("Turn off outlet");
     }
   }
-
+}
+else{
+  digitalWrite(outlet2,1);
+}
+if(getParameter("/outLet3.txt")){
   if (checkSize(startTime4) && checkSize(endTime4))
   {
     String curr3 = getTime();
@@ -2076,7 +2120,11 @@ else{
       //Serial.println("Turn off outlet");
     }
   }
-
+}
+else{
+  digitalWrite(outlet3,1);
+}
+if(getParameter("/outLet4.txt")){
   if (checkSize(startTime5) && checkSize(endTime5))
   {
     String curr4 = getTime();
@@ -2091,6 +2139,10 @@ else{
       digitalWrite(outlet4, 0);
     }
   }
+}
+else{
+  digitalWrite(outlet4,1);
+}
   //else
   //printf("routes completed");
 
@@ -2212,7 +2264,7 @@ else{
     temperatureF_offset = temperatureF_input - temperatureF;
     tds_offset = tds_value_input - tdsValue;
   }
-
+/*
   if (!client.connected())
   {
 
@@ -2255,6 +2307,7 @@ else{
 
     client.publish("esp32/humidity", humString);
   }
+  */
 
   //if(sleeptime>200){
   //esp_deep_sleep_start();/////sleep DONT DELETE

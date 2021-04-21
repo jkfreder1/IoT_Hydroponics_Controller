@@ -412,7 +412,7 @@ setInterval(function ( ){
     JSON_request("/daily6.json",myChartWaterLvlDaily,tableWaterLvlDaily,timestampsDaily);
     
 
-    }, 105000 ) ;
+    }, 55500 ) ;
 
     setInterval(function ( ){
         JSON_requestTime("/weeklyTimeStamp.json",timestampsWeekly);
