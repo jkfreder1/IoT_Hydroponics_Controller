@@ -476,7 +476,7 @@ StaticJsonDocument<512> doc5;
 String jsonData5 = "/data5.json";
 StaticJsonDocument<512> doc6;
 String jsonData6 = "/data6.json";
-StaticJsonDocument<796> timeStamp;
+StaticJsonDocument<512> timeStamp;
 String jsonTimeStamp = "/timeStamp.json";
 //daily documents
 StaticJsonDocument<1024> daily1;
@@ -710,8 +710,7 @@ int connect_port()
 const long gmtOffset_sec = -14400;
 const int daylightOffset_sec = 0;
 
-void printLocalTime(int time, int count, String filename)
-{
+void printLocalTime(int time, int count, String filename, JsonObject object){
   struct tm timeinfo;
   if (!getLocalTime(&timeinfo))
   {
@@ -755,9 +754,9 @@ void printLocalTime(int time, int count, String filename)
     break;
   default:
     break;
-  }
-  if (serializeJsonPretty(hourlyTimeStamp, outfile) == 0)
-  {
+
+}
+  if(serializeJsonPretty(object, outfile) == 0){
     Serial.println("Failed to write to file");
   }
   else
@@ -1492,15 +1491,16 @@ void setup()
   store_data(0, monthlypHAvg, monthlypHData, 0, jsonMonthly5);
   store_data(0, monthlyWaterLevelAvg, monthlyWaterLevelData, 0, jsonMonthly6);
 
-  printLocalTime(1, 0, jsonTimeStamp);
-  printLocalTime(2, 0, jsonDailyTimeStamp);
-  printLocalTime(3, 0, jsonWeeklyTimeStamp);
-  printLocalTime(4, 0, jsonMonthlyTimeStamp);
+  printLocalTime(1, 0, jsonTimeStamp, hourlyTimeStamp);
+  printLocalTime(2, 0, jsonDailyTimeStamp, dailyTime);
+  printLocalTime(3, 0, jsonWeeklyTimeStamp, weeklyTime);
+  printLocalTime(4, 0, jsonMonthlyTimeStamp, monthlyTime);
 
   // Send web page with input fields to client
   /*server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send_P(200, "text/html", "/index.html", processor);
-  });*/
+  });
+  */
 
   // Send a GET request to <ESP_IP>/get?inputString=<inputMessage>
 
@@ -1948,7 +1948,7 @@ else{
     //store_data(avgpH, pH, data5, airTempCount, jsonData5);
     store_data(fakeWaterLevel, waterLevel, data6, airTempCount, jsonData6);
     //store_data(avgWaterLevel, waterLevel, data6, airTempCount, jsonData6);
-    printLocalTime(1, airTempCount, jsonTimeStamp);
+    printLocalTime(1, airTempCount, jsonTimeStamp, hourlyTimeStamp);
     airTempCount++;
     totCount1 = 0;
     avgCount = 1;
@@ -1970,7 +1970,8 @@ else{
     store_daily(data4, dailyTdsData, dailyTdsAvg, jsonDaily4, 24, dailyArray);
     store_daily(data5, dailypHData, dailypHAvg, jsonDaily5, 24, dailyArray);
     store_daily(data6, dailyWaterLevelData, dailyWaterLevelAvg, jsonDaily6, 24, dailyArray);
-    printLocalTime(2, dailyArray, jsonDailyTimeStamp);
+    printLocalTime(2, dailyArray, jsonDailyTimeStamp, dailyTime);
+    timeStamp.garbageCollect();
     dailyArray++;
     //serializeJsonPretty(daily1, Serial);
     //serializeJsonPretty(daily2, Serial);
@@ -1990,7 +1991,8 @@ else{
     store_daily(dailyTdsData, weeklyTdsData, weeklyTdsAvg, jsonWeekly4, 7, weeklyArray);
     store_daily(dailypHData, weeklypHData, weeklypHAvg, jsonWeekly5, 7, weeklyArray);
     store_daily(dailyWaterLevelData, weeklyWaterLevelData, weeklyWaterLevelAvg, jsonWeekly6, 7, weeklyArray);
-    printLocalTime(7, weeklyArray, jsonWeeklyTimeStamp);
+    printLocalTime(7, weeklyArray, jsonWeeklyTimeStamp, weeklyTime);
+    dailyTimeStamp.garbageCollect();
     weeklyArray++;
     weeklyCount = 0;
     monthlyCount++;
@@ -2008,7 +2010,8 @@ else{
     store_daily(weeklyTdsData, monthlyTdsData, monthlyTdsAvg, jsonMonthly4, 4, monthlyArray);
     store_daily(weeklypHData, monthlypHData, monthlypHAvg, jsonMonthly5, 4, monthlyArray);
     store_daily(weeklyWaterLevelData, monthlyWaterLevelData, monthlyWaterLevelAvg, jsonMonthly6, 4, monthlyArray);
-    printLocalTime(4, monthlyArray, jsonMonthlyTimeStamp);
+    printLocalTime(4, monthlyArray, jsonMonthlyTimeStamp, monthlyTime);
+    weeklyTimeStamp.garbageCollect();
     monthlyArray++;
     monthlyCount = 0;
   }

@@ -107,10 +107,14 @@ var tableAirTempDaily = new Tabulator("#airTempDailyT", {
     cellHozAlign:"center", //center align cell contents
     headerHozAlign:"center",
     columns:[
-          {title:"Date", field:"time"},
-          {title:"Temperature", field:"dataset"},
-          
-    ]
+        {//create column group
+            title:"Daily",
+            columns:[
+                {title:"Date", field:"time"},
+                {title:"Temperature", field:"dataset"},
+            ],
+        },
+        ],
 });
 
 var tableAirTempWeekly = new Tabulator("#airTempWeeklyT", {
