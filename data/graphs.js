@@ -400,9 +400,6 @@ setInterval(function ( ){
     JSON_error("/pHError",errorpH,"errorpH");
     JSON_error("/nutrientLvlError",errorTDS,"errorNutrientLvl");
 
-   }, 10000 ) ; 
-
-   setInterval(function ( ){
     JSON_requestTime("/dailyTimeStamp.json",timestampsDaily);
     JSON_request("/daily1.json",myChartAirTempDaily,tableAirTempDaily,timestampsDaily);
     JSON_request("/daily2.json",myChartAirHumidityDaily,tableAirHumidityDaily,timestampsDaily);
@@ -410,6 +407,11 @@ setInterval(function ( ){
     JSON_request("/daily4.json",myChartNutrientLvlDaily,tableNutrientLvlDaily,timestampsDaily);
     JSON_request("/daily5.json",myChartpHDaily,tablepHDaily,timestampsDaily);
     JSON_request("/daily6.json",myChartWaterLvlDaily,tableWaterLvlDaily,timestampsDaily);
+
+   }, 10000 ) ; 
+
+   setInterval(function ( ){
+    
     
 
     }, 105000 ) ;

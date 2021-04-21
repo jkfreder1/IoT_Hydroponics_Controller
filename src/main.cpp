@@ -8,7 +8,6 @@
 #include <WebServer.h>
 #include <iostream>
 #include <deque>
-#include "WiFi.h"
 #include <ESPAsyncWebServer.h>
 #include <ESPAsyncWiFiManager.h> 
 #include "SPIFFS.h"
@@ -16,7 +15,6 @@
 #include <ArduinoJson.h>
 #include <PubSubClient.h>
 #include "time.h"
-//#include <ESPAsyncTCP.h>
 #include <AsyncTCP.h>
 #include <esp_task_wdt.h>
 
@@ -439,7 +437,7 @@ StaticJsonDocument<512> doc5;
 String jsonData5 = "/data5.json";
 StaticJsonDocument<512> doc6;
 String jsonData6 = "/data6.json";
-StaticJsonDocument<1024> timeStamp;
+StaticJsonDocument<796> timeStamp;
 String jsonTimeStamp = "/timeStamp.json";
 //daily documents
 StaticJsonDocument<1024> daily1;
@@ -692,6 +690,7 @@ void printLocalTime(int time, int count, String filename){
     char timeHourly[10];
     strftime(timeHourly,10, "%H:%M:%S", &timeinfo);
     s = timeHourly;
+    Serial.println("time taken is " + s);
     data7[count] = s;
     break;
   case 2:
@@ -1792,11 +1791,14 @@ else{
   store_data(fakeWaterLevel, waterLevel, data6, airTempCount, jsonData6);
   //store_data(avgWaterLevel, waterLevel, data6, airTempCount, jsonData6);
   printLocalTime(1, airTempCount, jsonTimeStamp);
+  timeStamp.garbageCollect();
+  
+
   airTempCount++;
   totCount1 = 0;
   avgCount = 1;
   //serializeJsonPretty(doc2, Serial);
-  //serializeJsonPretty(timeStamp, Serial);
+  serializeJsonPretty(timeStamp, Serial);
   //printJSON();
   dailyCount++;
  }
@@ -1813,8 +1815,9 @@ else{
    store_daily(data6, dailyWaterLevelData, dailyWaterLevelAvg, jsonDaily6, 24, dailyArray);
    printLocalTime(2, dailyArray, jsonDailyTimeStamp);
    dailyArray++;
+   timeStamp.garbageCollect();
    //serializeJsonPretty(daily1, Serial);
-   //serializeJsonPretty(daily2, Serial);
+   serializeJsonPretty(dailyTimeStamp, Serial);
    dailyCount = 0;
    weeklyCount++;
  }
@@ -1830,6 +1833,8 @@ else{
    store_daily(dailypHData, weeklypHData, weeklypHAvg, jsonWeekly5, 7, weeklyArray);
    store_daily(dailyWaterLevelData, weeklyWaterLevelData, weeklyWaterLevelAvg, jsonWeekly6, 7, weeklyArray);
    printLocalTime(7, weeklyArray, jsonWeeklyTimeStamp);
+      serializeJsonPretty(weeklyTimeStamp, Serial);
+
    weeklyArray++;
    weeklyCount = 0;
    monthlyCount++;
@@ -1846,6 +1851,7 @@ else{
    store_daily(weeklypHData, monthlypHData, monthlypHAvg, jsonMonthly5, 4, monthlyArray);
    store_daily(weeklyWaterLevelData, monthlyWaterLevelData, monthlyWaterLevelAvg, jsonMonthly6, 4, monthlyArray);
    printLocalTime(4, monthlyArray, jsonMonthlyTimeStamp);
+   serializeJsonPretty(monthlyTimeStamp, Serial);
    monthlyArray++;
    monthlyCount = 0;
  }
@@ -2017,7 +2023,7 @@ else{
   temperatureF_offset=temperatureF_input-temperatureF;
   tds_offset=tds_value_input-tdsValue;
   }
-
+/*
 
 if (!client.connected()) {
 
@@ -2061,7 +2067,7 @@ if (!client.connected()) {
 
     
   }
-  
+  */
 
   //if(sleeptime>200){
     //esp_deep_sleep_start();/////sleep DONT DELETE
