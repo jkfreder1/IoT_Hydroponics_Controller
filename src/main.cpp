@@ -377,8 +377,10 @@ const char* MQTT_PORT = "mqttPort";
 
 
 //const char* PARAM_INT = "inputInt";
-const char* PARAM_HIGHER = "floatHigher";
-const char* PARAM_LOWER = "floatLower";
+String PARAM_HIGHER = "floatHigher";
+const char* ParamHighPath = "/floatHigher.txt";
+String PARAM_LOWER = "floatLower";
+const char* ParamLowerPath = "/floatLower.txt";
 const char* TIMESTAMP_1="timeStamp1";
 const char* RUNTIME_1="runTime1";
 
@@ -433,7 +435,7 @@ StaticJsonDocument<512> doc5;
 String jsonData5 = "/data5.json";
 StaticJsonDocument<512> doc6;
 String jsonData6 = "/data6.json";
-StaticJsonDocument<1024> timeStamp;
+StaticJsonDocument<512> timeStamp;
 String jsonTimeStamp = "/timeStamp.json";
 //daily documents
 StaticJsonDocument<1024> daily1;
@@ -668,7 +670,7 @@ const char* connect_mqtt(){
 const long  gmtOffset_sec = -14400;
 const int   daylightOffset_sec = 0;
 
-void printLocalTime(int time, int count, String filename){
+void printLocalTime(int time, int count, String filename, JsonObject object){
   struct tm timeinfo;
   if(!getLocalTime(&timeinfo)){
     Serial.println("Failed to obtain time");
@@ -710,7 +712,7 @@ void printLocalTime(int time, int count, String filename){
     break;
 
 }
-  if(serializeJsonPretty(hourlyTimeStamp, outfile) == 0){
+  if(serializeJsonPretty(object, outfile) == 0){
     Serial.println("Failed to write to file");
   }
   else
@@ -1148,8 +1150,23 @@ inline const char * const BoolToString(bool b)
   });
 
  }
- void get_param(){
+ void get_param(String name, const char* filepath){
+  
+    server.on("/get", HTTP_GET, [name, filepath] (AsyncWebServerRequest *request) {
+    String inputMessage;
+    if (request->hasParam(name)) {
+      inputMessage = request->getParam(name)->value();
+      writeFile(SPIFFS, filepath, inputMessage.c_str());
+    }
 
+
+    else {
+      inputMessage = "No message sent";
+    }
+    Serial.println(inputMessage);
+    request->send(200, "text/text", inputMessage);
+  });
+/*
    yield();
 
       server.on("/get", HTTP_GET, [] (AsyncWebServerRequest *request) {
@@ -1294,6 +1311,7 @@ inline const char * const BoolToString(bool b)
     Serial.println(inputMessage);
     request->send(200, "text/text", inputMessage);
   });
+  */
     }
 
 
@@ -1302,8 +1320,8 @@ void setup(){
   Serial.begin (115200);
   Serial.print("it is starting");
   
-  client.setServer(mqttServer, mqttPort);
-  client.setCallback(callback);
+  //client.setServer(mqttServer, mqttPort);
+  //client.setCallback(callback);
   
  //setup_wifi();
 
@@ -1375,16 +1393,17 @@ void setup(){
   store_data(0, monthlypHAvg, monthlypHData, 0, jsonMonthly5);
   store_data(0, monthlyWaterLevelAvg, monthlyWaterLevelData, 0, jsonMonthly6);
 
-  printLocalTime(1, 0, jsonTimeStamp);
-  printLocalTime(2, 0, jsonDailyTimeStamp);
-  printLocalTime(3, 0, jsonWeeklyTimeStamp);
-  printLocalTime(4, 0, jsonMonthlyTimeStamp);
+  printLocalTime(1, 0, jsonTimeStamp, hourlyTimeStamp);
+  printLocalTime(2, 0, jsonDailyTimeStamp, dailyTime);
+  printLocalTime(3, 0, jsonWeeklyTimeStamp, weeklyTime);
+  printLocalTime(4, 0, jsonMonthlyTimeStamp, monthlyTime);
 
 
   // Send web page with input fields to client
   /*server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send_P(200, "text/html", "/index.html", processor);
-  });*/
+  });
+  */
 
   // Send a GET request to <ESP_IP>/get?inputString=<inputMessage>
   
@@ -1400,9 +1419,10 @@ void setup(){
       Serial.println(inputMessage);
     }*/
     // GET inputFloat value on <ESP_IP>/get?inputFloat=<inputMessage>
-    get_param();
-    
-    
+    get_param(PARAM_HIGHER, ParamHighPath);
+    yield();
+    get_param(PARAM_LOWER, ParamLowerPath);
+     
   server.onNotFound(notFound);
   getip_address(SPIFFS,"/mqttServer.txt");
   //int a=192;
@@ -1780,10 +1800,11 @@ else{
   //store_data(avgpH, pH, data5, airTempCount, jsonData5);
   store_data(fakeWaterLevel, waterLevel, data6, airTempCount, jsonData6);
   //store_data(avgWaterLevel, waterLevel, data6, airTempCount, jsonData6);
-  printLocalTime(1, airTempCount, jsonTimeStamp);
+  printLocalTime(1, airTempCount, jsonTimeStamp, hourlyTimeStamp);
   airTempCount++;
   totCount1 = 0;
   avgCount = 1;
+  //serializeJsonPretty(doc1, Serial);
   //serializeJsonPretty(doc2, Serial);
   //serializeJsonPretty(timeStamp, Serial);
   //printJSON();
@@ -1802,7 +1823,8 @@ else{
    store_daily(data4, dailyTdsData, dailyTdsAvg, jsonDaily4, 8, dailyArray);
    store_daily(data5, dailypHData, dailypHAvg, jsonDaily5, 8, dailyArray);
    store_daily(data6, dailyWaterLevelData, dailyWaterLevelAvg, jsonDaily6, 8, dailyArray);
-   printLocalTime(2, dailyArray, jsonDailyTimeStamp);
+   printLocalTime(2, dailyArray, jsonDailyTimeStamp, dailyTime);
+   timeStamp.garbageCollect();
    dailyArray++;
    //serializeJsonPretty(daily1, Serial);
    //serializeJsonPretty(daily2, Serial);
@@ -1820,7 +1842,7 @@ else{
    store_daily(dailyTdsData, weeklyTdsData, weeklyTdsAvg, jsonWeekly4, 3, weeklyArray);
    store_daily(dailypHData, weeklypHData, weeklypHAvg, jsonWeekly5, 3, weeklyArray);
    store_daily(dailyWaterLevelData, weeklyWaterLevelData, weeklyWaterLevelAvg, jsonWeekly6, 3, weeklyArray);
-   printLocalTime(3, weeklyArray, jsonWeeklyTimeStamp);
+   printLocalTime(3, weeklyArray, jsonWeeklyTimeStamp, weeklyTime);
    weeklyArray++;
    weeklyCount = 0;
    monthlyCount++;
@@ -1836,7 +1858,7 @@ else{
    store_daily(weeklyTdsData, monthlyTdsData, monthlyTdsAvg, jsonMonthly4, 2, monthlyArray);
    store_daily(weeklypHData, monthlypHData, monthlypHAvg, jsonMonthly5, 2, monthlyArray);
    store_daily(weeklyWaterLevelData, monthlyWaterLevelData, monthlyWaterLevelAvg, jsonMonthly6, 2, monthlyArray);
-   printLocalTime(4, monthlyArray, jsonMonthlyTimeStamp);
+   printLocalTime(4, monthlyArray, jsonMonthlyTimeStamp, monthlyTime);
    monthlyArray++;
    monthlyCount = 0;
  }
@@ -2009,7 +2031,7 @@ else{
   tds_offset=tds_value_input-tdsValue;
   }
 
-
+/*
 if (!client.connected()) {
 
   yield();
@@ -2052,7 +2074,7 @@ if (!client.connected()) {
 
     
   }
-  
+ */ 
 
   //if(sleeptime>200){
     //esp_deep_sleep_start();/////sleep DONT DELETE
