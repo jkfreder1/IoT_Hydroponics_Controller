@@ -423,44 +423,6 @@ const char *MQTT_SERVER = "mqttServer";
 const char *MQTT_PORT = "mqttPort";
 
 //const char* PARAM_INT = "inputInt";
-<<<<<<< HEAD
-String PARAM_HIGHER = "floatHigher";
-const char* ParamHighPath = "/floatHigher.txt";
-String PARAM_LOWER = "floatLower";
-const char* ParamLowerPath = "/floatLower.txt";
-const char* TIMESTAMP_1="timeStamp1";
-const char* RUNTIME_1="runTime1";
-
-const char* LOWERBOUND_2="lowerBound2";
-const char* UPPERBOUND_2="upperBound2";
-const char* TIMESTAMP_2="timeStamp2";
-const char* RUNTIME_2="runTime2";
-
-const char* LOWERBOUND_3="lowerBound3";
-const char* UPPERBOUND_3="upperBound3";
-const char* TIMESTAMP_3="timeStamp3";
-const char* RUNTIME_3="runTime3";
-
-const char* LOWERBOUND_4="lowerBound4";
-const char* UPPERBOUND_4="upperBound4";
-const char* TIMESTAMP_4="timeStamp4";
-const char* RUNTIME_4="runTime4";
-
-const char* LOWERBOUND_5="lowerBound5";
-const char* UPPERBOUND_5="upperBound5";
-const char* TIMESTAMP_5="timeStamp5";
-const char* RUNTIME_5="runTime5";
-
-const char* LOWERBOUND_6="lowerBound6";
-const char* UPPERBOUND_6="upperBound6";
-const char* TIMESTAMP_6="timeStamp6";
-const char* RUNTIME_6="runTime6";
-
-const char* OUTLET_1="outLet1";
-const char* OUTLET_2="outLet2";
-const char* OUTLET_3="outLet3";
-const char* OUTLET_4="outLet4";
-=======
 const char *PARAM_HIGHER = "floatHigher";
 const char *PARAM_LOWER = "floatLower";
 const char *TIMESTAMP_1 = "timeStamp1";
@@ -495,7 +457,6 @@ const char *OUTLET_1 = "outLet1";
 const char *OUTLET_2 = "outLet2";
 const char *OUTLET_3 = "outLet3";
 const char *OUTLET_4 = "outLet4";
->>>>>>> ca82a0d8b16786403adbc8940b4f8fd59eefccc4
 
 OneWire oneWire(oneWireBus);
 DallasTemperature sensors(&oneWire);
@@ -751,12 +712,7 @@ int connect_port()
 const long gmtOffset_sec = -14400;
 const int daylightOffset_sec = 0;
 
-<<<<<<< HEAD
 void printLocalTime(int time, int count, String filename, JsonObject object){
-=======
-void printLocalTime(int time, int count, String filename)
-{
->>>>>>> ca82a0d8b16786403adbc8940b4f8fd59eefccc4
   struct tm timeinfo;
   if (!getLocalTime(&timeinfo))
   {
@@ -799,15 +755,9 @@ void printLocalTime(int time, int count, String filename)
     break;
   default:
     break;
-<<<<<<< HEAD
 
 }
   if(serializeJsonPretty(object, outfile) == 0){
-=======
-  }
-  if (serializeJsonPretty(hourlyTimeStamp, outfile) == 0)
-  {
->>>>>>> ca82a0d8b16786403adbc8940b4f8fd59eefccc4
     Serial.println("Failed to write to file");
   }
   else
@@ -1284,29 +1234,7 @@ void routesLoop()
 void get_param()
 {
 
-<<<<<<< HEAD
- }
- void get_param(String name, const char* filepath){
-  
-    server.on("/get", HTTP_GET, [name, filepath] (AsyncWebServerRequest *request) {
-    String inputMessage;
-    if (request->hasParam(name)) {
-      inputMessage = request->getParam(name)->value();
-      writeFile(SPIFFS, filepath, inputMessage.c_str());
-    }
-
-
-    else {
-      inputMessage = "No message sent";
-    }
-    Serial.println(inputMessage);
-    request->send(200, "text/text", inputMessage);
-  });
-/*
-   yield();
-=======
   yield();
->>>>>>> ca82a0d8b16786403adbc8940b4f8fd59eefccc4
 
   server.on("/get", HTTP_GET, [](AsyncWebServerRequest *request) {
     String inputMessage;
@@ -1483,12 +1411,7 @@ void get_param()
     Serial.println(inputMessage);
     request->send(200, "text/text", inputMessage);
   });
-<<<<<<< HEAD
-  */
-    }
-=======
 }
->>>>>>> ca82a0d8b16786403adbc8940b4f8fd59eefccc4
 
 void setup()
 {
@@ -1500,17 +1423,9 @@ void setup()
 
   Serial.begin(115200);
   Serial.print("it is starting");
-<<<<<<< HEAD
-  
-  //client.setServer(mqttServer, mqttPort);
-  //client.setCallback(callback);
-  
- //setup_wifi();
-=======
 
   client.setServer(mqttServer, mqttPort);
   client.setCallback(callback);
->>>>>>> ca82a0d8b16786403adbc8940b4f8fd59eefccc4
 
   //setup_wifi();
 
@@ -1601,17 +1516,9 @@ void setup()
       writeFile(SPIFFS, "/inputInt.txt", inputMessage.c_str());
       Serial.println(inputMessage);
     }*/
-<<<<<<< HEAD
-    // GET inputFloat value on <ESP_IP>/get?inputFloat=<inputMessage>
-    get_param(PARAM_HIGHER, ParamHighPath);
-    yield();
-    get_param(PARAM_LOWER, ParamLowerPath);
-     
-=======
   // GET inputFloat value on <ESP_IP>/get?inputFloat=<inputMessage>
   get_param();
 
->>>>>>> ca82a0d8b16786403adbc8940b4f8fd59eefccc4
   server.onNotFound(notFound);
   getip_address(SPIFFS, "/mqttServer.txt");
   //int a=192;
@@ -2016,101 +1923,12 @@ else{
  */
 
   //store live and historical data
-<<<<<<< HEAD
- if(totCount1 > 2){
-  if(airTempCount == 8){
-    airTempCount = 0;
-  }
-  
-  float fakeAirTemp = 65 + rand() % (( 85 + 1 ) -65);
-  float fakeAirHumid = 30 + rand() % (( 80 + 1 ) -30);
-  float fakeWaterTemp = 65 + rand() % (( 85 + 1 ) -65);
-  float fakeTDS = 500 + rand() % (( 500 + 1 ) - 200);
-  float fakepH = 0 + rand() % (( 14 + 1 ) - 0);
-  float fakeWaterLevel = 0 + rand() % (( 10 + 1 ) - 0);
-
-  store_data(fakeAirTemp, airTemp, data1, airTempCount, jsonData1);
-  //store_data(avgAirTemp, airTemp, data1, airTempCount, jsonData1);
-  store_data(fakeAirHumid, airHum, data2, airTempCount, jsonData2);
-  //store_data(avgAirHum, airHum, data2, airTempCount, jsonData2);
-  store_data(fakeWaterTemp, waterTemp, data3, airTempCount, jsonData3);
-  //store_data(avgWaterTemp, waterTemp, data3, airTempCount, jsonData3);
-  store_data(fakeTDS, tds, data4, airTempCount, jsonData4);
-  //store_data(avgTDS, tds, data4, airTempCount, jsonData4);
-  store_data(fakepH, pH, data5, airTempCount, jsonData5);
-  //store_data(avgpH, pH, data5, airTempCount, jsonData5);
-  store_data(fakeWaterLevel, waterLevel, data6, airTempCount, jsonData6);
-  //store_data(avgWaterLevel, waterLevel, data6, airTempCount, jsonData6);
-  printLocalTime(1, airTempCount, jsonTimeStamp, hourlyTimeStamp);
-  airTempCount++;
-  totCount1 = 0;
-  avgCount = 1;
-  //serializeJsonPretty(doc1, Serial);
-  //serializeJsonPretty(doc2, Serial);
-  //serializeJsonPretty(timeStamp, Serial);
-  //printJSON();
-  dailyCount++;
- }
-
- yield();
-
- if(dailyCount == 8){
-   if(dailyArray == 3){
-     dailyArray = 0;
-   }
-   store_daily(data1, dailyAirTempData, dailyAirTempAvg, jsonDaily1, 8, dailyArray);
-   store_daily(data2, dailyAirHumData, dailyAirHumAvg, jsonDaily2, 8, dailyArray);
-   store_daily(data3, dailyWaterTempData, dailyWaterTempAvg, jsonDaily3, 8, dailyArray);
-   store_daily(data4, dailyTdsData, dailyTdsAvg, jsonDaily4, 8, dailyArray);
-   store_daily(data5, dailypHData, dailypHAvg, jsonDaily5, 8, dailyArray);
-   store_daily(data6, dailyWaterLevelData, dailyWaterLevelAvg, jsonDaily6, 8, dailyArray);
-   printLocalTime(2, dailyArray, jsonDailyTimeStamp, dailyTime);
-   timeStamp.garbageCollect();
-   dailyArray++;
-   //serializeJsonPretty(daily1, Serial);
-   //serializeJsonPretty(daily2, Serial);
-   dailyCount = 0;
-   weeklyCount++;
- }
-
- if(weeklyCount == 2){
-   if(weeklyArray == 2){
-     weeklyArray = 0;
-   }
-   store_daily(dailyAirTempData, weeklyAirTempData, weeklyAirTempAvg, jsonWeekly1, 3, weeklyArray);
-   store_daily(dailyAirHumData, weeklyAirHumData, weeklyAirHumAvg, jsonWeekly2, 3, weeklyArray);
-   store_daily(dailyWaterTempData, weeklyWaterTempData, weeklyWaterTempAvg, jsonWeekly3, 3, weeklyArray);
-   store_daily(dailyTdsData, weeklyTdsData, weeklyTdsAvg, jsonWeekly4, 3, weeklyArray);
-   store_daily(dailypHData, weeklypHData, weeklypHAvg, jsonWeekly5, 3, weeklyArray);
-   store_daily(dailyWaterLevelData, weeklyWaterLevelData, weeklyWaterLevelAvg, jsonWeekly6, 3, weeklyArray);
-   printLocalTime(3, weeklyArray, jsonWeeklyTimeStamp, weeklyTime);
-   weeklyArray++;
-   weeklyCount = 0;
-   monthlyCount++;
- }
-
- if(monthlyCount == 2){
-   if(monthlyArray == 12){
-     monthlyArray = 0;
-   }
-   store_daily(weeklyAirTempData, monthlyAirTempData, monthlyAirTempAvg, jsonMonthly1, 2, monthlyArray);
-   store_daily(weeklyAirHumData, monthlyAirHumData, monthlyAirHumAvg, jsonMonthly2, 2, monthlyArray);
-   store_daily(weeklyWaterTempData, monthlyWaterTempData, monthlyWaterTempAvg, jsonMonthly3, 2, monthlyArray);
-   store_daily(weeklyTdsData, monthlyTdsData, monthlyTdsAvg, jsonMonthly4, 2, monthlyArray);
-   store_daily(weeklypHData, monthlypHData, monthlypHAvg, jsonMonthly5, 2, monthlyArray);
-   store_daily(weeklyWaterLevelData, monthlyWaterLevelData, monthlyWaterLevelAvg, jsonMonthly6, 2, monthlyArray);
-   printLocalTime(4, monthlyArray, jsonMonthlyTimeStamp, monthlyTime);
-   monthlyArray++;
-   monthlyCount = 0;
- }
-=======
   if (totCount1 > 2)
   {
     if (airTempCount == 24)
     {
       airTempCount = 0;
     }
->>>>>>> ca82a0d8b16786403adbc8940b4f8fd59eefccc4
 
     float fakeAirTemp = 68 + rand() % ((77 + 1) - 68);
     float fakeAirHumid = 60 + rand() % ((70 + 1) - 60);
@@ -2131,7 +1949,7 @@ else{
     //store_data(avgpH, pH, data5, airTempCount, jsonData5);
     store_data(fakeWaterLevel, waterLevel, data6, airTempCount, jsonData6);
     //store_data(avgWaterLevel, waterLevel, data6, airTempCount, jsonData6);
-    printLocalTime(1, airTempCount, jsonTimeStamp);
+    printLocalTime(1, airTempCount, jsonTimeStamp, hourlyTimeStamp);
     airTempCount++;
     totCount1 = 0;
     avgCount = 1;
@@ -2153,7 +1971,8 @@ else{
     store_daily(data4, dailyTdsData, dailyTdsAvg, jsonDaily4, 24, dailyArray);
     store_daily(data5, dailypHData, dailypHAvg, jsonDaily5, 24, dailyArray);
     store_daily(data6, dailyWaterLevelData, dailyWaterLevelAvg, jsonDaily6, 24, dailyArray);
-    printLocalTime(2, dailyArray, jsonDailyTimeStamp);
+    printLocalTime(2, dailyArray, jsonDailyTimeStamp, dailyTime);
+    timeStamp.garbageCollect();
     dailyArray++;
     //serializeJsonPretty(daily1, Serial);
     //serializeJsonPretty(daily2, Serial);
@@ -2173,7 +1992,8 @@ else{
     store_daily(dailyTdsData, weeklyTdsData, weeklyTdsAvg, jsonWeekly4, 7, weeklyArray);
     store_daily(dailypHData, weeklypHData, weeklypHAvg, jsonWeekly5, 7, weeklyArray);
     store_daily(dailyWaterLevelData, weeklyWaterLevelData, weeklyWaterLevelAvg, jsonWeekly6, 7, weeklyArray);
-    printLocalTime(7, weeklyArray, jsonWeeklyTimeStamp);
+    printLocalTime(7, weeklyArray, jsonWeeklyTimeStamp, weeklyTime);
+    dailyTimeStamp.garbageCollect();
     weeklyArray++;
     weeklyCount = 0;
     monthlyCount++;
@@ -2191,7 +2011,8 @@ else{
     store_daily(weeklyTdsData, monthlyTdsData, monthlyTdsAvg, jsonMonthly4, 4, monthlyArray);
     store_daily(weeklypHData, monthlypHData, monthlypHAvg, jsonMonthly5, 4, monthlyArray);
     store_daily(weeklyWaterLevelData, monthlyWaterLevelData, monthlyWaterLevelAvg, jsonMonthly6, 4, monthlyArray);
-    printLocalTime(4, monthlyArray, jsonMonthlyTimeStamp);
+    printLocalTime(4, monthlyArray, jsonMonthlyTimeStamp, monthlyTime);
+    weeklyTimeStamp.garbageCollect();
     monthlyArray++;
     monthlyCount = 0;
   }
@@ -2381,10 +2202,6 @@ else{
     break;
   }
 
-<<<<<<< HEAD
-/*
-if (!client.connected()) {
-=======
   if (cal == 1)
   {
     cal = 0;
@@ -2398,7 +2215,6 @@ if (!client.connected()) {
 
   if (!client.connected())
   {
->>>>>>> ca82a0d8b16786403adbc8940b4f8fd59eefccc4
 
     yield();
 
@@ -2439,10 +2255,6 @@ if (!client.connected()) {
 
     client.publish("esp32/humidity", humString);
   }
-<<<<<<< HEAD
- */ 
-=======
->>>>>>> ca82a0d8b16786403adbc8940b4f8fd59eefccc4
 
   //if(sleeptime>200){
   //esp_deep_sleep_start();/////sleep DONT DELETE
