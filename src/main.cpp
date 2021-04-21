@@ -1800,7 +1800,7 @@ void loop()
   if (reset == 1)
   {
     reset = 0;
-    WiFi.disconnect(true);
+    WiFi.disconnect(false, true);
     ESP.restart();
   }
 
