@@ -44,8 +44,9 @@ float tdshighParam=400;
 float tdslowParam=50;
 float phhighParam=9;
 float phlowParam=2;
-
+String LED_ONE_STATE = "off";
 int counter=0;
+String header;
 /*
 #define uS_TO_S_FACTOR 1000000 //////////sleep DONT DELETE
 #define TIME_TO_SLEEP  20        
@@ -317,6 +318,16 @@ else if (var=="outLet3"){
 else if (var=="outLet4"){
   return readFile(SPIFFS, "/outLet4.txt");
 }
+else if(var == "STATE"){
+    if(digitalRead(ledPin)){
+      ledState = "ON";
+    }
+    else{
+      ledState = "OFF";
+    }
+    Serial.print(ledState);
+    return ledState;
+  }
 
   return String();
 }
@@ -1148,6 +1159,59 @@ inline const char * const BoolToString(bool b)
   });
 
  }
+ void led_pins(){
+   server.on("/outLet1on", HTTP_GET, [](AsyncWebServerRequest *request){
+    //digitalWrite(ledPin, HIGH); 
+    Serial.println("outlet1 is high") ;  
+    request->send(200, "text/plain", "ok");
+  });
+  
+  // Route to set GPIO to LOW
+  server.on("/outLet1off", HTTP_GET, [](AsyncWebServerRequest *request){
+    //digitalWrite(ledPin, LOW);    
+    Serial.println("outlet1 is low") ;  
+    request->send(200, "text/plain", "ok");
+  });
+
+  server.on("/outLet2on", HTTP_GET, [](AsyncWebServerRequest *request){
+    //digitalWrite(ledPin, HIGH); 
+    Serial.println("outlet2 is high") ;  
+    request->send(200, "text/plain", "ok");
+  });
+  
+  // Route to set GPIO to LOW
+  server.on("/outLet2off", HTTP_GET, [](AsyncWebServerRequest *request){
+    //digitalWrite(ledPin, LOW);    
+    Serial.println("outlet1 is low") ;  
+    request->send(200, "text/plain", "ok");
+  });
+
+  server.on("/outLet3on", HTTP_GET, [](AsyncWebServerRequest *request){
+    //digitalWrite(ledPin, HIGH); 
+    Serial.println("outlet3 is high") ;  
+    request->send(200, "text/plain", "ok");
+  });
+  
+  // Route to set GPIO to LOW
+  server.on("/outLet3off", HTTP_GET, [](AsyncWebServerRequest *request){
+    //digitalWrite(ledPin, LOW);    
+    Serial.println("outlet3 is low") ;  
+    request->send(200, "text/plain", "ok");
+  });
+
+  server.on("/outLet4on", HTTP_GET, [](AsyncWebServerRequest *request){
+    //digitalWrite(ledPin, HIGH); 
+    Serial.println("outlet4 is high") ;  
+    request->send(200, "text/plain", "ok");
+  });
+  
+  // Route to set GPIO to LOW
+  server.on("/outLet4off", HTTP_GET, [](AsyncWebServerRequest *request){
+    //digitalWrite(ledPin, LOW);    
+    Serial.println("outlet4 is low") ;  
+    request->send(200, "text/plain", "ok");
+  });
+ }
  void get_param(){
 
    yield();
@@ -1162,14 +1226,14 @@ inline const char * const BoolToString(bool b)
       inputMessage = request->getParam(PARAM_LOWER)->value();
       writeFile(SPIFFS, "/floatLower.txt", inputMessage.c_str());
     }
-    else if (request->hasParam(TIMESTAMP_1)) {
+    /*else if (request->hasParam(TIMESTAMP_1)) {
       inputMessage = request->getParam(TIMESTAMP_1)->value();
       writeFile(SPIFFS, "/timeStamp1.txt", inputMessage.c_str());
     }
     else if (request->hasParam(RUNTIME_1)) {
       inputMessage = request->getParam(RUNTIME_1)->value();
       writeFile(SPIFFS, "/runTime1.txt", inputMessage.c_str());
-    }
+    }*/
     else if (request->hasParam(LOWERBOUND_2)) {
       inputMessage = request->getParam(LOWERBOUND_2)->value();
       writeFile(SPIFFS, "/lowerBound2.txt", inputMessage.c_str());
@@ -1178,14 +1242,14 @@ inline const char * const BoolToString(bool b)
       inputMessage = request->getParam(UPPERBOUND_2)->value();
       writeFile(SPIFFS, "/upperBound2.txt", inputMessage.c_str());
     }
-     else if (request->hasParam(TIMESTAMP_2)) {
+     /*else if (request->hasParam(TIMESTAMP_2)) {
       inputMessage = request->getParam(TIMESTAMP_2)->value();
       writeFile(SPIFFS, "/timeStamp2.txt", inputMessage.c_str());
     }
     else if (request->hasParam(RUNTIME_2)) {
       inputMessage = request->getParam(RUNTIME_2)->value();
       writeFile(SPIFFS, "/runTime2.txt", inputMessage.c_str());
-    }
+    }*/
     
     else if (request->hasParam(LOWERBOUND_3)) {
       inputMessage = request->getParam(LOWERBOUND_3)->value();
@@ -1195,14 +1259,14 @@ inline const char * const BoolToString(bool b)
       inputMessage = request->getParam(UPPERBOUND_3)->value();
       writeFile(SPIFFS, "/upperBound3.txt", inputMessage.c_str());
     }
-     else if (request->hasParam(TIMESTAMP_3)) {
+     /*else if (request->hasParam(TIMESTAMP_3)) {
       inputMessage = request->getParam(TIMESTAMP_3)->value();
       writeFile(SPIFFS, "/timeStamp3.txt", inputMessage.c_str());
     }
     else if (request->hasParam(RUNTIME_3)) {
       inputMessage = request->getParam(RUNTIME_3)->value();
       writeFile(SPIFFS, "/runTime3.txt", inputMessage.c_str());
-    }
+    }*/
 
     //4
     else if (request->hasParam(LOWERBOUND_4)) {
@@ -1213,14 +1277,14 @@ inline const char * const BoolToString(bool b)
       inputMessage = request->getParam(UPPERBOUND_4)->value();
       writeFile(SPIFFS, "/upperBound4.txt", inputMessage.c_str());
     }
-     else if (request->hasParam(TIMESTAMP_4)) {
+     /*else if (request->hasParam(TIMESTAMP_4)) {
       inputMessage = request->getParam(TIMESTAMP_4)->value();
       writeFile(SPIFFS, "/timeStamp4.txt", inputMessage.c_str());
     }
     else if (request->hasParam(RUNTIME_4)) {
       inputMessage = request->getParam(RUNTIME_4)->value();
       writeFile(SPIFFS, "/runTime4.txt", inputMessage.c_str());
-    }
+    }*/
 
     else if (request->hasParam(LOWERBOUND_5)) {
       inputMessage = request->getParam(LOWERBOUND_5)->value();
@@ -1230,14 +1294,14 @@ inline const char * const BoolToString(bool b)
       inputMessage = request->getParam(UPPERBOUND_5)->value();
       writeFile(SPIFFS, "/upperBound5.txt", inputMessage.c_str());
     }
-     else if (request->hasParam(TIMESTAMP_5)) {
+     /*else if (request->hasParam(TIMESTAMP_5)) {
       inputMessage = request->getParam(TIMESTAMP_5)->value();
       writeFile(SPIFFS, "/timeStamp5.txt", inputMessage.c_str());
     }
     else if (request->hasParam(RUNTIME_5)) {
       inputMessage = request->getParam(RUNTIME_5)->value();
       writeFile(SPIFFS, "/runTime5.txt", inputMessage.c_str());
-    }
+    }*/
 
     else if (request->hasParam(LOWERBOUND_6)) {
       inputMessage = request->getParam(LOWERBOUND_6)->value();
@@ -1247,14 +1311,14 @@ inline const char * const BoolToString(bool b)
       inputMessage = request->getParam(UPPERBOUND_6)->value();
       writeFile(SPIFFS, "/upperBound6.txt", inputMessage.c_str());
     }
-     else if (request->hasParam(TIMESTAMP_6)) {
+     /*else if (request->hasParam(TIMESTAMP_6)) {
       inputMessage = request->getParam(TIMESTAMP_6)->value();
       writeFile(SPIFFS, "/timeStamp6.txt", inputMessage.c_str());
     }
     else if (request->hasParam(RUNTIME_6)) {
       inputMessage = request->getParam(RUNTIME_6)->value();
       writeFile(SPIFFS, "/runTime6.txt", inputMessage.c_str());
-    }
+    }*/
     else if (request->hasParam(OUTLET_1)) {
       inputMessage = request->getParam(OUTLET_1)->value();
       writeFile(SPIFFS, "/outLet1.txt", inputMessage.c_str());
@@ -1263,7 +1327,7 @@ inline const char * const BoolToString(bool b)
       inputMessage = request->getParam(OUTLET_2)->value();
       writeFile(SPIFFS, "/outLet2.txt", inputMessage.c_str());
     }
-     else if (request->hasParam(OUTLET_3)) {
+     /*else if (request->hasParam(OUTLET_3)) {
       inputMessage = request->getParam(OUTLET_3)->value();
       writeFile(SPIFFS, "/outLet3.txt", inputMessage.c_str());
     }
@@ -1271,6 +1335,7 @@ inline const char * const BoolToString(bool b)
       inputMessage = request->getParam(OUTLET_4)->value();
       writeFile(SPIFFS, "/outLet4.txt", inputMessage.c_str());
     }
+    */
     else if (request->hasParam(MQTT_USERNAME)) {
       inputMessage = request->getParam(MQTT_USERNAME)->value();
       writeFile(SPIFFS, "/mqttUsername.txt", inputMessage.c_str());
@@ -1301,6 +1366,7 @@ inline const char * const BoolToString(bool b)
 void setup(){
   Serial.begin (115200);
   Serial.print("it is starting");
+  pinMode(ledPin, OUTPUT);
   
   client.setServer(mqttServer, mqttPort);
   client.setCallback(callback);
@@ -1421,6 +1487,7 @@ void setup(){
 
   Serial.println(WiFi.localIP());
   routes();
+  led_pins();
   server.begin();
 
 
