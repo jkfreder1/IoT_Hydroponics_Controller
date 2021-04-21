@@ -5,24 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" href="data:,">
   <link rel="stylesheet" type="text/css" href="style.css">
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
  
   <link href="https://unpkg.com/tabulator-tables/dist/css/tabulator.min.css" rel="stylesheet">
-<script type="text/javascript" src="https://unpkg.com/tabulator-tables/dist/js/tabulator.min.js"></script>
-  
-  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript">
-  </script>
-  <script>
-    window.jQuery || document.write('<script src="http://mysite.com/jquery.min.js"><\/script>')</script>
-
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4"></script>
-  <script src="https://code.highcharts.com/highcharts.js"></script>
-  <script src="https://canvasjs.com/assets/script/canvasjs.min.js" type="text/javascript"></script>
-
+  <script type="text/javascript" src="https://unpkg.com/tabulator-tables/dist/js/tabulator.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4"></script>
   <script src="script.js" type="text/javascript"></script>
-
-
 
 </head>
 <body>
@@ -247,7 +234,7 @@
         <section class="checkboxContainer">
 
           <ul id = "AirTempCheckBox2" ><input type="checkbox" onclick="selectLI(AirTempCheckBox2);updateTablesDisplay();"  > <label for="airtemp">Air Temperature</label>
-            <li><input type="checkbox" class="checkboxesGraphs" onclick="updateTablesDisplay();"> <label for="airtemp" > Live Data</label></li>
+            <li><input type="checkbox" class="checkboxesTables" onclick="updateTablesDisplay();"> <label for="airtemp" > Live Data</label></li>
             <li><input type="checkbox" class="checkboxesTables" onclick="updateTablesDisplay();"> <label for="airtemp" >Historical Data</label></li>
           </ul>
           <ul id = "AirHumidCheckBox2" ><input type="checkbox" onclick="selectLI(AirHumidCheckBox2);updateTablesDisplay();" > <label for="airhumid">Air Humidity</label>
@@ -567,7 +554,7 @@ Sensor6 Runtime (current value %runTime6%): <input type="number " id="runTime6" 
           
           <iframe style="display:none" name="hidden-form"></iframe></p>-->
           <section class="formboxContainer">
-            <h2>Configuration Parameters</h2>
+            <div style="font-size: 20px;padding: 20px;color: #0F3376;">Configuration Parameters</div>
             <div class="topleft">
             Air Temperature
               <form action="/get" target="hidden-form">
