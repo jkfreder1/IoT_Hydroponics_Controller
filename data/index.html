@@ -554,16 +554,22 @@ Sensor6 Runtime (current value %runTime6%): <input type="number " id="runTime6" 
           
           <iframe style="display:none" name="hidden-form"></iframe></p>-->
           <section class="formboxContainer">
-            <div style="font-size: 20px;padding: 20px;color: #0F3376;">Configuration Parameters</div>
-            <div class="topleft">
+            <div style="font-size: 19px;color: #0e0e0f; font: size 4px; ;">Configuration Parameters</div>
+          <div class="sensors">Sensors</div>
+          <div class="mqtt_config">MQTT Configuration</div>
+          
+          <div class="outlet_config">Outlet Configuration</div>
+          <div class="mqtt_box"></div>
+          <div class="sensorspls"></div>
+            <div class="topleft" >
             Air Temperature
               <form action="/get" target="hidden-form">
-                <input type="number " name="floatHigher" placeholder="LowerBound">
+                <input type="number " id="border_input" name="floatHigher" placeholder="LowerBound">
                 <input type="submit" value="Submit" onclick="submitMessage()">
               </form>
               <br>
               <form action="/get" target="hidden-form">
-                <input type="number " id="floatLower" name="floatLower" placeholder="UpperBound">
+                <input type="number " id="border_input" name="floatLower" placeholder="UpperBound">
                 <input type="submit" value="Submit" onclick="submitMessage()">
               </form>
             
@@ -574,12 +580,12 @@ Sensor6 Runtime (current value %runTime6%): <input type="number " id="runTime6" 
               Air Humidity
               <br>
               <form action="/get" target="hidden-form">
-               <input type="number " id="lowerBound2" name="lowerBound2" placeholder="LowerBound">
+               <input type="number " id="border_input" name="lowerBound2" placeholder="LowerBound">
                 <input type="submit" value="Submit" onclick="submitMessage()">
               </form>
                <br>
                <form action="/get" target="hidden-form">
-               <input type="number " id="upperBound2" name="upperBound2" placeholder="UpperBound ">
+               <input type="number " id="border_input" name="upperBound2" placeholder="UpperBound ">
                <input type="submit" value="Submit" onclick="submitMessage()">
               </form>
                
@@ -589,12 +595,12 @@ Sensor6 Runtime (current value %runTime6%): <input type="number " id="runTime6" 
               Water Temperature
               <br>
               <form action="/get" target="hidden-form">
-              <input type="number " id="lowerBound3" name="lowerBound3" placeholder="LowerBound">
+              <input type="number " id="border_input" name="lowerBound3" placeholder="LowerBound">
               <input type="submit" value="Submit" onclick="submitMessage()">
               </form>
               <br>
               <form action="/get" target="hidden-form">
-              <input type="number " id="upperBound3" name="upperBound3" placeholder="UpperBound">
+              <input type="number " id="border_input" name="upperBound3" placeholder="UpperBound">
               <input type="submit" value="Submit" onclick="submitMessage()">
               </form>
               <br>
@@ -604,12 +610,12 @@ Sensor6 Runtime (current value %runTime6%): <input type="number " id="runTime6" 
               TDS Level
               <br>
               <form action="/get" target="hidden-form">
-              <input type="number " id="lowerBound4" name="lowerBound4" placeholder="LowerBound">
+              <input type="number " id="border_input" name="lowerBound4" placeholder="LowerBound">
               <input type="submit" value="Submit" onclick="submitMessage()">
               </form>
               <br>
               <form action="/get" target="hidden-form">
-               <input type="number " id="upperBound4" name="upperBound4" placeholder="UpperBound">
+               <input type="number " id="border_input" name="upperBound4" placeholder="UpperBound">
                <input type="submit" value="Submit" onclick="submitMessage()">
               </form>
                <br>
@@ -619,12 +625,12 @@ Sensor6 Runtime (current value %runTime6%): <input type="number " id="runTime6" 
                pH Level
                 <br>
                 <form action="/get" target="hidden-form">
-               <input type="number " id="lowerBound5" name="lowerBound5" placeholder="LowerBound">
+               <input type="number " id="border_input" name="lowerBound5" placeholder="LowerBound">
                <input type="button" value="Submit" onclick="submitMessage()">
                </form>
                <br>
                <form action="/get" target="hidden-form">
-               <input type="number " id="upperBound5" name="upperBound5" placeholder="UpperBound">
+               <input type="number " id="border_input" name="upperBound5" placeholder="UpperBound">
                <input type="submit" value="Submit" onclick="submitMessage()">
               </form>
                <br>
@@ -634,29 +640,34 @@ Sensor6 Runtime (current value %runTime6%): <input type="number " id="runTime6" 
                Water Level
                <br>
                <form action="/get" target="hidden-form">
-               <input type="number " id="lowerBound5" name="lowerBound5" placeholder="LowerBound">
+               <input type="number " id="border_input" name="lowerBound5" placeholder="LowerBound">
                <input type="submit" value="Submit" onclick="submitMessage()">
               </form>
                <br>
                <form action="/get" target="hidden-form">
-              <input type="number " id="upperBound6" name="upperBound6" placeholder="UpperBound">
+              <input type="number "  id="border_input" name="upperBound6" placeholder="UpperBound">
               <input type="submit" value="Submit" onclick="submitMessage()">
                </form>
               <br>
               
               </div>
+            </div>
+              
+            
+
               
               
+              <div class="outletspls"></div>
               <div class="bottomleft">
                 Outlet1
                 <br>
                 <form action="/get" target="hidden-form">
-                <input type="number " id="outLet1" name="outLet1" placeholder="Start Time">
+                <input type="number " id="border_input" name="outLet1" placeholder="Start Time">
                 <input type="submit" value="Submit" onclick="submitMessage()">
                </form>
                 <br>
                 <form action="/get" target="hidden-form">
-               <input type="number " id="outLet1_end" name="outLet1_end" placeholder="End Time">
+               <input type="number " id="border_input" name="outLet1_end" placeholder="End Time">
                <input type="submit" value="Submit" onclick="submitMessage()">
                 </form>
                <br>
@@ -676,12 +687,12 @@ Sensor6 Runtime (current value %runTime6%): <input type="number " id="runTime6" 
                 Outlet2
                 <br>
                 <form action="/get" target="hidden-form">
-                <input type="number " id="outLet2" name="outLet2" placeholder="Start Time">
+                <input type="number " id="border_input" name="outLet2" placeholder="Start Time">
                 <input type="submit" value="Submit" onclick="submitMessage()">
                </form>
                 <br>
                 <form action="/get" target="hidden-form">
-               <input type="number " id="outLet2_end" name="outLet2_end" placeholder="End Time">
+               <input type="number " id="border_input" name="outLet2_end" placeholder="End Time">
                <input type="submit" value="Submit" onclick="submitMessage()">
                 </form>
                <br>
@@ -700,12 +711,12 @@ Sensor6 Runtime (current value %runTime6%): <input type="number " id="runTime6" 
                 Outlet3
                 <br>
                 <form action="/get" target="hidden-form">
-                <input type="number " id="outLet3" name="outLet3" placeholder="Start Time">
+                <input type="number " id="border_input" name="outLet3" placeholder="Start Time">
                 <input type="submit" value="Submit" onclick="submitMessage()">
                </form>
                 <br>
                 <form action="/get" target="hidden-form">
-               <input type="number " id="outLet3_end" name="outLet3_end" placeholder="End Time">
+               <input type="number " id="border_input" name="outLet3_end" placeholder="End Time">
                <input type="submit" value="Submit" onclick="submitMessage()">
                 </form>
                <br>
@@ -724,12 +735,12 @@ Sensor6 Runtime (current value %runTime6%): <input type="number " id="runTime6" 
                 Outlet4
                 <br>
                 <form action="/get" target="hidden-form">
-                <input type="number " id="outLet4" name="outLet4" placeholder="Start Time">
+                <input type="number " id="border_input" name="outLet4" placeholder="Start Time">
                 <input type="submit" value="Submit" onclick="submitMessage()">
                </form>
                 <br>
                 <form action="/get" target="hidden-form">
-               <input type="number " id="outLet4_end" name="outLet4_end" placeholder="End Time">
+               <input type="number " id="border_input" name="outLet4_end" placeholder="End Time">
                <input type="submit" value="Submit" onclick="submitMessage()">
                 </form>
                <br>
@@ -743,26 +754,27 @@ Sensor6 Runtime (current value %runTime6%): <input type="number " id="runTime6" 
               
               </p>
                </div>
+              
                <div class="bottomcenter">
               MQTT
               <br>
               <form action="/get" target="hidden-form">
-              <input type="text " name="mqttUsername" placeholder="mqttUsername ">
+              <input type="text " id="border_input" name="mqttUsername" placeholder="mqttUsername ">
               <input type="submit" value="Submit" onclick="submitMessage()">
               </form>
               <br>
               <form action="/get" target="hidden-form">
-              <input type="text " name="mqttPassword" placeholder="mqttPassword"> 
+              <input type="text " id="border_input" name="mqttPassword" placeholder="mqttPassword"> 
               <input type="submit" value="Submit" onclick="submitMessage()">
               </form>
               <br>
               <form action="/get" target="hidden-form">
-              <input type="text " name="mqttServer" placeholder="mqttServer">
+              <input type="text " id="border_input" name="mqttServer" placeholder="mqttServer">
               <input type="submit" value="Submit" onclick="submitMessage()">
               </form>
               <br>
               <form action="/get" target="hidden-form">
-              <input type="number " name="mqttPort" placeholder="mqttPort">
+              <input type="number " id="border_input" name="mqttPort" placeholder="mqttPort">
               <input type="submit" value="Submit" onclick="submitMessage()">
               </form>
               </div> 
