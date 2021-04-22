@@ -108,19 +108,19 @@ var defaultOptions = {
         }]
     },
     tooltips: {
-        mode: 'index',
+        mode: 'y',
         intersect: false
      },
      hover: {
-        mode: 'index',
+        mode: 'y',
         intersect: false
      }
 }
 function secondaryInit(chart,title,yAxis,ymin,ymax, ystep,xAxis) {
     chart.options.title.text = title;
     chart.options.scales.yAxes[0].scaleLabel.labelString = yAxis;
-    chart.options.scales.yAxes[0].ticks.min = ymin;
-    chart.options.scales.yAxes[0].ticks.max = ymax;
+    chart.options.scales.yAxes[0].ticks.suggestedMin = ymin;
+    chart.options.scales.yAxes[0].ticks.suggestedMax = ymax;
     chart.options.scales.yAxes[0].ticks.stepSize = ystep;
 
     chart.update();
