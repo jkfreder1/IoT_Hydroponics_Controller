@@ -2306,6 +2306,8 @@ if(!out4){
     {
       lcd.setCursor(0, 0);
       lcd.print(WiFi.localIP());
+      lcd.setCursor(0, 1);
+      lcd.print("                "); 
       //lcd.print("Hydroponics     ");
     }
     break;
@@ -2333,6 +2335,8 @@ if(!out4){
     else
     {
       displayWaterTemp(temperatureF + temperatureF_offset);
+      lcd.setCursor(0, 1);
+      lcd.print("                "); 
     }
     break;
   case 3:
@@ -2346,6 +2350,8 @@ if(!out4){
     else
     {
       displayTDS(tdsValue + tds_offset);
+      lcd.setCursor(0, 1);
+      lcd.print("                "); 
     }
     break;
   case 4:
@@ -2359,6 +2365,8 @@ if(!out4){
     else
     {
       displaySonar(inches + inches_offset);
+      lcd.setCursor(0, 1);
+      lcd.print("                "); 
     }
     break;
   case 5:
@@ -2372,6 +2380,8 @@ if(!out4){
     else
     {
       displaypH(ph_act + ph_act_offset);
+      lcd.setCursor(0, 1);
+      lcd.print("                "); 
     }
     break;
   default:
