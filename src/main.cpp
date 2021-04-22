@@ -69,6 +69,14 @@ char msg[50];
 int value = 0;
 float temperatureMQTT = 0;
 float humidityMQTT = 0;
+float watertempMQTT = 0;
+float tdsMQTT = 0;
+float pHMQTT = 0;
+float waterlvlMQTT = 0;
+
+
+
+
 int ipadd[5];
 
 AsyncWebServer server(80); ////////new web server
@@ -80,7 +88,7 @@ const char *http_password = "admin";
 
 #define COLUMS 16
 #define ROWS 2
-#define DHTPIN 4
+#define DHTPIN 18 //NOT 4
 #define DHTTYPE DHT11
 #define LCD_SPACE_SYMBOL 0x20 //space symbol from the LCD ROM, see p.9 of GDM2004D datasheet
 const int oneWireBus = 23;
@@ -739,6 +747,11 @@ int outlet2 = 12; // or 14?
 int outlet3 = 27;
 int outlet4 = 14; // or 26?
 
+bool out1 = 0;
+bool out2 = 0;
+bool out3 = 0;
+bool out4 = 0;
+
 const char *ntpServer = "pool.ntp.org";
 const char *connect_mqtt()
 {
@@ -1291,53 +1304,61 @@ void routesLoop()
 
  void led_pins(){
    server.on("/outLet1on", HTTP_GET, [](AsyncWebServerRequest *request){
-    //digitalWrite(ledPin, HIGH); 
+    digitalWrite(outlet1, 1); 
+    out1 = 1;
     Serial.println("outlet1 is high") ;  
     request->send(200, "text/plain", "ok");
   });
   
   // Route to set GPIO to LOW
   server.on("/outLet1off", HTTP_GET, [](AsyncWebServerRequest *request){
-    //digitalWrite(ledPin, LOW);    
+    digitalWrite(outlet1, 0);   
+    out1 = 0; 
     Serial.println("outlet1 is low") ;  
     request->send(200, "text/plain", "ok");
   });
 
   server.on("/outLet2on", HTTP_GET, [](AsyncWebServerRequest *request){
-    //digitalWrite(ledPin, HIGH); 
+    digitalWrite(outlet2, 1); 
+    out2 = 1;
     Serial.println("outlet2 is high") ;  
     request->send(200, "text/plain", "ok");
   });
   
   // Route to set GPIO to LOW
   server.on("/outLet2off", HTTP_GET, [](AsyncWebServerRequest *request){
-    //digitalWrite(ledPin, LOW);    
+    digitalWrite(outlet2, 0);  
+    out2 = 0;
     Serial.println("outlet2 is low") ;  
     request->send(200, "text/plain", "ok");
   });
 
   server.on("/outLet3on", HTTP_GET, [](AsyncWebServerRequest *request){
-    //digitalWrite(ledPin, HIGH); 
+    digitalWrite(outlet3, 1);
+    out3 = 1;
     Serial.println("outlet3 is high") ;  
     request->send(200, "text/plain", "ok");
   });
   
   // Route to set GPIO to LOW
   server.on("/outLet3off", HTTP_GET, [](AsyncWebServerRequest *request){
-    //digitalWrite(ledPin, LOW);    
+    digitalWrite(outlet3, 0);  
+    out3 = 0;  
     Serial.println("outlet3 is low") ;  
     request->send(200, "text/plain", "ok");
   });
 
   server.on("/outLet4on", HTTP_GET, [](AsyncWebServerRequest *request){
-    //digitalWrite(ledPin, HIGH); 
+    digitalWrite(outlet4, 1); 
+    out4 = 1;
     Serial.println("outlet4 is high") ;  
     request->send(200, "text/plain", "ok");
   });
   
   // Route to set GPIO to LOW
   server.on("/outLet4off", HTTP_GET, [](AsyncWebServerRequest *request){
-    //digitalWrite(ledPin, LOW);    
+    digitalWrite(outlet4, 0);    
+    out4 = 0;
     Serial.println("outlet4 is low") ;  
     request->send(200, "text/plain", "ok");
   });
@@ -1560,7 +1581,7 @@ void setup()
 
   Serial.begin(115200);
   Serial.print("it is starting");
-  pinMode(ledPin, OUTPUT);
+  //pinMode(ledPin, OUTPUT);
   
   client.setServer(mqttServer, mqttPort);
   client.setCallback(callback);
@@ -2087,18 +2108,18 @@ else{
     float fakepH = 6 + rand() % ((9 + 1) - 6);
     float fakeWaterLevel = 0 + rand() % ((10 + 1) - 0);
 
-    store_data(fakeAirTemp, airTemp, data1, airTempCount, jsonData1);
-    //store_data(avgAirTemp, airTemp, data1, airTempCount, jsonData1);
-    store_data(fakeAirHumid, airHum, data2, airTempCount, jsonData2);
-    //store_data(avgAirHum, airHum, data2, airTempCount, jsonData2);
-    store_data(fakeWaterTemp, waterTemp, data3, airTempCount, jsonData3);
-    //store_data(avgWaterTemp, waterTemp, data3, airTempCount, jsonData3);
-    store_data(fakeTDS, tds, data4, airTempCount, jsonData4);
-    //store_data(avgTDS, tds, data4, airTempCount, jsonData4);
-    store_data(fakepH, pH, data5, airTempCount, jsonData5);
-    //store_data(avgpH, pH, data5, airTempCount, jsonData5);
-    store_data(fakeWaterLevel, waterLevel, data6, airTempCount, jsonData6);
-    //store_data(avgWaterLevel, waterLevel, data6, airTempCount, jsonData6);
+    //store_data(fakeAirTemp, airTemp, data1, airTempCount, jsonData1);
+    store_data(avgAirTemp, airTemp, data1, airTempCount, jsonData1);
+    //store_data(fakeAirHumid, airHum, data2, airTempCount, jsonData2);
+    store_data(avgAirHum, airHum, data2, airTempCount, jsonData2);
+    //store_data(fakeWaterTemp, waterTemp, data3, airTempCount, jsonData3);
+    store_data(avgWaterTemp, waterTemp, data3, airTempCount, jsonData3);
+    //store_data(fakeTDS, tds, data4, airTempCount, jsonData4);
+    store_data(avgTDS, tds, data4, airTempCount, jsonData4);
+    //store_data(fakepH, pH, data5, airTempCount, jsonData5);
+    store_data(avgpH, pH, data5, airTempCount, jsonData5);
+    //store_data(fakeWaterLevel, waterLevel, data6, airTempCount, jsonData6);
+    store_data(avgWaterLevel, waterLevel, data6, airTempCount, jsonData6);
     printLocalTime(1, airTempCount, jsonTimeStamp, hourlyTimeStamp);
     airTempCount++;
     totCount1 = 0;
@@ -2175,12 +2196,12 @@ else{
     runRoutes = false;
     //printf("run routes first");
   }
-if(!getParameter("/outLet1.txt")){
-  if (checkSize(startTime1) && checkSize(endTime1))
+if(!out1){
+  if (checkSize("/outLet1.txt") && checkSize("/outLet1_end.txt"))
   {
     String curr = getTime();
-    String s1 = getTimeStamp(startTime1);
-    String e1 = getTimeStamp(endTime1);
+    String s1 = getTimeStamp("/outLet1.txt");
+    String e1 = getTimeStamp("/outLet1_end.txt");
     if (checkTime(curr, s1, e1))
     {
       digitalWrite(outlet1, 1);
@@ -2193,10 +2214,7 @@ if(!getParameter("/outLet1.txt")){
     }
   }
 }
-else{
-  digitalWrite(outlet1, 1);
-}
-if(getParameter("/outLet2.txt")){
+if(!out2){
   if (checkSize(startTime3) && checkSize(endTime3))
   {
     String curr2 = getTime();
@@ -2214,10 +2232,7 @@ if(getParameter("/outLet2.txt")){
     }
   }
 }
-else{
-  digitalWrite(outlet2,1);
-}
-if(getParameter("/outLet3.txt")){
+if(!out3){
   if (checkSize(startTime4) && checkSize(endTime4))
   {
     String curr3 = getTime();
@@ -2235,15 +2250,12 @@ if(getParameter("/outLet3.txt")){
     }
   }
 }
-else{
-  digitalWrite(outlet3,1);
-}
-if(getParameter("/outLet4.txt")){
-  if (checkSize(startTime5) && checkSize(endTime5))
+if(!out4){
+  if (checkSize("/outLet4.txt") && checkSize("/outLet4_end.txt"))
   {
     String curr4 = getTime();
-    String s4 = getTimeStamp(startTime5);
-    String e4 = getTimeStamp(endTime5);
+    String s4 = getTimeStamp("/outLet4.txt");
+    String e4 = getTimeStamp("/outLet4_end.txt");
     if (checkTime(curr4, s4, e4))
     {
       digitalWrite(outlet4, 1);
@@ -2253,9 +2265,6 @@ if(getParameter("/outLet4.txt")){
       digitalWrite(outlet4, 0);
     }
   }
-}
-else{
-  digitalWrite(outlet4,1);
 }
   //else
   //printf("routes completed");
@@ -2297,6 +2306,8 @@ else{
     {
       lcd.setCursor(0, 0);
       lcd.print(WiFi.localIP());
+      lcd.setCursor(0, 1);
+      lcd.print("                "); 
       //lcd.print("Hydroponics     ");
     }
     break;
@@ -2324,6 +2335,8 @@ else{
     else
     {
       displayWaterTemp(temperatureF + temperatureF_offset);
+      lcd.setCursor(0, 1);
+      lcd.print("                "); 
     }
     break;
   case 3:
@@ -2337,6 +2350,8 @@ else{
     else
     {
       displayTDS(tdsValue + tds_offset);
+      lcd.setCursor(0, 1);
+      lcd.print("                "); 
     }
     break;
   case 4:
@@ -2350,6 +2365,8 @@ else{
     else
     {
       displaySonar(inches + inches_offset);
+      lcd.setCursor(0, 1);
+      lcd.print("                "); 
     }
     break;
   case 5:
@@ -2363,6 +2380,8 @@ else{
     else
     {
       displaypH(ph_act + ph_act_offset);
+      lcd.setCursor(0, 1);
+      lcd.print("                "); 
     }
     break;
   default:
@@ -2395,7 +2414,7 @@ else{
     lastMsg = now;
 
     // Temperature in Celsius
-    temperatureMQTT = 17;
+    temperatureMQTT = f;
     // Uncomment the next line to set temperature in Fahrenheit
     // (and comment the previous temperature line)
     //temperature = 1.8 * bme.readTemperature() + 32; // Temperature in Fahrenheit
@@ -2410,7 +2429,7 @@ else{
 
     client.publish("esp32/temperature", tempString);
 
-    humidityMQTT = 54.66;
+    humidityMQTT = h;
 
     // Convert the value to a char array
     char humString[8];
@@ -2421,6 +2440,56 @@ else{
     yield();
 
     client.publish("esp32/humidity", humString);
+
+  //ok paste this
+  watertempMQTT = temperatureF;
+
+    // Convert the value to a char array
+    char watertemp[8];
+    dtostrf(watertempMQTT, 1, 2, watertemp);
+    Serial.print("Water Temp: ");
+    Serial.println(watertemp);
+
+    yield();
+
+    client.publish("esp32/watertemp", watertemp);
+//
+  tdsMQTT = tdsValue;
+
+    // Convert the value to a char array
+    char tds[8];
+    dtostrf(tdsMQTT, 1, 2, tds);
+    Serial.print("Nutrient Level: ");
+    Serial.println(tds);
+
+    yield();
+
+    client.publish("esp32/tds", tds);
+//
+  pHMQTT = ph_act;
+
+    // Convert the value to a char array
+    char pH[8];
+    dtostrf(pHMQTT, 1, 2, pH);
+    Serial.print("pH: ");
+    Serial.println(pH);
+
+    yield();
+
+    client.publish("esp32/pH", pH);
+//
+  waterlvlMQTT = inches;
+
+    // Convert the value to a char array
+    char waterlvl[8];
+    dtostrf(waterlvlMQTT, 1, 2, waterlvl);
+    Serial.print("Water Level: ");
+    Serial.println(waterlvl);
+
+    yield();
+
+    client.publish("esp32/waterlvl", waterlvl);
+
   }
   
 
