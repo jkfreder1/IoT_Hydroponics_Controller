@@ -89,9 +89,9 @@ var defaultOptions = {
                 lineWidth: 2,
             },
             ticks: {
-                min: 60,
-                max: 90,
-                stepSize: 2,
+                //min: 60,
+                //max: 90,
+                //stepSize: 2,
                 beginAtZero: true,
                 display: true,
                 maxTicksLimit: 24,
@@ -119,7 +119,7 @@ var defaultOptions = {
 function secondaryInit(chart,title,yAxis,ymin,ymax, ystep,xAxis) {
     chart.options.title.text = title;
     chart.options.scales.yAxes[0].scaleLabel.labelString = yAxis;
-    chart.options.scales.yAxes[0].ticks.suggestedMin = ymin;
+    chart.options.scales.yAxes[0].ticks.min = ymin;
     chart.options.scales.yAxes[0].ticks.suggestedMax = ymax;
     chart.options.scales.yAxes[0].ticks.stepSize = ystep;
 
@@ -460,35 +460,35 @@ setInterval(function ( ){
 
 
 window.onload = (event) => {
-    secondaryInit(myChartAirTemp,'Air Temperature Live Data', 'Temperature (F)', 60, 100,5);
-    secondaryInit(myChartAirTempDaily, 'Air Temperature Daily Averages', 'Temperature (F)', 60, 100,5);
-    secondaryInit(myChartAirTempWeekly, 'Air Temperature Weekly Averages', 'Temperature (F)', 60, 100,5);
-    secondaryInit(myChartAirTempMonthly, 'Air Temperature Monthly Averages', 'Temperature (F)', 60, 100,5);
+    secondaryInit(myChartAirTemp,'Air Temperature Live Data', 'Temperature (F)', 65, 70,.5);
+    secondaryInit(myChartAirTempDaily, 'Air Temperature Daily Averages', 'Temperature (F)',65, 70,.5);
+    secondaryInit(myChartAirTempWeekly, 'Air Temperature Weekly Averages', 'Temperature (F)',65, 70,.5);
+    secondaryInit(myChartAirTempMonthly, 'Air Temperature Monthly Averages', 'Temperature (F)',65, 70,.5);
     
-    secondaryInit(myChartAirHumidity,'Air Humidity Live Data', '%', 30, 80,5 );
-    secondaryInit(myChartAirHumidityDaily,'Air Humidity Daily Averages', '%', 30, 80,5);
-    secondaryInit(myChartAirHumidityWeekly,'Air Humidity Weekly Averages', '%', 30, 80,5);
-    secondaryInit(myChartAirHumidityMonthly,'Air Humidity Monthly Averages', '%', 30, 80,5);
+    secondaryInit(myChartAirHumidity,'Air Humidity Live Data', '%', 35, 45,1 );
+    secondaryInit(myChartAirHumidityDaily,'Air Humidity Daily Averages', '%', 35,45,1);
+    secondaryInit(myChartAirHumidityWeekly,'Air Humidity Weekly Averages', '%', 35,45,1);
+    secondaryInit(myChartAirHumidityMonthly,'Air Humidity Monthly Averages', '%', 35,45,1);
 
-    secondaryInit(myChartWaterTemp,'Water Temperature Live Data', 'Temperature (F)', 60, 100,5);
-    secondaryInit(myChartWaterTempDaily,'Water Temperature Daily Averages', 'Temperature (F)', 60, 100,5);
-    secondaryInit(myChartWaterTempWeekly,'Water Temperature Weekly Averages', 'Temperature (F)', 60, 100,5);
-    secondaryInit(myChartWaterTempMonthly,'Water Temperature Monthly Averages', 'Temperature (F)', 60, 100,5);
+    secondaryInit(myChartWaterTemp,'Water Temperature Live Data', 'Temperature (F)',75,80.5);
+    secondaryInit(myChartWaterTempDaily,'Water Temperature Daily Averages', 'Temperature (F)',75,80.5);
+    secondaryInit(myChartWaterTempWeekly,'Water Temperature Weekly Averages', 'Temperature (F)',75,80.5);
+    secondaryInit(myChartWaterTempMonthly,'Water Temperature Monthly Averages', 'Temperature (F)',75,80.5);
 
-    secondaryInit(myChartWaterLvl,'Water Level Live Data', 'Distance from Water Surface (inches)',0,10,.5);
-    secondaryInit(myChartWaterLvlDaily,'Water Level Daily Averages', 'Distance from Water Surface (inches)',0,10,.5);
-    secondaryInit(myChartWaterLvlWeekly,'Water Level Weekly Averages', 'Distance from Water Surface (inches)',0,10,.5);
-    secondaryInit(myChartWaterLvlMonthly,'Water Level Monthly Averages', '%Distance from Water Surface (inches)',0,10,.5);
+    secondaryInit(myChartWaterLvl,'Water Level Live Data', 'Distance from Water Surface (inches)',0,12,.5);
+    secondaryInit(myChartWaterLvlDaily,'Water Level Daily Averages', 'Distance from Water Surface (inches)',0,12,.5);
+    secondaryInit(myChartWaterLvlWeekly,'Water Level Weekly Averages', 'Distance from Water Surface (inches)',0,12,.5);
+    secondaryInit(myChartWaterLvlMonthly,'Water Level Monthly Averages', '%Distance from Water Surface (inches)',0,12,.5);
 
-    secondaryInit(myChartpH,'pH Live Data', 'pH',0,14,.5);
-    secondaryInit(myChartpHDaily,'pH Daily Averages', 'pH',0,14,.5);
-    secondaryInit(myChartpHWeekly,'pH Weekly Averages', 'pH',0,14,.5);
-    secondaryInit(myChartpHMonthly,'pH Monthly Averages', 'pH',0,14,.5);
+    secondaryInit(myChartpH,'pH Live Data', 'pH',6,8,.1);
+    secondaryInit(myChartpHDaily,'pH Daily Averages', 'pH',6,8,.1);
+    secondaryInit(myChartpHWeekly,'pH Weekly Averages', 'pH',6,8,.1);
+    secondaryInit(myChartpHMonthly,'pH Monthly Averages', 'pH',6,8,.1);
 
-    secondaryInit(myChartNutrientLvl,'Nutrient Level Live Data', 'Parts Per Million (ppm)', 0, 1000, 25);
-    secondaryInit(myChartNutrientLvlDaily,'Nutrient Level Daily Averages', 'Parts Per Million (ppm)', 0, 1000, 25);
-    secondaryInit(myChartNutrientLvlWeekly,'Nutrient Level Weekly Averages', 'Parts Per Million (ppm)', 0, 1000, 25);
-    secondaryInit(myChartNutrientLvlMonthly,'Nutrient Level Monthly Averages', 'Parts Per Million (ppm)', 0, 1000, 25);
+    secondaryInit(myChartNutrientLvl,'Nutrient Level Live Data', 'Parts Per Million (ppm)', 0, 100, 5);
+    secondaryInit(myChartNutrientLvlDaily,'Nutrient Level Daily Averages', 'Parts Per Million (ppm)',0,100,5);
+    secondaryInit(myChartNutrientLvlWeekly,'Nutrient Level Weekly Averages', 'Parts Per Million (ppm)',0,100,5);
+    secondaryInit(myChartNutrientLvlMonthly,'Nutrient Level Monthly Averages', 'Parts Per Million (ppm)',0,100,5);
     
 
     
