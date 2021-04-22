@@ -20,66 +20,122 @@ li{
 .topleft {
   position: absolute;
   top: 200px;
-  left: 35px;
+  left: 430px;
 }
 .topcenter {
   position: absolute;
   top: 200px;
-  left:335px;
+  left:700px;
 }
 .topright {
   position: absolute;
   top: 200px;
-  left: 635px;
+  left: 970px;
 }
+
+
 
 .centerleft {
   position: absolute;
   top: 300px;
-  left:35px;
+  left:430px;
 }
 .centercenter {
   position: absolute;
   top: 300px;
-  left:335px;
+  left:700px;
   
 }
 .centerright {
   position: absolute;
   top: 300px;
-  left:635px;
+  left:970px;
 }
 .bottomleft {
   position: absolute;
-  top: 600px;
-  left:35px;
+  top: 450px;
+  left:55px;
 }
 .outLet2 {
   position: absolute;
-  top: 600px;
-  left:335px;
+  top: 450px;
+  left:355px;
 }
 .outLet3 {
   position: absolute;
-  top: 600px;
-  left:635px;
+  top: 450px;
+  left:655px;
 }
 .outLet4 {
   position: absolute;
-  top: 600px;
-  left:935px;
+  top: 450px;
+  left:955px;
 }
 
 .bottomcenter {
   position: absolute;
   top: 200px;
-  right:35px;
+  left:35px;
+}
+
+.sensorspls{
+  width: 810px;
+  height: 200px;
+  position:absolute;
+  top:190px;
+  left:410px;
+  border: 3px solid black;
+  background-color: rgb(211, 209, 209);
+  
+  box-sizing: border-box;
+}
+.outletspls{
+  width: 1170px;
+  height: 170px;
+  position:absolute;
+  top:440px;
+  left:35px;
+  border: 3px solid black;
+  box-sizing: border-box;
+  background-color: rgb(211, 209, 209);
+
+}
+.sensors{
+  position:absolute;
+  top:170px;
+  left:760px;
+  font-weight: 100;
+}
+.mqtt_config{
+  position:absolute;
+  top:170px;
+  left:65px;
+}
+.outlet_config{
+  position:absolute;
+  top:420px;
+  left:540px;
+}
+#border_input{
+  border-style: solid;
+}
+
+.mqtt_box{
+  width: 270px;
+  height: 200px;
+  position:absolute;
+  top:190px;
+  left:20px;
+  border: 3px solid black;
+  box-sizing: border-box;
+  background-color: rgb(211, 209, 209);
+  
 }
 
 .formboxContainer {
-  height: 700px;
+  height: 500px;
   width: 100%;
-  background-color:white;
+  background-color: rgb(255, 255, 255);
   text-align: left;
   justify-content: center;
   display: flex;
@@ -107,9 +163,9 @@ button {
 .button2 {
   background-color: #f44336;
 }
-#outLet1off{
+/*#outLet1off{
   background-color: yellow;
-}
+}*/
 
 .table, th, td {
   border-collapse: collapse;

@@ -2379,7 +2379,7 @@ else{
     temperatureF_offset = temperatureF_input - temperatureF;
     tds_offset = tds_value_input - tdsValue;
   }
-/*
+
   if (!client.connected())
   {
 
@@ -2422,7 +2422,7 @@ else{
 
     client.publish("esp32/humidity", humString);
   }
-  */
+  
 
   //if(sleeptime>200){
   //esp_deep_sleep_start();/////sleep DONT DELETE
