@@ -739,6 +739,11 @@ int outlet2 = 12; // or 14?
 int outlet3 = 27;
 int outlet4 = 14; // or 26?
 
+bool out1 = 0;
+bool out2 = 0;
+bool out3 = 0;
+bool out4 = 0;
+
 const char *ntpServer = "pool.ntp.org";
 const char *connect_mqtt()
 {
@@ -1291,53 +1296,61 @@ void routesLoop()
 
  void led_pins(){
    server.on("/outLet1on", HTTP_GET, [](AsyncWebServerRequest *request){
-    //digitalWrite(ledPin, HIGH); 
+    digitalWrite(outlet1, 1); 
+    out1 = 1;
     Serial.println("outlet1 is high") ;  
     request->send(200, "text/plain", "ok");
   });
   
   // Route to set GPIO to LOW
   server.on("/outLet1off", HTTP_GET, [](AsyncWebServerRequest *request){
-    //digitalWrite(ledPin, LOW);    
+    digitalWrite(outlet1, 0);   
+    out1 = 0; 
     Serial.println("outlet1 is low") ;  
     request->send(200, "text/plain", "ok");
   });
 
   server.on("/outLet2on", HTTP_GET, [](AsyncWebServerRequest *request){
-    //digitalWrite(ledPin, HIGH); 
+    digitalWrite(outlet2, 1); 
+    out2 = 1;
     Serial.println("outlet2 is high") ;  
     request->send(200, "text/plain", "ok");
   });
   
   // Route to set GPIO to LOW
   server.on("/outLet2off", HTTP_GET, [](AsyncWebServerRequest *request){
-    //digitalWrite(ledPin, LOW);    
+    digitalWrite(outlet2, 0);  
+    out2 = 0;
     Serial.println("outlet2 is low") ;  
     request->send(200, "text/plain", "ok");
   });
 
   server.on("/outLet3on", HTTP_GET, [](AsyncWebServerRequest *request){
-    //digitalWrite(ledPin, HIGH); 
+    digitalWrite(outlet3, 1);
+    out3 = 1;
     Serial.println("outlet3 is high") ;  
     request->send(200, "text/plain", "ok");
   });
   
   // Route to set GPIO to LOW
   server.on("/outLet3off", HTTP_GET, [](AsyncWebServerRequest *request){
-    //digitalWrite(ledPin, LOW);    
+    digitalWrite(outlet3, 0);  
+    out3 = 0;  
     Serial.println("outlet3 is low") ;  
     request->send(200, "text/plain", "ok");
   });
 
   server.on("/outLet4on", HTTP_GET, [](AsyncWebServerRequest *request){
-    //digitalWrite(ledPin, HIGH); 
+    digitalWrite(outlet4, 1); 
+    out4 = 1;
     Serial.println("outlet4 is high") ;  
     request->send(200, "text/plain", "ok");
   });
   
   // Route to set GPIO to LOW
   server.on("/outLet4off", HTTP_GET, [](AsyncWebServerRequest *request){
-    //digitalWrite(ledPin, LOW);    
+    digitalWrite(outlet4, 0);    
+    out4 = 0;
     Serial.println("outlet4 is low") ;  
     request->send(200, "text/plain", "ok");
   });
@@ -2175,7 +2188,7 @@ else{
     runRoutes = false;
     //printf("run routes first");
   }
-if(!getParameter("/outLet1.txt")){
+if(!out1){
   if (checkSize(startTime1) && checkSize(endTime1))
   {
     String curr = getTime();
@@ -2193,10 +2206,7 @@ if(!getParameter("/outLet1.txt")){
     }
   }
 }
-else{
-  digitalWrite(outlet1, 1);
-}
-if(getParameter("/outLet2.txt")){
+if(!out2){
   if (checkSize(startTime3) && checkSize(endTime3))
   {
     String curr2 = getTime();
@@ -2214,10 +2224,7 @@ if(getParameter("/outLet2.txt")){
     }
   }
 }
-else{
-  digitalWrite(outlet2,1);
-}
-if(getParameter("/outLet3.txt")){
+if(!out3){
   if (checkSize(startTime4) && checkSize(endTime4))
   {
     String curr3 = getTime();
@@ -2235,10 +2242,7 @@ if(getParameter("/outLet3.txt")){
     }
   }
 }
-else{
-  digitalWrite(outlet3,1);
-}
-if(getParameter("/outLet4.txt")){
+if(!out4){
   if (checkSize(startTime5) && checkSize(endTime5))
   {
     String curr4 = getTime();
@@ -2253,9 +2257,6 @@ if(getParameter("/outLet4.txt")){
       digitalWrite(outlet4, 0);
     }
   }
-}
-else{
-  digitalWrite(outlet4,1);
 }
   //else
   //printf("routes completed");
