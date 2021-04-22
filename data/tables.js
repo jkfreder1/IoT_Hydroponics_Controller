@@ -89,11 +89,12 @@ var tableNutrientLvlSummary = new Tabulator("#nutrientLvl-summary", {
                                     // **** DATA TABLES **** //
 
 var tableAirTemp = new Tabulator("#airTempT", {
-    reactiveData:true, //enable reactive data
+   // reactiveData:true, //enable reactive data
     data:test, //assign data array
     layout:"fitDataTable",
     cellHozAlign:"center", //center align cell contents
     headerHozAlign:"center",
+    
     columns:[
           {title:"Time", field:"time"},
           {title:"Temperature", field:"dataset"},
@@ -101,7 +102,7 @@ var tableAirTemp = new Tabulator("#airTempT", {
     ]
 });
 var tableAirTempDaily = new Tabulator("#airTempDailyT", {
-    reactiveData:true, //enable reactive data
+    //reactiveData:true, //enable reactive data
     data:tableData, //assign data array
     layout:"fitDataTable",
     cellHozAlign:"center", //center align cell contents
@@ -110,8 +111,8 @@ var tableAirTempDaily = new Tabulator("#airTempDailyT", {
         {//create column group
             title:"Daily",
             columns:[
-                {title:"Date", field:"time"},
-                {title:"Temperature", field:"dataset"},
+                {title:"Date", field:"time", },
+                {title:"Temperature", field:"dataset", },
             ],
         },
         ],
@@ -406,6 +407,7 @@ function addTableData(table, data,timestamps) {
         newData.push(row);
      }
     table.setData(newData);
+    table.setSort("time", "asc");
     table.redraw
 }
 

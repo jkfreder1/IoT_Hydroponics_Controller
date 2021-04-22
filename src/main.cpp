@@ -125,7 +125,7 @@ String readFile(fs::FS &fs, const char *path)
   File file = fs.open(path, "r");
   if (!file || file.isDirectory())
   {
-    Serial.println("- empty file or failed to open file");
+    //Serial.println("- empty file or failed to open file");
     return String();
   }
   //Serial.println("- read from file:");
@@ -786,7 +786,7 @@ void printLocalTime(int time, int count, String filename, JsonObject object){
     char timeHourly[10];
     strftime(timeHourly, 10, "%H:%M:%S", &timeinfo);
     s = timeHourly;
-    Serial.println("time taken is " + s);
+    //Serial.println("time taken is " + s);
     data7[count] = s;
     break;
   case 2:
@@ -2074,7 +2074,7 @@ else{
   //store live and historical data
   if (totCount1 > 2)
   {
-    if (airTempCount == 24)
+    if (airTempCount == 20)
     {
       airTempCount = 0;
     }

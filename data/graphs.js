@@ -324,12 +324,34 @@ var myChartNutrientLvlMonthly= new Chart(ctxnutrientLvlMonthly, {
 
 
 function addGraphData(chart, data, timestamps) {
+     arrayOfObj = timestamps[0].dataset.map(function(d, i) {
+        return {
+          label: d,
+          data: data.dataset[i] || 0
+        };
+      });
+      
+       sortedArrayOfObj = arrayOfObj.sort(function(a, b) {
+        return (a.label < b.label) ? -1 : 1;
+      });
+      
+       newArrayLabel = [];
+       newArrayData = [];
+      sortedArrayOfObj.forEach(function(d){
+        newArrayLabel.push(d.label);
+        newArrayData.push(d.data);
+      });
 
+      chart.data.labels = newArrayLabel;
+      chart.data.datasets.forEach((dataset) => {
+        dataset.data = newArrayData;
+      });
+      /*
     chart.data.labels = timestamps[0].dataset;
 
     chart.data.datasets.forEach((dataset) => {
         dataset.data = data.dataset;
-    });
+    });*/
 
     chart.update();
 }
