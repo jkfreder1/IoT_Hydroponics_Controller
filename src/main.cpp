@@ -2129,18 +2129,18 @@ else{
     dailyCount++;
   }
 
-  if (dailyCount == 24)
+  if (dailyCount == 20)
   {
     if (dailyArray == 7)
     {
       dailyArray = 0;
     }
-    store_daily(data1, dailyAirTempData, dailyAirTempAvg, jsonDaily1, 24, dailyArray);
-    store_daily(data2, dailyAirHumData, dailyAirHumAvg, jsonDaily2, 24, dailyArray);
-    store_daily(data3, dailyWaterTempData, dailyWaterTempAvg, jsonDaily3, 24, dailyArray);
-    store_daily(data4, dailyTdsData, dailyTdsAvg, jsonDaily4, 24, dailyArray);
-    store_daily(data5, dailypHData, dailypHAvg, jsonDaily5, 24, dailyArray);
-    store_daily(data6, dailyWaterLevelData, dailyWaterLevelAvg, jsonDaily6, 24, dailyArray);
+    store_daily(data1, dailyAirTempData, dailyAirTempAvg, jsonDaily1, 20, dailyArray);
+    store_daily(data2, dailyAirHumData, dailyAirHumAvg, jsonDaily2, 20, dailyArray);
+    store_daily(data3, dailyWaterTempData, dailyWaterTempAvg, jsonDaily3, 20, dailyArray);
+    store_daily(data4, dailyTdsData, dailyTdsAvg, jsonDaily4, 20, dailyArray);
+    store_daily(data5, dailypHData, dailypHAvg, jsonDaily5, 20, dailyArray);
+    store_daily(data6, dailyWaterLevelData, dailyWaterLevelAvg, jsonDaily6, 20, dailyArray);
     printLocalTime(2, dailyArray, jsonDailyTimeStamp, dailyTime);
     timeStamp.garbageCollect();
     dailyArray++;
