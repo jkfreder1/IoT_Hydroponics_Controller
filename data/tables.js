@@ -5,7 +5,7 @@ var tableData = [
     {date: 1}
 ]
 var test = [
-    {time: 1, dataset: 1}
+    
 ]
 
                                     // **** SUMMARY TABLES **** //
@@ -97,7 +97,7 @@ var tableAirTemp = new Tabulator("#airTempT", {
     
     columns:[
           {title:"Time", field:"time"},
-          {title:"Temperature", field:"dataset"},
+          {title:"Temperature (F)", field:"dataset"},
           
     ]
 });
@@ -107,15 +107,23 @@ var tableAirTempDaily = new Tabulator("#airTempDailyT", {
     layout:"fitDataTable",
     cellHozAlign:"center", //center align cell contents
     headerHozAlign:"center",
+    
     columns:[
         {//create column group
             title:"Daily",
             columns:[
                 {title:"Date", field:"time", },
-                {title:"Temperature", field:"dataset", },
+                {title:"Temperature (F)", field:"dataset", },
             ],
         },
         ],
+        
+       /*
+    columns:[
+        {title:"Date", field:"time"},
+        {title:"Temperature", field:"dataset"},
+      ]
+      */
 });
 
 var tableAirTempWeekly = new Tabulator("#airTempWeeklyT", {
@@ -125,10 +133,21 @@ var tableAirTempWeekly = new Tabulator("#airTempWeeklyT", {
     cellHozAlign:"center", //center align cell contents
     headerHozAlign:"center",
     columns:[
+        {//create column group
+            title:"Weekly",
+            columns:[
+                {title:"Date", field:"time", },
+                {title:"Temperature", field:"dataset", },
+            ],
+        },
+    ],
+    /*
+    columns:[
           {title:"Date", field:"time"},
-          {title:"Temperature", field:"dataset"},
+          {title:"Temperature (F)", field:"dataset"},
           
     ]
+    */
 });
 
 var tableAirTempMonthly = new Tabulator("#airTempMonthlyT", {
@@ -138,10 +157,20 @@ var tableAirTempMonthly = new Tabulator("#airTempMonthlyT", {
     cellHozAlign:"center", //center align cell contents
     headerHozAlign:"center",
     columns:[
+        {//create column group
+            title:"Monthly",
+            columns:[
+                {title:"Month", field:"time", },
+                {title:"Temperature (F)", field:"dataset", },
+            ],
+        },
+    ],
+    /*
+    columns:[
           {title:"Month", field:"time"},
-          {title:"Temperature", field:"dataset"},
+          {title:"Temperature (F)", field:"dataset"},
           
-    ]
+    ]*/
 });
 
 
@@ -164,9 +193,19 @@ var tableAirHumidityDaily = new Tabulator("#airHumidityDailyT", {
     cellHozAlign:"center", //center align cell contents
     headerHozAlign:"center",
     columns:[
+        {//create column group
+            title:"Daily",
+            columns:[
+                {title:"Date", field:"time", },
+                {title:"%", field:"dataset", },
+            ],
+        },
+        ],
+        /*
+    columns:[
           {title:"Date", field:"time"},
-          {title:"Temperature", field:"dataset"},
-    ]
+          {title:"%", field:"dataset"},
+    ]*/
 });
 
 var tableAirHumidityWeekly = new Tabulator("#airHumidityWeeklyT", {
@@ -176,9 +215,19 @@ var tableAirHumidityWeekly = new Tabulator("#airHumidityWeeklyT", {
     cellHozAlign:"center", //center align cell contents
     headerHozAlign:"center",
     columns:[
+        {//create column group
+            title:"Weekly",
+            columns:[
+                {title:"Date", field:"time", },
+                {title:"%", field:"dataset", },
+            ],
+        },
+        ],
+        /*
+    columns:[
           {title:"Date", field:"time"},
-          {title:"Temperature", field:"dataset"},
-    ]
+          {title:"%", field:"dataset"},
+    ]*/
 });
 
 var tableAirHumidityMonthly = new Tabulator("#airHumidityMonthlyT", {
@@ -188,9 +237,19 @@ var tableAirHumidityMonthly = new Tabulator("#airHumidityMonthlyT", {
     cellHozAlign:"center", //center align cell contents
     headerHozAlign:"center",
     columns:[
+        {//create column group
+            title:"Monthly",
+            columns:[
+                {title:"Month", field:"time", },
+                {title:"%", field:"dataset", },
+            ],
+        },
+        ],
+        /*
+    columns:[
           {title:"Month", field:"time"},
-          {title:"Temperature", field:"dataset"},
-    ]
+          {title:"%", field:"dataset"},
+    ] */
 });
 
 var tableWaterTemp = new Tabulator("#waterTempT", {
@@ -199,9 +258,10 @@ var tableWaterTemp = new Tabulator("#waterTempT", {
     layout:"fitDataTable",
     cellHozAlign:"center", //center align cell contents
     headerHozAlign:"center",
+    
     columns:[
           {title:"Time", field:"time"},
-          {title:"Temperature", field:"dataset"},
+          {title:"Temperature (F)", field:"dataset"},
     ]
 });
 
@@ -212,9 +272,19 @@ var tableWaterTempDaily = new Tabulator("#waterTempDailyT", {
     cellHozAlign:"center", //center align cell contents
     headerHozAlign:"center",
     columns:[
+        {//create column group
+            title:"Daily",
+            columns:[
+                {title:"Date", field:"time", },
+                {title:"Temperature (F)", field:"dataset", },
+            ],
+        },
+        ],
+        /*
+    columns:[
           {title:"Date", field:"time"},
-          {title:"Temperature", field:"dataset"},
-    ]
+          {title:"Temperature (F)", field:"dataset"},
+    ] */
 });
 
 var tableWaterTempWeekly = new Tabulator("#waterTempWeeklyT", {
@@ -224,9 +294,19 @@ var tableWaterTempWeekly = new Tabulator("#waterTempWeeklyT", {
     cellHozAlign:"center", //center align cell contents
     headerHozAlign:"center",
     columns:[
+        {//create column group
+            title:"Weekly",
+            columns:[
+                {title:"Date", field:"time", },
+                {title:"Temperature (F)", field:"dataset", },
+            ],
+        },
+        ],
+        /*
+    columns:[
           {title:"Date", field:"time"},
-          {title:"Temperature", field:"dataset"},
-    ]
+          {title:"Temperature (F)", field:"dataset"},
+    ] */
 });
 
 var tableWaterTempMonthly = new Tabulator("#waterTempMonthlyT", {
@@ -236,9 +316,19 @@ var tableWaterTempMonthly = new Tabulator("#waterTempMonthlyT", {
     cellHozAlign:"center", //center align cell contents
     headerHozAlign:"center",
     columns:[
+        {//create column group
+            title:"Monthly",
+            columns:[
+                {title:"Month", field:"time", },
+                {title:"Temperature (F)", field:"dataset", },
+            ],
+        },
+        ],
+        /*
+    columns:[
           {title:"Month", field:"time"},
-          {title:"Temperature", field:"dataset"},
-    ]
+          {title:"Temperature (F)", field:"dataset"},
+    ] */
 });
 
 var tableWaterLvl = new Tabulator("#waterLvlT", {
@@ -260,9 +350,19 @@ var tableWaterLvlDaily = new Tabulator("#waterLvlDailyT", {
     cellHozAlign:"center", //center align cell contents
     headerHozAlign:"center",
     columns:[
+        {//create column group
+            title:"Daily",
+            columns:[
+                {title:"Date", field:"time", },
+                {title:"Level (inches)", field:"dataset", },
+            ],
+        },
+    ],
+        /*
+    columns:[
           {title:"Date", field:"time"},
           {title:"Level (inches)", field:"dataset"},
-    ]
+    ] */
 });
 
 var tableWaterLvlWeekly = new Tabulator("#waterLvlWeeklyT", {
@@ -272,9 +372,18 @@ var tableWaterLvlWeekly = new Tabulator("#waterLvlWeeklyT", {
     cellHozAlign:"center", //center align cell contents
     headerHozAlign:"center",
     columns:[
+        {//create column group
+            title:"Weekly",
+            columns:[
+                {title:"Date", field:"time", },
+                {title:"Level (inches)", field:"dataset", },
+            ],
+        },
+    ],/*
+    columns:[
           {title:"Date", field:"time"},
           {title:"Level (inches)", field:"dataset"},
-    ]
+    ]*/
 });
 
 var tableWaterLvlMonthly = new Tabulator("#waterLvlMonthlyT", {
@@ -284,9 +393,19 @@ var tableWaterLvlMonthly = new Tabulator("#waterLvlMonthlyT", {
     cellHozAlign:"center", //center align cell contents
     headerHozAlign:"center",
     columns:[
+        {//create column group
+            title:"Monthly",
+            columns:[
+                {title:"Month", field:"time", },
+                {title:"Level (inches)", field:"dataset", },
+            ],
+        },
+    ],
+    /*
+    columns:[
           {title:"Month", field:"time"},
           {title:"Level (inches)", field:"dataset"},
-    ]
+    ] */
 });
 
 var tablepH = new Tabulator("#pHT", {
@@ -308,9 +427,19 @@ var tablepHDaily = new Tabulator("#pHDailyT", {
     cellHozAlign:"center", //center align cell contents
     headerHozAlign:"center",
     columns:[
+        {//create column group
+            title:"Daily",
+            columns:[
+                {title:"Date", field:"time", },
+                {title:"pH", field:"dataset", },
+            ],
+        },
+    ],
+    /*
+    columns:[
           {title:"Date", field:"time"},
           {title:"pH", field:"dataset"},
-    ]
+    ]*/
 });
 
 var tablepHWeekly = new Tabulator("#pHWeeklyT", {
@@ -320,9 +449,19 @@ var tablepHWeekly = new Tabulator("#pHWeeklyT", {
     cellHozAlign:"center", //center align cell contents
     headerHozAlign:"center",
     columns:[
+        {//create column group
+            title:"Weekly",
+            columns:[
+                {title:"Date", field:"time", },
+                {title:"pH", field:"dataset", },
+            ],
+        },
+    ],
+    /*
+    columns:[
           {title:"Date", field:"time"},
           {title:"pH", field:"dataset"},
-    ]
+    ] */
 });
 
 var tablepHMonthly = new Tabulator("#pHMonthlyT", {
@@ -332,9 +471,19 @@ var tablepHMonthly = new Tabulator("#pHMonthlyT", {
     cellHozAlign:"center", //center align cell contents
     headerHozAlign:"center",
     columns:[
+        {//create column group
+            title:"Monthly",
+            columns:[
+                {title:"Month", field:"time", },
+                {title:"pH", field:"dataset", },
+            ],
+        },
+    ],
+    /*
+    columns:[
           {title:"Month", field:"time"},
           {title:"pH", field:"dataset"},
-    ]
+    ] */
 });
 
 var tableNutrientLvl = new Tabulator("#nutrientLvlT", {
@@ -356,9 +505,19 @@ var tableNutrientLvlDaily = new Tabulator("#nutrientLvlDailyT", {
     cellHozAlign:"center", //center align cell contents
     headerHozAlign:"center",
     columns:[
+        {//create column group
+            title:"Daily",
+            columns:[
+                {title:"Date", field:"time", },
+                {title:"Part per Millon (ppm)", field:"dataset", },
+            ],
+        },
+    ],
+    /*
+    columns:[
           {title:"Date", field:"time"},
           {title:"Part per Millon (ppm)", field:"dataset"},
-    ]
+    ] */
 });
 
 var tableNutrientLvlWeekly = new Tabulator("#nutrientLvlWeeklyT", {
@@ -368,9 +527,19 @@ var tableNutrientLvlWeekly = new Tabulator("#nutrientLvlWeeklyT", {
     cellHozAlign:"center", //center align cell contents
     headerHozAlign:"center",
     columns:[
+        {//create column group
+            title:"Weekly",
+            columns:[
+                {title:"Date", field:"time", },
+                {title:"Part per Millon (ppm)", field:"dataset", },
+            ],
+        },
+    ],
+    /*
+    columns:[
           {title:"Date", field:"time"},
           {title:"Part per Millon (ppm)", field:"dataset"},
-    ]
+    ] */
 });
 
 var tableNutrientLvlMonthly = new Tabulator("#nutrientLvlMonthlyT", {
@@ -380,9 +549,19 @@ var tableNutrientLvlMonthly = new Tabulator("#nutrientLvlMonthlyT", {
     cellHozAlign:"center", //center align cell contents
     headerHozAlign:"center",
     columns:[
+        {//create column group
+            title:"Monthly",
+            columns:[
+                {title:"Month", field:"time", },
+                {title:"Part per Millon (ppm)", field:"dataset", },
+            ],
+        },
+    ],
+    /*
+    columns:[
           {title:"Month", field:"time"},
           {title:"Part per Millon (ppm)", field:"dataset"},
-    ]
+    ]*/
 });
 
 
