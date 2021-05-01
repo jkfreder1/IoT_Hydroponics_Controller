@@ -588,8 +588,8 @@ StaticJsonDocument<1024> monthlyTimeStamp;
 String jsonMonthlyTimeStamp = "/monthlyTimeStamp.json";
 
 //Air Temp
-String upperBound1 = "/floatHigher.txt";
-String lowerBound1 = "/floatLower.txt";
+String lowerBound1 = "/floatHigher.txt";
+String upperBound1 = "/floatLower.txt";
 String startTime1 = "/timeStamp1.txt";
 String endTime1 = "/runTime1.txt";
 
@@ -1734,7 +1734,7 @@ int errorflag = 0;
 void displayWaterTemp(float temperatureF)
 {
   lcd.setCursor(0, 0); //water temp display
-  if (checkSize(lowerBound3) && checkSize(upperBound3))
+  if (getParameter(lowerBound3) && getParameter(upperBound3))
   {
     waterTempLowParam = getParameter(lowerBound3);
     waterTempHighParam = getParameter(upperBound3);
@@ -1777,7 +1777,7 @@ int clear3 = 0;
 void displayDHT(float h, float f)
 {
   lcd.setCursor(0, 0); //humidity display
-  if (checkSize(lowerBound2) && checkSize(upperBound2))
+  if (getParameter(lowerBound2) && getParameter(upperBound2))
   {
     airHumLowParam = getParameter(lowerBound2);
     airHumHighParam = getParameter(upperBound2);
@@ -1804,7 +1804,7 @@ void displayDHT(float h, float f)
     lcd.print("%    ");
   }
   lcd.setCursor(0, 1); //air temp display
-  if (checkSize(lowerBound1) && checkSize(upperBound1))
+  if (getParameter(lowerBound1) && getParameter(upperBound1))
   {
     airTempLowParam = getParameter(lowerBound1);
     airTempHighParam = getParameter(upperBound1);
@@ -1843,7 +1843,7 @@ void displayDHT(float h, float f)
 void displaySonar(long inches)
 {
   lcd.setCursor(0, 0); //sonar display
-  if (checkSize(lowerBound6) && checkSize(upperBound6))
+  if (getParameter(lowerBound6) && getParameter(upperBound6))
   {
     sonarLowParam = getParameter(lowerBound6);
     sonarHighParam = getParameter(upperBound6);
@@ -1883,7 +1883,7 @@ void displaySonar(long inches)
 void displayTDS(float tdsValue)
 {
   lcd.setCursor(0, 0);
-  if (checkSize(lowerBound4) && checkSize(upperBound4))
+  if (getParameter(lowerBound4) && getParameter(upperBound4))
   {
     tdslowParam = getParameter(lowerBound4);
     tdshighParam = getParameter(upperBound4);
@@ -1914,7 +1914,7 @@ void displayTDS(float tdsValue)
 void displaypH(float ph_act)
 {
   lcd.setCursor(0, 0);
-  if (checkSize(lowerBound5) && checkSize(upperBound5))
+  if (getParameter(lowerBound5) && getParameter(upperBound5))
   {
     phlowParam = getParameter(lowerBound5);
     phhighParam = getParameter(upperBound5);
@@ -2136,11 +2136,19 @@ else{
       dailyArray = 0;
     }
     store_daily(data1, dailyAirTempData, dailyAirTempAvg, jsonDaily1, 20, dailyArray);
+<<<<<<< HEAD
+    store_daily(data2, dailyAirHumData, dailyAirHumAvg, jsonDaily2, 24, dailyArray);
+    store_daily(data3, dailyWaterTempData, dailyWaterTempAvg, jsonDaily3, 24, dailyArray);
+    store_daily(data4, dailyTdsData, dailyTdsAvg, jsonDaily4, 24, dailyArray);
+    store_daily(data5, dailypHData, dailypHAvg, jsonDaily5, 24, dailyArray);
+    store_daily(data6, dailyWaterLevelData, dailyWaterLevelAvg, jsonDaily6, 24, dailyArray);
+=======
     store_daily(data2, dailyAirHumData, dailyAirHumAvg, jsonDaily2, 20, dailyArray);
     store_daily(data3, dailyWaterTempData, dailyWaterTempAvg, jsonDaily3, 20, dailyArray);
     store_daily(data4, dailyTdsData, dailyTdsAvg, jsonDaily4, 20, dailyArray);
     store_daily(data5, dailypHData, dailypHAvg, jsonDaily5, 20, dailyArray);
     store_daily(data6, dailyWaterLevelData, dailyWaterLevelAvg, jsonDaily6, 20, dailyArray);
+>>>>>>> d2690e5966bf018fd245b1fa488cab77072a09ff
     printLocalTime(2, dailyArray, jsonDailyTimeStamp, dailyTime);
     timeStamp.garbageCollect();
     dailyArray++;
@@ -2188,6 +2196,8 @@ else{
   }
 
   yield();
+
+  Serial.println(airTempHighParam);
 
   if (runRoutes == true)
   {
@@ -2386,7 +2396,6 @@ if(!out4){
   default:
     break;
   }
-/*
   if (cal == 1)
   {
     cal = 0;
@@ -2397,7 +2406,7 @@ if(!out4){
     temperatureF_offset = temperatureF_input - temperatureF;
     tds_offset = tds_value_input - tdsValue;
   }
-
+/*
   if (!client.connected())
   {
 
