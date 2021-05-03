@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>ESP32 Hydroponics Web Server</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" type="text/css" href="style.css">
+ 
+  <link href="https://unpkg.com/tabulator-tables/dist/css/tabulator.min.css" rel="stylesheet">
+  <script type="text/javascript" src="https://unpkg.com/tabulator-tables/dist/js/tabulator.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4"></script>
+  <script src="script.js" type="text/javascript"></script>
+
+</head>
+<body>
+  <h1>ESP32 Hydroponics Web Server </h1>
+  <div class="tabs">
+    <ul>
+      <li><a  onclick="openTab(event, 'section1')">Home</a></li>
+      <li><a  onclick="openTab(event, 'section8')">Configuration</a></li>
+      <li><a  onclick="openTab(event, 'section2')">Graphs</a></li>
+      <li><a  onclick="openTab(event, 'section3')">Tables</a></li>
+
+    </ul>
+  
+  </div>
+      <section id="section1" class="tabcontent">
+        
+        <h2>Latest Sensor Recordings</h2>
+        <section class="summary-container">
+          <div>
+            <p class="summaryTitle"> Air Temperature</p>
+            <div id="airTemp-summary"></div>
+          </div>
+          <div>
+            <p class="summaryTitle"> Air Humidity</p>
+            <div  id="airHumid-summary" ></div>
+          </div>
+          <div>
+            <p class="summaryTitle"> Water Temperature</p>
+            <div  id="waterTemp-summary" ></div>
+          </div>
+          <div>
+            <p class="summaryTitle"> Water Level</p>
+            <div  id="waterLvl-summary" ></div>
+          </div>
+          <div>
+            <p class="summaryTitle"> pH</p>
+            <div  id="pH-summary" ></div>
+          </div>
+          <div>
+            <p class="summaryTitle"> Nutrient Level</p>
+            <div  id="nutrientLvl-summary" ></div>
+          </div>
+
+        </section>
+
+        <h2>Error Messages: </h2>
+        <p id="errorAirTemp" class="error" style="display:none">Air Sensor has been unplugged.</p>
+        <p id="errorWaterTemp" class="error" style="display:none">Water Temperature Sensor has been unplugged.</p>
+        <p id="errorWaterLvl" class="error" style="display:none">Water Level Sensor has been unplugged.</p>
+        <p id="errorpH" class="error" style="display:none">pH Sensor has been unplugged.</p>
+        <p id="errorNutrientLvl" class="error" style="display:none">Nutrient Level Sensor has been unplugged.</p>
+
+      </section>
+      <section id="section2" class="tabcontent">
+        <div style="font-size: 20px;color: #0F3376;">Select Graphs to Display </div>
+        <br>
+       
+        <section class="checkboxContainer">
+          
+
+          <ul id = "AirTempCheckBox1" ><input type="checkbox" onclick="selectLI(AirTempCheckBox1);updateGraphsDisplay();"  > <label for="airtemp">Air Temperature</label>
+            <li><input type="checkbox" class="checkboxesGraphs" onclick="updateGraphsDisplay();"> <label for="airtemp" > Live Data</label></li>
+            <li><input type="checkbox" class="checkboxesGraphs" onclick="updateGraphsDisplay();"> <label for="airtemp" >Historical Data</label></li>
+          </ul>
+          <ul id = "AirHumidCheckBox1" ><input type="checkbox" onclick="selectLI(AirHumidCheckBox1);updateGraphsDisplay();" > <label for="airhumid">Air Humidity</label>
+            <li ><input type="checkbox" class="checkboxesGraphs" onclick="updateGraphsDisplay();" > <label for="airhumid" > Live Data</label></li>
+            <li><input type="checkbox" class="checkboxesGraphs" onclick="updateGraphsDisplay();"> <label for="airhumid" >Historical Data</label></li>
+          </ul>
+          <ul id = "WaterTempCheckBox1" ><input type="checkbox" onclick="selectLI(WaterTempCheckBox1);updateGraphsDisplay();" > <label for="watertemp">Water Temperature</label>
+            <li ><input type="checkbox" class="checkboxesGraphs" onclick="updateGraphsDisplay();" > <label for="watertemp" > Live Data</label></li>
+            <li><input type="checkbox" class="checkboxesGraphs" onclick="updateGraphsDisplay();"> <label for="watertemp" >Historical Data</label></li>
+          </ul>
+          <ul id = "WaterLevelCheckBox1" ><input type="checkbox" onclick="selectLI(WaterLevelCheckBox1);updateGraphsDisplay();"  > <label for="waterlevel">Water Level</label>
+            <li><input type="checkbox" class="checkboxesGraphs" onclick="updateGraphsDisplay();"> <label for="waterlevel" > Live Data</label></li>
+            <li><input type="checkbox" class="checkboxesGraphs" onclick="updateGraphsDisplay();"> <label for="waterlevel" >Historical Data</label></li>
+          </ul>
+          <ul id = "pHCheckBox1" ><input type="checkbox" onclick="selectLI(pHCheckBox1);updateGraphsDisplay();" > <label for="pH">pH</label>
+            <li ><input type="checkbox" class="checkboxesGraphs" onclick="updateGraphsDisplay();" > <label for="pH" > Live Data</label></li>
+            <li><input type="checkbox" class="checkboxesGraphs" onclick="updateGraphsDisplay();"> <label for="pH" >Historical Data</label></li>
+          </ul>
+          <ul id = "NutrientLvlCheckBox1" ><input type="checkbox" onclick="selectLI(NutrientLvlCheckBox1);updateGraphsDisplay();" > <label for="nutrientlevel">Nutrient Level</label>
+            <li ><input type="checkbox" class="checkboxesGraphs" onclick="updateGraphsDisplay();" > <label for="nutrientlevel" > Live Data</label></li>
+            <li><input type="checkbox" class="checkboxesGraphs" onclick="updateGraphsDisplay();"> <label for="nutrientlevel" >Historical Data</label></li>
+          </ul>
+        </section>
+        <br>
+
+        <button onclick="selectAllCheckboxes('section2');updateGraphsDisplay();">Select all</button>
+        <button onclick="clearAllCheckboxes('section2');updateGraphsDisplay();">Clear all</button>
+        <section id="graphs">
+          <div class="graphElement" >
+            <!-- <div class="chart-container" > -->
+            <canvas id="airTemp" ></canvas>
+            <!-- </div> -->
+          </div>
+
+          <div class="graphElement">
+            <label for="airTempHistory">Choose a Historical Graph:</label>
+            <select name="airTempHistory" id="airTempHistoryDropdown" onchange="showHistoricalGraph(event,this.value,this.name)">
+              <option value=""> Please select Graph</option>
+              <option value="airTempDaily" >Daily Averages</option>
+              <option value="airTempWeekly" >Weekly Averages</option>
+              <option value="airTempMonthly" >Monthly Averages</option>
+            </select>
+
+            <div id="airTempHistory" class="historyGraphs">
+              <canvas id="airTempDaily" ></canvas>
+              <canvas id="airTempWeekly" ></canvas>
+              <canvas id="airTempMonthly" ></canvas>
+            </div>
+          </div>
+          
+          <div class="graphElement">
+            <canvas id="airHumidity" ></canvas>
+          </div>
+
+          <div class="graphElement">
+          <label for="airHumidityHistory">Choose a Historical Graph:</label>
+          <select name="airHumidityHistory" id="airHumidityHistoryDropdown" onchange="showHistoricalGraph(event,this.value,this.name)">
+            <option value=""> Please select a Graph</option>
+            <option value="airHumidityDaily" >Daily Averages</option>
+            <option value="airHumidityWeekly" >Weekly Averages</option>
+            <option value="airHumidityMonthly" >Monthly Averages</option>
+          </select>
+
+          <div id="airHumidityHistory" class="historyGraphs">
+          <canvas id="airHumidityDaily" ></canvas>
+          <canvas id="airHumidityWeekly" ></canvas>
+          <canvas id="airHumidityMonthly"></canvas>
+          </div>
+          </div>
+
+          <div class="graphElement">
+            <canvas id="waterTemp" ></canvas>
+          </div>
+
+          <div class="graphElement">
+          <label for="waterTempHistory"> Choose a Historical Graph:</label> 
+          <select name="waterTempHistory" id="waterTempHistoryDropdown" onchange="showHistoricalGraph(event,this.value,this.name)">
+            <option value=""> Please select a Graph</option>
+            <option value="waterTempDaily" >Daily Averages</option>
+            <option value="waterTempWeekly" >Weekly Averages</option>
+            <option value="waterTempMonthly" >Monthly Averages</option>
+          </select>
+
+          <div id="waterTempHistory" class="historyGraphs">
+          <canvas id="waterTempDaily" ></canvas>
+          <canvas id="waterTempWeekly" ></canvas>
+          <canvas id="waterTempMonthly" ></canvas>
+          </div>
+          </div>
+
+          <div class="graphElement">
+            <canvas id="waterLvl" ></canvas>
+          </div>
+
+          <div class="graphElement">
+          <label for="waterLvlHistory">Choose a Historical Graph:</label>
+          <select name="waterLvlHistory" id="waterLvlHistoryDropdown" onchange="showHistoricalGraph(event,this.value,this.name)">
+            <option value=""> Please select Graph</option>
+            <option value="waterLvlDaily" >Daily Averages</option>
+            <option value="waterLvlWeekly" >Weekly Averages</option>
+            <option value="waterLvlMonthly" >Monthly Averages</option>
+          </select>
+
+          <div id="waterLvlHistory" class="historyGraphs">
+          <canvas id="waterLvlDaily" ></canvas>
+          <canvas id="waterLvlWeekly" ></canvas>
+          <canvas id="waterLvlMonthly" ></canvas>
+          </div>
+          </div>
+
+          <div class="graphElement">
+            <canvas id="pH" ></canvas>
+          </div>
+
+          <div class="graphElement">
+          <label for="pHHistory">Choose a Historical Graph:</label>
+          <select name="pHHistory" id="pHHistoryDropdown" onchange="showHistoricalGraph(event,this.value,this.name)">
+            <option value=""> Please select Graph</option>
+            <option value="pHDaily" >Daily Averages</option>
+            <option value="pHWeekly" >Weekly Averages</option>
+            <option value="pHMonthly" >Monthly Averages</option>
+          </select>
+
+          <div id="pHHistory" class="historyGraphs">
+          <canvas id="pHDaily" ></canvas>
+          <canvas id="pHWeekly" ></canvas>
+          <canvas id="pHMonthly" ></canvas>
+          </div>
+          </div>
+
+          <div class="graphElement">
+            <canvas id="nutrientLvl" ></canvas>
+          </div>
+
+          <div class="graphElement">
+          <label for="nutrientLvlHistory">Choose a Historical Graph:</label>
+          <select name="nutrientLvlHistory" id="nutrientLvlHistoryDropdown" onchange="showHistoricalGraph(event,this.value,this.name)">
+            <option value=""> Please select Graph</option>
+            <option value="nutrientLvlDaily" >Daily Averages</option>
+            <option value="nutrientLvlWeekly" >Weekly Averages</option>
+            <option value="nutrientLvlMonthly" >Monthly Averages</option>
+          </select>
+
+          <div id="nutrientLvlHistory" class="historyGraphs">
+          <canvas id="nutrientLvlDaily" ></canvas>
+          <canvas id="nutrientLvlWeekly" ></canvas>
+          <canvas id="nutrientLvlMonthly" ></canvas>
+          </div>
+          </div>
+
+        
+        </section>
+      </section>
+     
+      <section id="section3" class="tabcontent">
+
+        <div style="font-size: 20px;padding: 20px;color: #0F3376;">Select Tables to Display </div>
+        <br>
+       
+        <section class="checkboxContainer">
+
+          <ul id = "AirTempCheckBox2" ><input type="checkbox" onclick="selectLI(AirTempCheckBox2);updateTablesDisplay();"  > <label for="airtemp">Air Temperature</label>
+            <li><input type="checkbox" class="checkboxesTables" onclick="updateTablesDisplay();"> <label for="airtemp" > Live Data</label></li>
+            <li><input type="checkbox" class="checkboxesTables" onclick="updateTablesDisplay();"> <label for="airtemp" >Historical Data</label></li>
+          </ul>
+          <ul id = "AirHumidCheckBox2" ><input type="checkbox" onclick="selectLI(AirHumidCheckBox2);updateTablesDisplay();" > <label for="airhumid">Air Humidity</label>
+            <li ><input type="checkbox" class="checkboxesTables" onclick="updateTablesDisplay();" > <label for="airhumid" > Live Data</label></li>
+            <li><input type="checkbox" class="checkboxesTables" onclick="updateTablesDisplay();"> <label for="airhumid" >Historical Data</label></li>
+          </ul>
+          <ul id = "WaterTempCheckBox2" ><input type="checkbox" onclick="selectLI(WaterTempCheckBox2);updateTablesDisplay();" > <label for="watertemp">Water Temperature</label>
+            <li ><input type="checkbox" class="checkboxesTables" onclick="updateTablesDisplay();" > <label for="watertemp" > Live Data</label></li>
+            <li><input type="checkbox" class="checkboxesTables" onclick="updateTablesDisplay();"> <label for="watertemp" >Historical Data</label></li>
+          </ul>
+          <ul id = "WaterLevelCheckBox2" ><input type="checkbox" onclick="selectLI(WaterLevelCheckBox2);updateTablesDisplay();"  > <label for="waterlevel">Water Level</label>
+            <li><input type="checkbox" class="checkboxesTables" onclick="updateTablesDisplay();"> <label for="waterlevel" > Live Data</label></li>
+            <li><input type="checkbox" class="checkboxesTables" onclick="updateTablesDisplay();"> <label for="waterlevel" >Historical Data</label></li>
+          </ul>
+          <ul id = "pHCheckBox2" ><input type="checkbox" onclick="selectLI(pHCheckBox2);updateTablesDisplay();" > <label for="pH">pH</label>
+            <li ><input type="checkbox" class="checkboxesTables" onclick="updateTablesDisplay();" > <label for="pH" > Live Data</label></li>
+            <li><input type="checkbox" class="checkboxesTables" onclick="updateTablesDisplay();"> <label for="pH" >Historical Data</label></li>
+          </ul>
+          <ul id = "NutrientLvlCheckBox2" ><input type="checkbox" onclick="selectLI(NutrientLvlCheckBox2);updateTablesDisplay();" > <label for="nutrientlevel">Nutrient Level</label>
+            <li ><input type="checkbox" class="checkboxesTables" onclick="updateTablesDisplay();" > <label for="nutrientlevel" > Live Data</label></li>
+            <li><input type="checkbox" class="checkboxesTables" onclick="updateTablesDisplay();"> <label for="nutrientlevel" >Historical Data</label></li>
+          </ul>
+        </section>
+        <br>
+
+        <button onclick="selectAllCheckboxes('section3');updateTablesDisplay();">Select all</button>
+        <button onclick="clearAllCheckboxes('section3');updateTablesDisplay();">Clear all</button> <br>
+
+        <section id="tables">
+          <div class="tableElement" >
+            <h3>Air Temperature Live Data</h3>
+            <div id="airTempT"></div>
+          </div>
+
+          
+          <div class="tableElement">
+            <h3>Air Temperature Historical Data</h3>
+
+            <label for="airTempHistoryT">Choose a Historical Table:</label>
+            <select name="airTempHistoryT" id="airTempHistoryDropdownT" onchange="showHistoricalTable(event,this.value,this.name)">
+              <option value=""> Please select Table</option>
+              <option value="airTempDailyT" >Daily Averages</option>
+              <option value="airTempWeeklyT" >Weekly Averages</option>
+              <option value="airTempMonthlyT" >Monthly Averages</option>
+            </select>
+
+            <div id="airTempHistoryT" class="historyTables">
+              <div id="airTempDailyT"></div>
+              <div id="airTempWeeklyT"></div>
+              <div id="airTempMonthlyT"></div>
+            </div>
+          </div>
+          
+          <div class="tableElement">
+            <h3>Air Humidity Live Data</h3>
+
+            <div id="airHumidityT"></div>
+          </div>
+
+          <div class="tableElement">
+            <h3>Air Humidity Historical Data</h3>
+
+          <label for="airHumidityHistoryT">Choose a Historical Table:</label>
+          <select name="airHumidityHistoryT" id="airHumidityHistoryDropdownT" onchange="showHistoricalTable(event,this.value,this.name)">
+            <option value=""> Please select Table</option>
+            <option value="airHumidityDailyT" >Daily Averages</option>
+            <option value="airHumidityWeeklyT" >Weekly Averages</option>
+            <option value="airHumidityMonthlyT" >Monthly Averages</option>
+          </select>
+
+          <div id="airHumidityHistoryT" class="historyTables">
+            <div id="airHumidityDailyT"></div>
+            <div id="airHumidityWeeklyT"></div>
+            <div id="airHumidityMonthlyT"></div>
+          </div>
+          </div>
+
+          <div class="tableElement">
+            <h3>Water Temperature Live Data</h3>
+
+            <div id="waterTempT"></div>
+          </div>
+
+          <div class="tableElement">
+          <h3>Water Temperature Historical Data</h3>
+
+          <label for="waterTempHistoryT">Choose a Historical Table:</label>
+          <select name="waterTempHistoryT" id="waterTempHistoryDropdownT" onchange="showHistoricalTable(event,this.value,this.name)">
+            <option value=""> Please select Table</option>
+            <option value="waterTempDailyT" >Daily Averages</option>
+            <option value="waterTempWeeklyT" >Weekly Averages</option>
+            <option value="waterTempMonthlyT" >Monthly Averages</option>
+          </select>
+
+          <div id="waterTempHistoryT" class="historyTables">
+            <div id="waterTempDailyT"></div>
+            <div id="waterTempWeeklyT"></div>
+            <div id="waterTempMonthlyT"></div>
+          </div>
+          </div>
+
+          <div class="tableElement">
+            <h3>Water Level Live Data</h3>
+
+            <div id="waterLvlT"></div>
+          </div>
+
+          <div class="tableElement">
+            <h3>Water Level Historical Data</h3>
+
+          <label for="waterLvlHistoryT">Choose a Historical Table:</label>
+          <select name="waterLvlHistoryT" id="waterLvlHistoryDropdownT" onchange="showHistoricalTable(event,this.value,this.name)">
+            <option value=""> Please select Table</option>
+            <option value="waterLvlDailyT" >Daily Averages</option>
+            <option value="waterLvlWeeklyT" >Weekly Averages</option>
+            <option value="waterLvlMonthlyT" >Monthly Averages</option>
+          </select>
+
+          <div id="waterLvlHistoryT" class="historyTables">
+            <div id="waterLvlDailyT"></div>
+            <div id="waterLvlWeeklyT"></div>
+            <div id="waterLvlMonthlyT"></div>
+          </div>
+          </div>
+
+          <div class="tableElement">
+            <h3>pH Live Data</h3>
+
+            <div id="pHT"></div>
+          </div>
+
+          <div class="tableElement">
+            <h3>pH Historical Data</h3>
+
+          <label for="pHHistoryT">Choose a Historical Table:</label>
+          <select name="pHHistoryT" id="pHHistoryDropdownT" onchange="showHistoricalTable(event,this.value,this.name)">
+            <option value=""> Please select Table</option>
+            <option value="pHDailyT" >Daily Averages</option>
+            <option value="pHWeeklyT" >Weekly Averages</option>
+            <option value="pHMonthlyT" >Monthly Averages</option>
+          </select>
+
+          <div id="pHHistoryT" class="historyTables">
+            <div id="pHDailyT"></div>
+            <div id="pHWeeklyT"></div>
+            <div id="pHMonthlyT"></div>
+          </div>
+          </div>
+
+          <div class="tableElement">
+            <h3>Nutrient Level Live Data</h3>
+
+            <div id="nutrientLvlT"></div>
+          </div>
+
+          <div class="tableElement">
+            <h3>Nutrient Level Historical  Data</h3>
+
+          <label for="nutrientLvlHistoryT">Choose a Historical Table:</label>
+          <select name="nutrientLvlHistoryT" id="nutrientLvlHistoryDropdownT" onchange="showHistoricalTable(event,this.value,this.name)">
+            <option value=""> Please select Table</option>
+            <option value="nutrientLvlDailyT" >Daily Averages</option>
+            <option value="nutrientLvlWeeklyT" >Weekly Averages</option>
+            <option value="nutrientLvlMonthlyT" >Monthly Averages</option>
+          </select>
+
+          <div id="nutrientLvlHistoryT" class="historyTables">
+            <div id="nutrientLvlDailyT"></div>
+            <div id="nutrientLvlWeeklyT"></div>
+            <div id="nutrientLvlMonthlyT"></div>
+          </div>
+          </div>
+
+        
+        </section>
+
+
+      </section>
+
+      
+      <section id="section8" class="tabcontent">
+        <!--<h2>Section 8</h2>
+        <p>
+          <form action="/get" target="hidden-form">
+            Sensor1 LowerBound (current value %floatHigher%): <input type="number " name="floatHigher">
+            <input type="submit" value="Submit" onclick="submitMessage()">
+          </form>
+          
+          <form action="/get" target="hidden-form">
+            Sensor1 UpperBound (current value %floatLower%): <input type="number " id="floatLower" name="floatLower">
+            <input type="submit" value="Submit" onclick="submitMessage()">
+          </form>
+          <form action="/get" target="hidden-form">
+            Sensor1 TimeStamp (current value %timeStamp1%): <input type="text " id="timeStamp1" name="timeStamp1">
+              <input type="submit" value="Submit" onclick="submitMessage()">
+            </form>
+          <form action="/get" target="hidden-form">
+          Sensor1 Runtime (current value %runTime1%): <input type="number " id="runTime1" name="runTime1">
+            <input type="submit" value="Submit" onclick="submitMessage()">
+          </form>
+          <form action="/get" target="hidden-form">
+          Sensor2 LowerBound (current value %lowerBound2%): <input type="number " id="lowerBound2" name="lowerBound2">
+              <input type="submit" value="Submit" onclick="submitMessage()">
+            </form>
+            <form action="/get" target="hidden-form">
+          Sensor2 UpperBound (current value %upperBound2%): <input type="number " id="upperBound2" name="upperBound2">
+                <input type="submit" value="Submit" onclick="submitMessage()">
+              </form>
+          <form action="/get" target="hidden-form">
+          Sensor2 TimeStamp (current value %timeStamp2%): <input type="text " id="timeStamp2" name="timeStamp2">
+                  <input type="submit" value="Submit" onclick="submitMessage()">
+              </form>
+              <form action="/get" target="hidden-form">
+          Sensor2 Runtime (current value %runTime2%): <input type="number " id="runTime2" name="runTime2">
+                  <input type="submit" value="Submit" onclick="submitMessage()">
+                </form>
+
+          <form action="/get" target="hidden-form">
+          Sensor3 LowerBound (current value %lowerBound3%): <input type="number " id="lowerBound3" name="lowerBound3">
+          <input type="submit" value="Submit" onclick="submitMessage()">
+          </form>
+
+          <form action="/get" target="hidden-form">
+            Sensor3 UpperBound (current value %upperBound3%): <input type="number " id="upperBound3" name="upperBound3">
+                  <input type="submit" value="Submit" onclick="submitMessage()">
+                </form>
+
+          <form action="/get" target="hidden-form">
+          Sensor3 TimeStamp (current value %timeStamp3%): <input type="text " id="timeStamp3" name="timeStamp3">
+                  <input type="submit" value="Submit" onclick="submitMessage()">
+              </form>
+          <form action="/get" target="hidden-form">
+          Sensor3 Runtime (current value %runTime3%): <input type="number " id="runTime3" name="runTime3">
+                  <input type="submit" value="Submit" onclick="submitMessage()">
+                </form>
+
+          <form action="/get" target="hidden-form">
+                  Sensor4 LowerBound (current value %lowerBound4%): <input type="number " id="lowerBound4" name="lowerBound4">
+                  <input type="submit" value="Submit" onclick="submitMessage()">
+          </form>
+        
+            <form action="/get" target="hidden-form">
+              Sensor4 UpperBound (current value %upperBound4%): <input type="number " id="upperBound4" name="upperBound4">
+              <input type="submit" value="Submit" onclick="submitMessage()">
+              </form>
+        
+          <form action="/get" target="hidden-form">
+          Sensor4 TimeStamp (current value %timeStamp4%): <input type="text " id="timeStamp4" name="timeStamp4">
+          <input type="submit" value="Submit" onclick="submitMessage()">
+          </form>
+          <form action="/get" target="hidden-form">
+            Sensor4 Runtime (current value %runTime4%): <input type="number " id="runTime4" name="runTime4">
+            <input type="submit" value="Submit" onclick="submitMessage()">
+           </form>
+         
+
+           <form action="/get" target="hidden-form">
+            Sensor5 LowerBound (current value %lowerBound5%): <input type="number " id="lowerBound5" name="lowerBound5">
+            <input type="submit" value="Submit" onclick="submitMessage()">
+    </form>
+  
+      <form action="/get" target="hidden-form">
+        Sensor5 UpperBound (current value %upperBound5%): <input type="number " id="upperBound5" name="upperBound5">
+        <input type="submit" value="Submit" onclick="submitMessage()">
+        </form>
+  
+    <form action="/get" target="hidden-form">
+    Sensor5 TimeStamp (current value %timeStamp5%): <input type="text " id="timeStamp5" name="timeStamp5">
+    <input type="submit" value="Submit" onclick="submitMessage()">
+    </form>
+    <form action="/get" target="hidden-form">
+      Sensor5 Runtime (current value %runTime5%): <input type="number " id="runTime5" name="runTime5">
+      <input type="submit" value="Submit" onclick="submitMessage()">
+     </form>
+
+     <form action="/get" target="hidden-form">
+      Sensor5 LowerBound (current value %lowerBound5%): <input type="number " id="lowerBound5" name="lowerBound5">
+      <input type="submit" value="Submit" onclick="submitMessage()">
+</form>
+
+<form action="/get" target="hidden-form">
+  Sensor6 UpperBound (current value %upperBound6%): <input type="number " id="upperBound6" name="upperBound6">
+  <input type="submit" value="Submit" onclick="submitMessage()">
+  </form>
+
+<form action="/get" target="hidden-form">
+Sensor6 TimeStamp (current value %timeStamp6%): <input type="text " id="timeStamp6" name="timeStamp6">
+<input type="submit" value="Submit" onclick="submitMessage()">
+</form>
+<form action="/get" target="hidden-form">
+Sensor6 Runtime (current value %runTime6%): <input type="number " id="runTime6" name="runTime6">
+<input type="submit" value="Submit" onclick="submitMessage()">
+</form>
+   
+
+          
+          <form action="/get" target="hidden-form">
+            twoInput (current value %twoInput%): <input type="number " name="twoInput">
+            <input type="submit" value="Submit" onclick="submitMessage()">
+          </form>
+          <form action="/get" target="hidden-form">
+            mqttUsername (current value %mqttUsername%): <input type="text " name="mqttUsername">
+            <input type="submit" value="Submit" onclick="submitMessage()">
+          </form>
+          <form action="/get" target="hidden-form">
+            mqttPassword (current value %mqttPassword%): <input type="text " name="mqttPassword">
+            <input type="submit" value="Submit" onclick="submitMessage()">
+          </form>
+          <form action="/get" target="hidden-form">
+            mqttServer (current value %mqttServer%): <input type="text " name="mqttServer">
+            <input type="submit" value="Submit" onclick="submitMessage()">
+          </form>
+          <form action="/get" target="hidden-form">
+            mqttPort (current value %mqttPort%): <input type="number " name="mqttPort">
+            <input type="submit" value="Submit" onclick="submitMessage()">
+          </form>
+          
+          <iframe style="display:none" name="hidden-form"></iframe></p>-->
+          <section class="formboxContainer">
+            <div style="font-size: 19px;color: #0e0e0f; font: size 4px; ;">Configuration Parameters</div>
+          <div class="sensors">Sensors</div>
+          <div class="mqtt_config">MQTT Configuration</div>
+          
+          <div class="outlet_config">Outlet Configuration</div>
+          <div class="mqtt_box"></div>
+          <div class="sensorspls"></div>
+            <div class="topleft" >
+            Air Temperature
+              <form action="/get" target="hidden-form">
+                <input type="number " id="border_input" name="floatHigher" placeholder="LowerBound">
+                <input type="submit" value="Submit" onclick="submitMessage()">
+              </form>
+              <br>
+              <form action="/get" target="hidden-form">
+                <input type="number " id="border_input" name="floatLower" placeholder="UpperBound">
+                <input type="submit" value="Submit" onclick="submitMessage()">
+              </form>
+            
+              
+            </div>
+           
+            <div class="topcenter">
+              Air Humidity
+              <br>
+              <form action="/get" target="hidden-form">
+               <input type="number " id="border_input" name="lowerBound2" placeholder="LowerBound">
+                <input type="submit" value="Submit" onclick="submitMessage()">
+              </form>
+               <br>
+               <form action="/get" target="hidden-form">
+               <input type="number " id="border_input" name="upperBound2" placeholder="UpperBound ">
+               <input type="submit" value="Submit" onclick="submitMessage()">
+              </form>
+               
+             </div>
+             
+            <div class="topright">
+              Water Temperature
+              <br>
+              <form action="/get" target="hidden-form">
+              <input type="number " id="border_input" name="lowerBound3" placeholder="LowerBound">
+              <input type="submit" value="Submit" onclick="submitMessage()">
+              </form>
+              <br>
+              <form action="/get" target="hidden-form">
+              <input type="number " id="border_input" name="upperBound3" placeholder="UpperBound">
+              <input type="submit" value="Submit" onclick="submitMessage()">
+              </form>
+              <br>
+              
+             </div>
+             <div class="centerleft">
+              TDS Level
+              <br>
+              <form action="/get" target="hidden-form">
+              <input type="number " id="border_input" name="lowerBound4" placeholder="LowerBound">
+              <input type="submit" value="Submit" onclick="submitMessage()">
+              </form>
+              <br>
+              <form action="/get" target="hidden-form">
+               <input type="number " id="border_input" name="upperBound4" placeholder="UpperBound">
+               <input type="submit" value="Submit" onclick="submitMessage()">
+              </form>
+               <br>
+               
+              </div>
+              <div class="centercenter">
+               pH Level
+                <br>
+                <form action="/get" target="hidden-form">
+               <input type="number " id="border_input" name="lowerBound5" placeholder="LowerBound">
+               <input type="button" value="Submit" onclick="submitMessage()">
+               </form>
+               <br>
+               <form action="/get" target="hidden-form">
+               <input type="number " id="border_input" name="upperBound5" placeholder="UpperBound">
+               <input type="submit" value="Submit" onclick="submitMessage()">
+              </form>
+               <br>
+               
+                </div>
+              <div class="centerright">
+               Water Level
+               <br>
+               <form action="/get" target="hidden-form">
+               <input type="number " id="border_input" name="lowerBound5" placeholder="LowerBound">
+               <input type="submit" value="Submit" onclick="submitMessage()">
+              </form>
+               <br>
+               <form action="/get" target="hidden-form">
+              <input type="number "  id="border_input" name="upperBound6" placeholder="UpperBound">
+              <input type="submit" value="Submit" onclick="submitMessage()">
+               </form>
+              <br>
+              
+              </div>
+            </div>
+              
+            
+
+              
+              
+              <div class="outletspls"></div>
+              <div class="bottomleft">
+                Outlet1
+                <br>
+                <form action="/get" target="hidden-form">
+                <input type="number " id="border_input" name="outLet1" placeholder="Start Time">
+                <input type="submit" value="Submit" onclick="submitMessage()">
+               </form>
+                <br>
+                <form action="/get" target="hidden-form">
+               <input type="number " id="border_input" name="outLet1_end" placeholder="End Time">
+               <input type="submit" value="Submit" onclick="submitMessage()">
+                </form>
+               <br>
+               <form action="/outLet1on" target="hidden-form">
+                <input type="submit" value="ON" onclick="submitMessage()">
+                
+              </form>
+              <form action="/outLet1off" target="hidden-form">
+                <input type="submit" value="OFF" id="outLet1off" onclick="submitMessage()">
+              </form>
+              
+              
+              
+              </p>
+               </div>
+               <div class="outLet2">
+                Outlet2
+                <br>
+                <form action="/get" target="hidden-form">
+                <input type="number " id="border_input" name="outLet2" placeholder="Start Time">
+                <input type="submit" value="Submit" onclick="submitMessage()">
+               </form>
+                <br>
+                <form action="/get" target="hidden-form">
+               <input type="number " id="border_input" name="outLet2_end" placeholder="End Time">
+               <input type="submit" value="Submit" onclick="submitMessage()">
+                </form>
+               <br>
+               <form action="/outLet2on" target="hidden-form">
+                <input type="submit" value="ON" onclick="submitMessage()">
+                
+              </form>
+              <form action="/outLet2off" target="hidden-form">
+                <input type="submit" value="OFF" id="outLet2off" onclick="submitMessage()">
+              </form>
+              
+              </p>
+               </div>
+
+               <div class="outLet3">
+                Outlet3
+                <br>
+                <form action="/get" target="hidden-form">
+                <input type="number " id="border_input" name="outLet3" placeholder="Start Time">
+                <input type="submit" value="Submit" onclick="submitMessage()">
+               </form>
+                <br>
+                <form action="/get" target="hidden-form">
+               <input type="number " id="border_input" name="outLet3_end" placeholder="End Time">
+               <input type="submit" value="Submit" onclick="submitMessage()">
+                </form>
+               <br>
+               <form action="/outLet3on" target="hidden-form">
+                <input type="submit" value="ON" onclick="submitMessage()">
+                
+              </form>
+              <form action="/outLet3off" target="hidden-form">
+                <input type="submit" value="OFF" id="outLet3off" onclick="submitMessage()">
+              </form>
+              
+              </p>
+               </div>
+
+               <div class="outLet4">
+                Outlet4
+                <br>
+                <form action="/get" target="hidden-form">
+                <input type="number " id="border_input" name="outLet4" placeholder="Start Time">
+                <input type="submit" value="Submit" onclick="submitMessage()">
+               </form>
+                <br>
+                <form action="/get" target="hidden-form">
+               <input type="number " id="border_input" name="outLet4_end" placeholder="End Time">
+               <input type="submit" value="Submit" onclick="submitMessage()">
+                </form>
+               <br>
+               <form action="/outLet4on" target="hidden-form">
+                <input type="submit" value="ON" onclick="submitMessage()">
+                
+              </form>
+              <form action="/outLet4off" target="hidden-form">
+                <input type="submit" value="OFF" id="outLet4off" onclick="submitMessage()">
+              </form>
+              
+              </p>
+               </div>
+              
+               <div class="bottomcenter">
+              MQTT
+              <br>
+              <form action="/get" target="hidden-form">
+              <input type="text " id="border_input" name="mqttUsername" placeholder="mqttUsername ">
+              <input type="submit" value="Submit" onclick="submitMessage()">
+              </form>
+              <br>
+              <form action="/get" target="hidden-form">
+              <input type="text " id="border_input" name="mqttPassword" placeholder="mqttPassword"> 
+              <input type="submit" value="Submit" onclick="submitMessage()">
+              </form>
+              <br>
+              <form action="/get" target="hidden-form">
+              <input type="text " id="border_input" name="mqttServer" placeholder="mqttServer">
+              <input type="submit" value="Submit" onclick="submitMessage()">
+              </form>
+              <br>
+              <form action="/get" target="hidden-form">
+              <input type="number " id="border_input" name="mqttPort" placeholder="mqttPort">
+              <input type="submit" value="Submit" onclick="submitMessage()">
+              </form>
+              </div> 
+              <iframe style="display:none" name="hidden-form"></iframe>
+              </section>
+      </section>
+      
+    
+
+      
+  <button onclick="logoutButton()">Logout</button>
+
+
+
+</body>
+<script src="tables.js" type="text/javascript"></script>
+<script src="graphs.js" type="text/javascript"></script>
+
+
+
+</html>
